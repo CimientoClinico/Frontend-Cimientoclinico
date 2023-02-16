@@ -1,3 +1,47 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+#primario{
+    background-color: #51B6B6;
+}
+#textologo{
+    color: #077070;
+}
+#bold{
+    color: #005382;
+}
+#boton{
+    background-color: #99D9D9;
+}
+
+#textoclaro{
+color: #99D9D9;
+}
+
+body{
+    background-color: #F8F8F3;
+}
+#requisitos{
+    background-color: #077070;
+}
+#footer{
+    background-color: #005382;
+}
+#animacion{
+    animation: myAnim 1s ease 0s 1 normal forwards;
+    
+}
+@keyframes myAnim {
+	0% {
+		opacity: 0;
+		transform: translateX(-250px);
+	}
+
+	100% {
+		opacity: 1;
+		transform: translateX(0);
+	}
+}
