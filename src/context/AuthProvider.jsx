@@ -4,51 +4,54 @@ import clientAxios from "../config/axios";
 const AuthContext = createContext()
 
 const AuthProvider = ({children})=>{
-const [cargando, setCargando ] =useState(true)
-const [ auth, setAuth ] = useState({})
-
-useEffect(()=>{
-    const autenticarUsuario = async () =>{
+const [cargando, setCargando] = useState(true)
+    const [auth, setAuth] = useState({})
+ useEffect(()=>{
+    const autenticarUsuario = async() =>{
         const token = localStorage.getItem('token')
-        if(!token) {
+        if(!token){
             setCargando(false)
             return
-        }
+
+        } 
+
         const config ={
-            headers : {
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`
+
+            headers:{
+                "Content-Type":"application/json",
+                Authorization:`Bearer ${token}`
             }
         }
         try {
-            const { data } = await clientAxios('/pacientes/perfil', config)
+            const {data} = await clientAxios.get(`/pacientes/perfil`,config)
             setAuth(data)
-            console.log(data)
         } catch (error) {
             console.log(error.response.data.msg)
-            
             setAuth({})
         }
+
         setCargando(false)
     }
     autenticarUsuario()
-},[])
 
-return(
-    <AuthContext.Provider
-    value={{
-        auth,
-        setAuth,
-        cargando
-    }}
-    >
-        {children}
-    </AuthContext.Provider>
+ }, [])
 
-)
+
+
+    return(
+        <AuthContext.Provider
+        value={{
+            auth,
+            setAuth, 
+            cargando,
+        }}
+        >
+            {children}
+        </AuthContext.Provider>
+    )
 }
 
-export{
+export {
     AuthProvider
 }
 

@@ -1,14 +1,15 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 const HeaderPublico = () =>{
     const [navbar, setNavbar] = useState(false);
 return(
     <header>
-    <nav   className= " bg-white  drop-shadow-2xl px-4 lg:px-6 py-3.5  w-full ">
-           <div className=" justify-between px-4 mx-auto lg:max-w-7xl md:items-center md:flex md:px-8 ">
+    <nav   className= " bg-white  drop-shadow-2xl px-4 lg:px-4 py-3.5  w-full ">
+           <div className=" justify-between px-4 mx-auto lg:max-w-7xl md:items-center md:flex md:px-1 ">
                <div>
                    <div className="flex items-center justify-between py-3 md:py-5 md:block">
                        <a href="/">
-                           <h1 id="textologo" className="font-nunito  text-3xl font-bold text-white">Cimiento Clínico</h1>
+                           <h1 id="textologo" className="font-nunito   text-3xl font-bold text-white">Cimiento Clínico</h1>
                        </a>
                        <div className="md:hidden">
                            <button
@@ -42,10 +43,10 @@ return(
                </div>
                <div>
                    <div
-                       className={`flex-1 justify-self-center pb-3 mt-8 md:block md:pb-0 md:mt-0  ${
+                       className={`flex-1 justify-self-center pb-3 mt-8 lg:block md:pb-0 md:mt-0  ${
                            navbar ? "block" : "hidden"
                        }`}>
-                       <ul className="items-center justify-center space-y-8 md:flex md:space-x-16 md:space-y-0">
+                       <ul className="items-center justify-center space-y-8 md:flex lg:space-x-12  sm:space-x-4 md:space-y-0">
                            <li className="font-nunito font-normal block py-2 pr-4 pl-3 text-black border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700">
                                <a href="#">Reservas</a>
                            </li>
@@ -61,12 +62,21 @@ return(
                        </ul>
 
                        <div className="mt-3 space-y-2 lg:hidden md:inline-block">
-                   <a id="primario" href="/ingresa"className="inline-block w-full px-4 py-2 text-center text-white font-nunito  rounded-md shadow ">Ingresar</a>
+                   <Link id="primario" to="/ingresa"className="inline-block w-full px-4 py-2 text-center text-white font-nunito  rounded-md shadow ">Portal paciente</Link>
                </div>
+               <div className="mt-3 space-y-2 lg:hidden md:inline-block">
+                   <Link to="/portal-profesional"className=" bg-blue-500 inline-block w-full px-4 py-2 text-center text-white font-nunito  rounded-md shadow ">Portal profesional</Link>
+               </div>
+               
                    </div>
                </div>
-               <div className="hidden space-x-2 md:inline-block">
-                   <a id="primario" href="/ingresa" className="inline-block w-full px-4 py-2 text-center text-white font-nunito  rounded-md shadow ">Ingresar</a>
+               <div className="justify-between ">
+               <div className="hidden space-x-1 md:inline-block ">
+                   <Link id="primario" to="/ingresa" className=" text-sm transition-transform  ease-in-out hover:scale-110 inline-block w-full px-7 py-1 text-center text-white font-nunito  rounded-md shadow ">Portal <br /> Paciente</Link>
+               </div>
+               <div className="hidden space-x-1 md:inline-block ml-2">
+                   <Link to="/portal-profesional" className=" bg-blue-500 text-sm transition-transform  ease-in-out hover:scale-110 inline-block w-full px-4 py-1 text-center text-white font-nunito  rounded-md shadow ">Portal <br /> Profesionales</Link>
+               </div>
                </div>
            </div>
        </nav>
