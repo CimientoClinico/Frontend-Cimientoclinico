@@ -3,6 +3,7 @@ import Alerta from '../../components/AlertaModal';
 import Modal from "../../components/Modal"
 import useAdmins from "../../hooks/admin/useAdmin";
 import { Paginacion } from "../Paginacion";
+import AdminAuth from '../../hooks/adminAuth'
 const FormularioAdmins = () => {
 
     const [email, setEmail] = useState('')
@@ -18,6 +19,7 @@ const FormularioAdmins = () => {
     const [showModalGuardar, setShowModalGuardar]= useState(false)
     const [showModalEditar, setShowModalEditar]= useState(false)
     const[busqueda, setBusqueda]= useState('')
+    const { authadmin} = AdminAuth()
 
     const {guardarAdmin, admin} = useAdmins()
     const {setEdicion, eliminarAdmin, setAdmins, tablaUsuarios,pagina, setPagina, porPagina, maximo } = useAdmins()
@@ -47,20 +49,24 @@ const FormularioAdmins = () => {
         e.preventDefault();
         if([email,rut,nombre,apellidos,password,repetirPassword].includes('')){
           setAlerta({msg: 'Hay campos vacíos', error: true})
+          setTimeout(()=> setAlerta({}),5000)
           return;
         }
     
         if(password !== repetirPassword){
           setAlerta({msg: 'Las contraseñas deben ser iguales', error: true})
+          setTimeout(()=> setAlerta({}),5000)
           return;
         }
         if(rut.length < 9 || rut.length > 10 ){
           setAlerta({msg: 'RUT no válido. Ejemplo:11111111-1', error: true})
+          setTimeout(()=> setAlerta({}),5000)
           return;
         }
     
         if(password.length < 6 ){
           setAlerta({msg: 'La contraseña debe tener al menos 6 caracteres', error: true})
+          setTimeout(()=> setAlerta({}),5000)
           return;
         }
     
@@ -71,6 +77,7 @@ const FormularioAdmins = () => {
                 msg: 'Administrador registrado, Email de confirmación enviado',
                 error: false
                })
+               setTimeout(()=> setAlerta({}),5000)
         }
 
        }
@@ -79,6 +86,7 @@ const FormularioAdmins = () => {
       e.preventDefault();
       if([email,rut,nombre].includes('')){
         setAlerta({msg: 'Email, rut y nombres no pueden estar vacíos', error: true})
+        setTimeout(()=> setAlerta({}),5000)
         return;
       }
 
@@ -120,15 +128,15 @@ const FormularioAdmins = () => {
   return (
     <>
     
-    <h1 id="textologo" className="font-bold font-nunito text-center text-2xl ">Cimiento Clínico</h1>
-<h3 className="font-semibold font-nunito text-center text-mb mb-2">Mantenedor de administradores</h3>
-<div class="flex w-full items-center justify-between border-b pb-3"> 
-<button onClick={()=> setShowModalGuardar(true)} className=" bg-indigo-500 text-sm text-white hover:bg-indigo-700 font-bold uppercase  px-2 py-3 rounded-full shadow-md hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" type="button">
+    <h1  className="font-bold font-nunito text-center text-2xl text-teal-600 dark:text-white ">Cimiento Clínico</h1>
+<h3 className="font-semibold font-nunito text-center text-mb mb-2 dark:text-white">Mantenedor de administradores</h3>
+<div className="flex w-full items-center justify-between border-b pb-3"> 
+<button onClick={()=> setShowModalGuardar(true)} className=" bg-indigo-500 text-sm text-white hover:bg-indigo-700 font-regular  px-2 py-3 rounded-lg shadow-md hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" type="button">
 Agregar Administrador
 </button>	
-<div class="flex items-center space-x-8">
-      <div class="pt-2 relative mx-auto text-gray-600">
-        <input class=" text-black px-2  font-semibold  text-sm py-3 rounded-md shadow-md hover:shadow-lg  focus:outline-none mr-1 mb-1  transition-all duration-150"
+<div className="flex items-center space-x-8">
+      <div className="pt-2 relative mx-auto text-gray-600">
+        <input className=" text-black px-2  font-semibold  text-sm py-3 rounded-md shadow-md hover:shadow-lg  focus:outline-none mr-1 mb-1  transition-all duration-150"
           value={busqueda}
           placeholder="Buscar Profesional"
           onChange={handleChange}/>
@@ -227,9 +235,9 @@ Agregar Administrador
               alerta={alerta}
               />}
   <form  className="px-10 py-2 shadow-lg" onSubmit={Editar}  >
-    <label htmlFor="email" className="font-semibold text-sm text-gray-700 pb-0 block" >Correo Electrónico</label>
+    <label htmlFor="email2" className="font-semibold text-sm text-gray-700 pb-0 block" >Correo Electrónico</label>
     <input 
-    id="email"
+    id="email2"
     className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full" 
     placeholder="Ingresar Correo electrónico"
     type="email" 
@@ -237,18 +245,18 @@ Agregar Administrador
     onChange={e => setEmail(e.target.value) }
     />
 
-     <label htmlFor="nombres" className="font-semibold text-sm text-gray-600 pb-1 block" >Nombres</label>
+     <label htmlFor="nombres2" className="font-semibold text-sm text-gray-600 pb-1 block" >Nombres</label>
     <input 
-    id="nombres"
+    id="nombres2"
     className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full" 
     placeholder="Ingresa ambos nombres"
     value={nombre}
     onChange={e => setNombre(e.target.value) } 
 
     />
-     <label htmlFor="apellidos" className="font-semibold text-sm text-gray-600 pb-1 block" >Apellidos</label>
+     <label htmlFor="apellidos2" className="font-semibold text-sm text-gray-600 pb-1 block" >Apellidos</label>
     <input 
-    id="apellidos"
+    id="apellidos2"
     className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full" 
     placeholder="Ingresa ambos apellidos" 
     value={apellidos}
@@ -256,9 +264,9 @@ Agregar Administrador
 
 
     />
-     <label htmlFor="rut" className="font-semibold text-sm text-gray-600 pb-1 block" >Rut</label>
+     <label htmlFor="rut2" className="font-semibold text-sm text-gray-600 pb-1 block" >Rut</label>
     <input 
-    id="rut"
+    id="rut2"
     className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full" 
     placeholder="RUT.Ejemplo:11111111-1" 
     value={rut}
@@ -267,19 +275,19 @@ Agregar Administrador
 
     />
 
-        <label htmlFor="telefono" className="font-semibold text-sm text-gray-600 pb-1 block" >Teléfono</label>
+        <label htmlFor="telefono2" className="font-semibold text-sm text-gray-600 pb-1 block" >Teléfono</label>
     <input
-    id="telefono"
+    id="telefono2"
     className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full" 
     placeholder="Teléfono contacto" 
     value={telefono}
     onChange={e => setTelefono(e.target.value) }/> 
 
-        <label htmlFor="fecha" className="font-semibold text-sm text-gray-600 pb-1 block" >Fecha de Creación</label>
+        <label htmlFor="fecha2" className="font-semibold text-sm text-gray-600 pb-1 block" >Fecha de Creación</label>
         
     <input 
      type="date"
-    id="fecha"
+    id="fecha2"
     className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full " 
     placeholder="Fecha Nacimiento" 
     value={fecha}
@@ -337,9 +345,10 @@ Agregar Administrador
                                   onClick={()=>{setShowModalEditar(true); setEdicion(administrador)} }
                                    className="bg-indigo-500 hover:bg-indigo-700 text-white text-sm font-nunito font-semibold py-1 mr-1 mb-1 px-2 border border-indigo-500 rounded"
                                    >Editar</button>
-					              <button
+                                   {authadmin.email==='kixayar524@ngopy.com' ?  <button
                                    onClick={()=> eliminarAdmin(administrador._id)}
-                                   className="bg-red-500 hover:bg-red-700 text-white text-sm font-nunito font-semibold py-1 px-2 border border-red-500 rounded">Eliminar</button>
+                                   className="bg-red-500 hover:bg-red-700 text-white text-sm font-nunito font-semibold py-1 px-2 border border-red-500 rounded">Eliminar</button> : ' '}
+
 			             	</td>
                     </tr>
                     

@@ -6,7 +6,7 @@ import { Paginacion } from "../Paginacion";
 
 const FormularioPaciente = () => {
   const [email, setEmail] = useState('')
-  const [Rut, setRut] = useState('')
+  const [rut, setRut] = useState('')
   const [nombres, setNombres] = useState('')
   const [apellidos, setApellidos] = useState('')
   const [password, setPassword] = useState('')
@@ -29,7 +29,7 @@ const FormularioPaciente = () => {
 
   useEffect(() => {
      if(paciente?.nombres){
-      setRut(paciente.Rut)
+      setRut(paciente.rut)
       setEmail(paciente.email)
       setNombres(paciente.nombres)
       setApellidos(paciente.apellidos)
@@ -44,40 +44,45 @@ const FormularioPaciente = () => {
       //AGREGANDO PACIENTE
       const handleSubmit = async e =>{
         e.preventDefault();
-        if([email,Rut,nombres,apellidos,password,repetirPassword].includes('')){
+        if([email,rut,nombres,apellidos,password,repetirPassword].includes('')){
           setAlerta({msg: 'Hay campos vacíos', error: true})
+          setTimeout(()=> setAlerta({}),5000)
           return;
         }
     
         if(password !== repetirPassword){
           setAlerta({msg: 'Las contraseñas deben ser iguales', error: true})
+          setTimeout(()=> setAlerta({}),5000)
           return;
         }
-        if(Rut.length < 9 || Rut.length > 10 ){
-          setAlerta({msg: 'Rut no válido. Ejemplo:11111111-1', error: true})
+        if(rut.length < 9 || rut.length > 10 ){
+          setAlerta({msg: 'rut no válido. Ejemplo:11111111-1', error: true})
+          setTimeout(()=> setAlerta({}),5000)
           return;
         }
     
         if(password.length < 6 ){
           setAlerta({msg: 'La contraseña debe tener al menos 6 caracteres', error: true})
+          setTimeout(()=> setAlerta({}),5000)
           return;
         }
     
         setAlerta({})
-        guardarPaciente({email,Rut,nombres,apellidos,password})
+        guardarPaciente({email,rut,nombres,apellidos,fechaNacimiento,password})
       
 
        }
     //EDITANDO PACIENTE
     const Editar = async e =>{
       e.preventDefault();
-      if([email,Rut,nombres].includes('')){
-        setAlerta({msg: 'Email, Rut y nombres no pueden estar vacíos', error: true})
+      if([email,rut,nombres].includes('')){
+        setAlerta({msg: 'Email, rut y nombres no pueden estar vacíos', error: true})
+        setTimeout(()=> setAlerta({}),5000)
         return;
       }
 
       
-      guardarPaciente({email,Rut,nombres,apellidos,sexo,fechaNacimiento,telefono,id})
+      guardarPaciente({email,rut,nombres,apellidos,sexo,fechaNacimiento,telefono,id})
       if(guardarPaciente){
 
       }
@@ -101,7 +106,7 @@ const FormularioPaciente = () => {
       const filtrar=(terminoBusqueda)=>{
         var resultadosBusqueda=tablaUsuarios.filter((elemento)=>{
           if(elemento.nombres.toString().toLowerCase().includes(terminoBusqueda.toLowerCase())
-          || elemento.Rut.toString().toLowerCase().includes(terminoBusqueda.toLowerCase())
+          || elemento.rut.toString().toLowerCase().includes(terminoBusqueda.toLowerCase())
           || elemento.apellidos.toString().toLowerCase().includes(terminoBusqueda.toLowerCase())
           ||elemento.email.toString().toLowerCase().includes(terminoBusqueda.toLowerCase())
           ){
@@ -114,10 +119,10 @@ const FormularioPaciente = () => {
     <>
     <div>
     
-    <h1 id="textologo" className="font-bold font-nunito text-center text-2xl ">Cimiento Clínico</h1>
-<h3 className="font-semibold font-nunito text-center text-mb mb-2">Mantenedor de pacientes</h3>
+    <h1  className="font-bold font-nunito text-center text-2xl text-teal-600 dark:text-white ">Cimiento Clínico</h1>
+<h3 className="font-semibold font-nunito text-center text-mb mb-2 dark:text-white">Mantenedor de pacientes</h3>
 <div className="flex w-full items-center justify-between border-b pb-3">
-      <button onClick={()=> setShowModalGuardar(true)} className=" bg-teal-500 text-sm text-white hover:bg-teal-600 font-bold uppercase  px-2 py-3 rounded-full shadow-md hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" type="button">
+      <button onClick={()=> setShowModalGuardar(true)} className=" bg-teal-500 text-sm text-white hover:bg-teal-600 font-regular px-2 py-3 rounded-lg shadow-md hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" type="button">
 Agregar paciente
 </button>	
       <div className="flex items-center space-x-8">
@@ -174,16 +179,38 @@ Agregar paciente
 
 
     />
-     <label htmlFor="Rut" className="font-semibold text-sm text-gray-600 pb-1 block" >Rut</label>
+     <label htmlFor="Rut2" className="font-semibold text-sm text-gray-600 pb-1 block" >Rut</label>
     <input 
-    id="Rut"
+    id="Rut2"
     className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full" 
     placeholder="Rut.Ejemplo:11111111-1" 
-    value={Rut}
+    value={rut}
     onChange={e => setRut(e.target.value) }
 
 
     />
+    <label htmlFor="Rut" className="font-semibold text-sm text-gray-600 pb-1 block" >Fecha de nacimiento</label>
+    <input 
+    id="Rut"
+    type="date"
+    className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full" 
+    placeholder="Rut.Ejemplo:11111111-1" 
+    value={fechaNacimiento}
+    onChange={e => setFechaNacimiento(e.target.value) }
+
+
+    />
+         <label htmlFor="genero" className="font-semibold text-sm text-gray-600 pb-1 block" >Genero</label>
+    <select
+    id="genero"
+    className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full" 
+    placeholder="Genero" 
+    value={sexo}
+    onChange={e => setSexo(e.target.value) }> 
+    <option value="No especifica" >No específica</option>
+    <option value="Masculino">Masculino</option>
+    <option value="Femenino" >Femenino</option>
+    </select>
 
 
     <label htmlFor="password" className="font-semibold text-sm text-gray-600 pb-1 block">Contraseña</label>
@@ -217,9 +244,9 @@ Agregar paciente
               alerta={alerta}
               />}
   <form  className="px-10 py-2 shadow-lg" onSubmit={Editar}  >
-    <label htmlFor="email" className="font-semibold text-sm text-gray-700 pb-0 block" >Correo Electrónico</label>
+    <label htmlFor="email2" className="font-semibold text-sm text-gray-700 pb-0 block" >Correo Electrónico</label>
     <input 
-    id="email"
+    id="email2"
     className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full" 
     placeholder="Ingresar Correo electrónico"
     type="email" 
@@ -227,18 +254,18 @@ Agregar paciente
     onChange={e => setEmail(e.target.value) }
     />
 
-     <label htmlFor="nombres" className="font-semibold text-sm text-gray-600 pb-1 block" >Nombres</label>
+     <label htmlFor="nombres2" className="font-semibold text-sm text-gray-600 pb-1 block" >Nombres</label>
     <input 
-    id="nombres"
+    id="nombres2"
     className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full" 
     placeholder="Ingresa ambos nombres"
     value={nombres}
     onChange={e => setNombres(e.target.value) } 
 
     />
-     <label htmlFor="apellidos" className="font-semibold text-sm text-gray-600 pb-1 block" >Apellidos</label>
+     <label htmlFor="apellidos2" className="font-semibold text-sm text-gray-600 pb-1 block" >Apellidos</label>
     <input 
-    id="apellidos"
+    id="apellidos2"
     className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full" 
     placeholder="Ingresa ambos apellidos" 
     value={apellidos}
@@ -251,7 +278,7 @@ Agregar paciente
     id="Rut"
     className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full" 
     placeholder="Rut.Ejemplo:11111111-1" 
-    value={Rut}
+    value={rut}
     onChange={e => setRut(e.target.value) }
 
 
@@ -264,9 +291,9 @@ Agregar paciente
     placeholder="sexo" 
     value={sexo}
     onChange={e => setSexo(e.target.value) }> 
+    <option value="No especifica" >No específica</option>
     <option value="Masculino">Masculino</option>
     <option value="Femenino" >Femenino</option>
-    <option value="No específica" >No específica</option>
     </select>
         <label htmlFor="telefono" className="font-semibold text-sm text-gray-600 pb-1 block" >Teléfono</label>
     <input
@@ -275,13 +302,13 @@ Agregar paciente
     placeholder="Teléfono contacto" 
     value={telefono}
     onChange={e => setTelefono(e.target.value) }/> 
-        <label htmlFor="fecha" className="font-semibold text-sm text-gray-600 pb-1 block" >Fecha de Nacimiento</label>
+        <label htmlFor="fecha2" className="font-semibold text-sm text-gray-600 pb-1 block" >Fecha de Nacimiento</label>
         
 
         
     <input 
      type="date"
-    id="fecha"
+    id="fecha2"
     className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full " 
     placeholder="Fecha Nacimiento" 
     value={fechaNacimiento}
@@ -323,7 +350,7 @@ Agregar paciente
                 (pagina - 1 ) * porPagina + porPagina
                 ).map((pacien)=>(
                     <tr key={pacien._id}>
-                        <td className="text-center py-4 pl-4 pr-3 text-sm font-semibold text-gray-900 sm:pl-6">{pacien.Rut}</td>
+                        <td className="text-center py-4 pl-4 pr-3 text-sm font-semibold text-gray-900 sm:pl-6">{pacien.rut}</td>
                         <td className="text-center px-3 py-4 text-sm">{pacien.nombres}</td>
                         <td className="text-center px-3 py-4 text-sm">{pacien.apellidos} </td>
                         <td className="text-center px-3 py-4 text-sm">{pacien.email} </td>

@@ -9,6 +9,7 @@ const LoginAdmin = () => {
   const [password, setPassword]= useState('')
   const [alerta, setAlerta]= useState({})
   const [showPwd, setShowPwd] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const { setAuthadmin } = AdminAuth()
   const navigate = useNavigate()
@@ -20,19 +21,23 @@ const LoginAdmin = () => {
         msg:'todos los campos son obligatorios',
         error:true
       });
+      setTimeout(()=> setAlerta({}),5000)
       return
     }
-
+    setLoading(true)
     try {
       const {data} = await clientAxios.post(`/admin/login`,{email,password})
-      localStorage.setItem('token', data.token)
+      localStorage.setItem('tokenAdm', data.tokenAdm)
       setAuthadmin(data)
+      setLoading(false)
       navigate('/admin')
     } catch (error) {
       setAlerta({
         msg: error.response.data.msg,
         error:true
       })
+      setLoading(false)
+      setTimeout(()=> setAlerta({}),5000)
     }
   }
 
@@ -43,6 +48,11 @@ const LoginAdmin = () => {
   <div className="p-10 xs:p-0 mx-auto md:w-full md:max-w-md">
     <h1 id="textologo" className="font-bold font-nunito text-center text-4xl ">Cimiento Clínico</h1>
     <h3 className="font-semibold font-nunito text-center text-lg mb-5">Portal administradores</h3>
+    {loading?    <div className=" container text-center">
+            <div class="animate-spin inline-block w-10 h-10 border-[3px] border-current border-t-transparent text-blue-600 rounded-full" role="status" aria-label="loading">
+  <span class="sr-only">Loading...</span>
+</div>
+</div>:''}
     { msg && 
             
             <Alerta

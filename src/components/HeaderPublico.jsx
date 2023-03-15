@@ -5,13 +5,13 @@ const HeaderPublico = () =>{
 return(
     <header>
     <nav   className= " bg-white  drop-shadow-2xl px-4 lg:px-4 py-3.5  w-full ">
-           <div className=" justify-between px-4 mx-auto lg:max-w-7xl md:items-center md:flex md:px-1 ">
+           <div className=" justify-between px-4 mx-auto lg:max-w-12xl   md:items-center md:flex md:px-20 lg:px-40  ">
                <div>
-                   <div className="flex items-center justify-between py-3 md:py-5 md:block">
+                   <div className="flex items-center justify-between py-3 md:py-2 md:block">
                        <a href="/">
                            <h1 id="textologo" className="font-nunito   text-3xl font-bold text-white">Cimiento Clínico</h1>
                        </a>
-                       <div className="md:hidden">
+                       <div className="lg:hidden">
                            <button
                                className="p-2 text-gray-700 rounded-md outline-none focus:border-gray-400 focus:border"
                                onClick={() => setNavbar(!navbar)}>
@@ -46,15 +46,21 @@ return(
                        className={`flex-1 justify-self-center pb-3 mt-8 lg:block md:pb-0 md:mt-0  ${
                            navbar ? "block" : "hidden"
                        }`}>
-                       <ul className="items-center justify-center space-y-8 md:flex lg:space-x-12  sm:space-x-4 md:space-y-0">
+                       <ul className="items-center justify-center space-y-8 lg:flex lg:space-x-12 md:space-x-3 sm:space-x-0 md:space-y-0 ">
                            <li className="font-nunito font-normal block py-2 pr-4 pl-3 text-black border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700">
-                               <a href="#">Reservas</a>
-                           </li>
-                           <li className="font-nunito font-normal block py-2 pr-4 pl-3 text-black border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700">
-                               <a href="#">Nosotros</a>
+                               <a href="#">Sobre Nosotros</a>
                            </li>
                            <li className="font-nunito font-normal block py-2 pr-4 pl-3 text-black border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700">
                                <a href="#">Preguntas frecuentes</a>
+                           </li>
+                           <li className="font-nunito font-normal block py-2 pr-4 pl-3 text-black border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700">
+                               <a href="#">Seguridad de datos</a>
+                           </li>
+                           <li className="font-nunito font-normal block py-2 pr-4 pl-3 text-black border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700">
+                               <a href="#">Trabaja con nosotros</a>
+                           </li>
+                           <li className="font-nunito font-normal block py-2 pr-4 pl-3 text-black border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700">
+                               <a href="#">Visión y Misión</a>
                            </li>
                            <li className="font-nunito  font-normal block py-2 pr-4 pl-3 text-black border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700">
                                <a href="#">Contacto</a>
@@ -65,19 +71,12 @@ return(
                    <Link id="primario" to="/ingresa"className="inline-block w-full px-4 py-2 text-center text-white font-nunito  rounded-md shadow ">Portal paciente</Link>
                </div>
                <div className="mt-3 space-y-2 lg:hidden md:inline-block">
-                   <Link to="/portal-profesional"className=" bg-blue-500 inline-block w-full px-4 py-2 text-center text-white font-nunito  rounded-md shadow ">Portal profesional</Link>
+                   <Link to="/ingresa-profesional"className=" bg-blue-500 inline-block w-full px-4 py-2 text-center text-white font-nunito  rounded-md shadow ">Portal profesional</Link>
                </div>
                
                    </div>
                </div>
-               <div className="justify-between ">
-               <div className="hidden space-x-1 md:inline-block ">
-                   <Link id="primario" to="/ingresa" className=" text-sm transition-transform  ease-in-out hover:scale-110 inline-block w-full px-7 py-1 text-center text-white font-nunito  rounded-md shadow ">Portal <br /> Paciente</Link>
-               </div>
-               <div className="hidden space-x-1 md:inline-block ml-2">
-                   <Link to="/portal-profesional" className=" bg-blue-500 text-sm transition-transform  ease-in-out hover:scale-110 inline-block w-full px-4 py-1 text-center text-white font-nunito  rounded-md shadow ">Portal <br /> Profesionales</Link>
-               </div>
-               </div>
+
            </div>
        </nav>
        </header>

@@ -29,6 +29,13 @@ import ProfesionalPass from "./paginas/profesionales/ProfesionalPass"
 import Adminpass from "./paginas/admins/Adminpass"
 import PortalProfesional from "./paginas/PortalProfesional"
 import ModuloPaciente from "./paginas/admins/ModuloPaciente"
+import PerfilPaciente from "./paginas/pacientes/PerfilPaciente"
+import HistoriaClinica from "./paginas/pacientes/HistoriaClinica"
+import ProfesionalesList from "./paginas/pacientes/ProfesionalesList"
+import Consultas from "./paginas/pacientes/Consultas"
+import PerfilProfesional from "./paginas/profesionales/PerfilProfesional"
+import ConsultasProfesional from "./paginas/profesionales/ConsultasProfesional"
+import PerfilAdministrador from "./paginas/admins/PerfilAdministrador"
 import {AuthProvider} from "./context/AuthProvider"
 import {AuthAdminProvider } from "./context/AuthAdminProvider"
 import {AuthProProvider} from "./context/AuthProProvider"
@@ -80,6 +87,10 @@ function App() {
      {/* Ruta protegida para PACIENTES */}
       <Route path="/paciente" element={ <PacienteLayout />}>
         <Route index element={ <InicioPacientes/> } />
+        <Route path="perfil-paciente" element={ <PerfilPaciente/> } /> 
+        <Route path="historia-clinica" element={ <HistoriaClinica/> } />
+        <Route path="lista-profesionales" element={ <ProfesionalesList/> } />
+        <Route path="consultas" element={ <Consultas/> } />
 
       </Route>
       <Route path="/admin" element={ <AdminLayout />}>
@@ -87,10 +98,14 @@ function App() {
         <Route path="modulo-profesional" element={ <ModuloProfesional/> } />
         <Route path="modulo-admin" element={ <ModuloAdmin/> } />
         <Route path="modulo-paciente" element={ <ModuloPaciente/> } />
+        <Route path="perfil-admin" element={ <PerfilAdministrador/> } />
+        
       </Route>
 
       <Route path="/profesional" element={ <ProfesionalLayout />}>
         <Route index element={ <InicioProfesional/> } />
+        <Route path="perfil-profesional" element={ <PerfilProfesional/> } />
+        <Route path="consultas" element={ <ConsultasProfesional/> } />
 
       </Route>
     </Routes>

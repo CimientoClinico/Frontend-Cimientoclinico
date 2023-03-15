@@ -1,5 +1,6 @@
 import{createContext, useState, useEffect} from 'react'
 import clientAxios from '../../config/axios'
+import AdminAuth from '../../hooks/adminAuth'
 const PacienteContext = createContext()
 
 export const PacienteProvider = ({children}) => {
@@ -8,7 +9,9 @@ export const PacienteProvider = ({children}) => {
     const [paciente, setPaciente] = useState({})
     const [tablaUsuarios, setTablaUsuarios]= useState([]);
     const [pagina, setPagina] = useState (1);
+    const { authadmin} = AdminAuth()
     const [porPagina, setPorPagina] = useState (7);
+    
     const maximo = Math.round(pacientes.length / porPagina) 
 
 
@@ -32,12 +35,12 @@ export const PacienteProvider = ({children}) => {
      const obtenerPacientes = async ()=>{
 
         try {
-            const token = localStorage.getItem('token')
-            if(!token) return
+            const tokenAdm = localStorage.getItem('tokenAdm')
+            if(!tokenAdm) return
             const config = {
               headers:{
                   "Content-Type": "application/json",
-                  Authorization: `Bearer ${token}`
+                  Authorization: `Bearer ${tokenAdm}`
               }
             }
             const { data } = await clientAxios("/admin/modulo-paciente",config)
@@ -51,14 +54,14 @@ export const PacienteProvider = ({children}) => {
      }
      obtenerPacientes()
 
-   },[])
+   },[authadmin])
 
     const guardarPaciente = async (paciente)=>{
-      const token = localStorage.getItem('token')
+      const tokenAdm = localStorage.getItem('tokenAdm')
       const config = {
         headers:{
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${tokenAdm}`
         }
       }
       if(paciente.id){
@@ -125,11 +128,11 @@ export const PacienteProvider = ({children}) => {
     })
     if(confirmar) {
       try {
-          const token = localStorage.getItem("token");
+          const tokenAdm = localStorage.getItem("tokenAdm");
           const config = {
               headers: {
                   "Content-Type": "application/json",
-                  Authorization: `Bearer ${token}`
+                  Authorization: `Bearer ${tokenAdm}`
               }
           }
           const {data} = await clientAxios.delete(`admin/modulo-paciente/${id}`, config);

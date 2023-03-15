@@ -1,5 +1,6 @@
 import{createContext, useState, useEffect} from 'react'
 import clientAxios from '../../config/axios'
+import AdminAuth from '../../hooks/adminAuth'
 const AdminsContext = createContext()
 
 export const AdminProvider = ({children}) => {
@@ -8,6 +9,7 @@ export const AdminProvider = ({children}) => {
     const [tablaUsuarios, setTablaUsuarios]= useState([]);
     const [pagina, setPagina] = useState (1);
     const [porPagina, setPorPagina] = useState (7);
+    const { authadmin} = AdminAuth()
     const maximo = Math.round(admins.length / porPagina) 
     const toastMixin = Swal.mixin({
         toast: true,
@@ -28,12 +30,12 @@ export const AdminProvider = ({children}) => {
         const obtenerAdmins = async ()=>{
    
            try {
-               const token = localStorage.getItem('token')
-               if(!token) return
+               const tokenAdm = localStorage.getItem('tokenAdm')
+               if(!tokenAdm) return
                const config = {
                  headers:{
                      "Content-Type": "application/json",
-                     Authorization: `Bearer ${token}`
+                     Authorization: `Bearer ${tokenAdm}`
                  }
                }
                const { data } = await clientAxios("/admin/modulo-admin",config)
@@ -47,14 +49,14 @@ export const AdminProvider = ({children}) => {
         }
         obtenerAdmins()
    
-      },[])
+      },[authadmin])
 
       const guardarAdmin = async (admin)=>{
-        const token = localStorage.getItem('token')
+        const tokenAdm = localStorage.getItem('tokenAdm')
         const config = {
           headers:{
               "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`
+              Authorization: `Bearer ${tokenAdm}`
           }
         }
         if(admin.id){
@@ -120,11 +122,11 @@ export const AdminProvider = ({children}) => {
       })
       if(confirmar) {
         try {
-            const token = localStorage.getItem("token");
+            const tokenAdm = localStorage.getItem("tokenAdm");
             const config = {
                 headers: {
                     "Content-Type": "application/json",
-                    Authorization: `Bearer ${token}`
+                    Authorization: `Bearer ${tokenAdm}`
                 }
             }
             const {data} = await clientAxios.delete(`admin/modulo-admin/${id}`, config);

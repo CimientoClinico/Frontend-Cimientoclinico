@@ -22,7 +22,7 @@ color: #99D9D9;
 }
 
 body{
-    background-color: #F8F8F3;
+    background-color: 	#f0f2f3;
 }
 #requisitos{
     background-color: #077070;
@@ -49,5 +49,87 @@ body{
 #pro{
     clip-path:polygon(10% 0, 100% 0%, 100% 100%, 0 100%)
 }
+#lateral{
+    height: 100vh;
+    
+}
 
 
+
+
+*,
+*:before,
+*:after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.contenedor {
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  
+}
+
+
+.contenedor .sidebar {
+
+
+  height: 100%;
+  transition: all .23s cubic-bezier(0.39, 0.575, 0.565, 1);
+}
+
+
+.contenedor .contenido {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  height: 100%;
+}
+
+.contenedor .contenido .top {
+  background-color: #fff;
+  flex: 0 0 50px;
+  
+}
+
+.contenedor .contenido .main {
+
+  flex: 1;
+  overflow: auto;
+  margin-left: -24px;
+
+
+}
+
+#box {
+  background-color: coral;
+  border-radius: 3px;
+  height: 1500px;
+  margin: 0 auto;
+  width: 150px;
+  
+}
+
+@media screen and (max-width: 850px) {
+  .contenedor .sidebar {
+    flex: 0 0 70px;
+  }
+  .contenedor .contenido .main {
+
+    flex: 1;
+    overflow: auto;
+    margin-left: -30px;
+  
+  
+  }
+}
+
+
+.carruBox{
+  margin-top: -100px;
+}
+.fondo{
+  background-color: #f0f2f3;
+}

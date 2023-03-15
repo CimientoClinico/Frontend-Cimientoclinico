@@ -20,6 +20,7 @@ const NuevaPassAdmin = () => {
         setAlerta({
           msg:'Ya puedes ingresar tu nueva contraseña'
         })
+        setTimeout(()=> setAlerta({}),5000)
         setTokenValido(true)
       } catch (error) {
         setAlerta({
@@ -38,6 +39,7 @@ const NuevaPassAdmin = () => {
       msg:'El password debe tener almenos 6 caracteres',
       error:true
     })
+    setTimeout(()=> setAlerta({}),5000)
     return
   }
   try {
@@ -46,12 +48,14 @@ const NuevaPassAdmin = () => {
     setAlerta({
       msg:data.msg
     })
+    setTimeout(()=> setAlerta({}),5000)
     setPasswordModificado(true)
   } catch (error) {
       setAlerta({
         msg: error.response.data.msg,
         error:true
       })
+      setTimeout(()=> setAlerta({}),5000)
 
   }
 

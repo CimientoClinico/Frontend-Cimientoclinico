@@ -16,12 +16,13 @@ const FormularioProfesionales = () => {
     const [repetirPassword, setRepetirPassword] = useState('')
     const [alerta, setAlerta ]= useState({})
     const [id, setId] = useState(null)
+    const [showModalGuardarpro, setShowModalGuardarPro]= useState(false)
     const [showModalGuardar, setShowModalGuardar]= useState(false)
     const [showModalEditar, setShowModalEditar]= useState(false)
     const[busqueda, setBusqueda]= useState('')
 
    
-    const {guardarProfesional, profesional} = useProfesionales()
+    const {guardarProfesional, profesional, guardarSoloProfesional} = useProfesionales()
     const {setEdicion, eliminarProfesional,setProfesionales, tablaUsuarios, pagina, setPagina, porPagina, maximo } =  useProfesionales()
     
     const {profesionales} = useProfesionales()
@@ -51,25 +52,29 @@ const FormularioProfesionales = () => {
         e.preventDefault();
         if([email,rut,nombres,apellidos,password,repetirPassword,especialidad].includes('')){
           setAlerta({msg: 'Hay campos vacíos', error: true})
+          setTimeout(()=> setAlerta({}),5000)
           return;
         }
     
         if(password !== repetirPassword){
           setAlerta({msg: 'Las contraseñas deben ser iguales', error: true})
+          setTimeout(()=> setAlerta({}),5000)
           return;
         }
         if(rut.length < 9 || rut.length > 10 ){
           setAlerta({msg: 'RUT no válido. Ejemplo:11111111-1', error: true})
+          setTimeout(()=> setAlerta({}),5000)
           return;
         }
     
         if(password.length < 6 ){
           setAlerta({msg: 'La contraseña debe tener al menos 6 caracteres', error: true})
+          setTimeout(()=> setAlerta({}),5000)
           return;
         }
     
         setAlerta({})
-        guardarProfesional({email,rut,nombres,apellidos,password,especialidad})
+        guardarProfesional({email,rut,nombres,apellidos,password,fechaNacimiento,especialidad})
       
 
        }
@@ -78,6 +83,7 @@ const FormularioProfesionales = () => {
       e.preventDefault();
       if([email,rut,nombres].includes('')){
         setAlerta({msg: 'Email, rut y nombres no pueden estar vacíos', error: true})
+        setTimeout(()=> setAlerta({}),5000)
         return;
       }
 
@@ -95,6 +101,37 @@ const FormularioProfesionales = () => {
       setEspecialidad('')
       setTelefono('')
       setId('')
+
+     }
+         //AGREGANDO SOLO A 1  PROFESIONAL
+    const agregarProfesional= async e =>{
+      e.preventDefault();
+      if([email,rut,nombres,apellidos,password,repetirPassword,especialidad].includes('')){
+        setAlerta({msg: 'Hay campos vacíos', error: true})
+        setTimeout(()=> setAlerta({}),5000)
+        return;
+      }
+  
+      if(password !== repetirPassword){
+        setAlerta({msg: 'Las contraseñas deben ser iguales', error: true})
+        setTimeout(()=> setAlerta({}),5000)
+        return;
+      }
+      if(rut.length < 9 || rut.length > 10 ){
+        setAlerta({msg: 'RUT no válido. Ejemplo:11111111-1', error: true})
+        setTimeout(()=> setAlerta({}),5000)
+        return;
+      }
+  
+      if(password.length < 6 ){
+        setAlerta({msg: 'La contraseña debe tener al menos 6 caracteres', error: true})
+        setTimeout(()=> setAlerta({}),5000)
+        return;
+      }
+  
+      setAlerta({})
+      guardarSoloProfesional({email,rut,nombres,apellidos,password,fechaNacimiento,especialidad})
+    
 
      }
 
@@ -120,21 +157,30 @@ const FormularioProfesionales = () => {
 
   return (
     <>
-    <h1 id="textologo" className="font-bold font-nunito text-center text-2xl ">Cimiento Clínico</h1>
-<h3 className="font-semibold font-nunito text-center text-mb mb-2">Mantenedor de profesionales</h3>
-<div class="flex w-full items-center justify-between border-b pb-3">
-      <button onClick={()=> setShowModalGuardar(true)} className=" bg-blue-500 text-sm text-white hover:bg-blue-600 font-bold uppercase  px-2 py-3 rounded-full shadow-md hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" type="button">
-Agregar Profesional
+    <h1  className="font-bold font-nunito text-center text-2xl text-teal-600 dark:text-white  ">Cimiento Clínico</h1>
+<h3 className="font-semibold font-nunito text-center text-mb mb-2 dark:text-white">Mantenedor de profesionales</h3>
+<div className="flex w-full items-center justify-between  pb-3">
+      <button onClick={()=> setShowModalGuardar(true)} className=" bg-blue-500 text-sm text-white hover:bg-blue-600 font-regular  px-2 py-3 rounded-lg shadow-md hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 " type="button">
+Agregar Profesional/Paciente
 </button>	
-      <div class="flex items-center space-x-8">
-      <div class="pt-2 relative mx-auto text-gray-600">
-        <input class=" text-black px-2  font-semibold  text-sm py-3 rounded-md shadow-md hover:shadow-lg  focus:outline-none mr-1 mb-1  transition-all duration-150"
+
+      <div className="flex items-center space-x-8">
+      <div className="pt-2 relative mx-auto text-gray-600">
+        <input className=" text-black px-2  font-semibold  text-sm py-3 rounded-md shadow-md hover:shadow-lg  focus:outline-none mr-1 mb-1  transition-all duration-150"
           value={busqueda}
           placeholder="Buscar Profesional"
           onChange={handleChange}/>
 
       </div>
       </div>
+    </div>
+
+    
+    <div className="flex w-full items-center justify-between border-b pb-3">
+    <button onClick={()=> setShowModalGuardarPro(true)} className=" bg-blue-500 text-sm text-white hover:bg-blue-600 font-regular  px-2 py-3 rounded-lg shadow-md hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150" type="button">
+Agregar Profesional
+</button>	
+
     </div>
 
 
@@ -144,7 +190,95 @@ Agregar Profesional
 <div className="p-1 xs:p-0 mx-auto md:w-full md:max-w-sm ">
 
 <div className="bg-white shadow w-full rounded-lg divide-y divide-gray-200">
- 
+<Modal isVisible={showModalGuardarpro} onClose={()=> setShowModalGuardarPro(false)}  >
+   <h3 className="font-semibold font-nunito text-center text-mb mb-2">Registro de profesionales</h3>
+   {msg && <Alerta 
+              alerta={alerta}
+              />}
+  <form  className="px-10 py-2 shadow-lg" onSubmit={agregarProfesional} >
+    <label htmlFor="email" className="font-semibold text-sm text-gray-700 pb-0 block" >Correo Electrónico</label>
+    <input 
+    id="email"
+    className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full" 
+    placeholder="Ingresar Correo electrónico"
+    type="email" 
+    value={email}
+    onChange={e => setEmail(e.target.value) }
+    />
+
+     <label htmlFor="nombres" className="font-semibold text-sm text-gray-600 pb-1 block" >Nombres</label>
+    <input 
+    id="nombres"
+    className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full" 
+    placeholder="Ingresa ambos nombres"
+    value={nombres}
+    onChange={e => setNombres(e.target.value) } 
+
+    />
+     <label htmlFor="apellidos" className="font-semibold text-sm text-gray-600 pb-1 block" >Apellidos</label>
+    <input 
+    id="apellidos"
+    className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full" 
+    placeholder="Ingresa ambos apellidos" 
+    value={apellidos}
+    onChange={e => setApellidos(e.target.value) }
+
+
+    />
+     <label htmlFor="rut" className="font-semibold text-sm text-gray-600 pb-1 block" >Rut</label>
+    <input 
+    id="rut"
+    className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full" 
+    placeholder="RUT.Ejemplo:11111111-1" 
+    value={rut}
+    onChange={e => setRut(e.target.value) }
+
+
+    />
+   <label htmlFor="fecha" className="font-semibold text-sm text-gray-600 pb-1 block" >Fecha de Nacimiento</label>
+
+        <input 
+         type="date"
+        id="fecha"
+        className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full " 
+        placeholder="Fecha Nacimiento" 
+        value={fechaNacimiento}
+        onChange={e => setFechaNacimiento(e.target.value) }/> 
+      <label htmlFor="especialidad" className="font-semibold text-sm text-gray-600 pb-1 block" >Especialidad</label>
+    <input
+    id="especialidad"
+    className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full" 
+    placeholder="Tipo de profesional" 
+    value={especialidad}
+    onChange={e => setEspecialidad(e.target.value) }/> 
+
+
+
+    <label htmlFor="password" className="font-semibold text-sm text-gray-600 pb-1 block">Contraseña</label>
+    <input 
+    id="password"
+    className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full"  
+    placeholder="Ingresar ultimos 6 digitos del RUT"
+    type="password" 
+    value={password}
+    onChange={e => setPassword(e.target.value) }
+   
+
+    />
+      <label  htmlFor="repetirPassword" className="font-semibold text-sm text-gray-600 pb-1 block">Confirmar Contraseña</label>
+    <input 
+    id="repetirPassword"
+    className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full" 
+    type="password"  
+    placeholder="Confirma la contraseña" 
+    value={repetirPassword}
+    onChange={e => setRepetirPassword(e.target.value) }
+
+    />
+    
+    <input  type="submit" className=" bg-blue-500 block w-full font-nunito py-1 rounded-xl hover:bg-blue-700 hover:-translate-y-1 transition-all duration-500 text-white font-semibold mb-2" value='Registrar Profesional'/>
+  </form> 
+  </Modal>
    <Modal isVisible={showModalGuardar} onClose={()=> setShowModalGuardar(false)}  >
    <h3 className="font-semibold font-nunito text-center text-mb mb-2">Registro de profesionales</h3>
    {msg && <Alerta 
@@ -190,6 +324,15 @@ Agregar Profesional
 
 
     />
+   <label htmlFor="fecha" className="font-semibold text-sm text-gray-600 pb-1 block" >Fecha de Nacimiento</label>
+
+        <input 
+         type="date"
+        id="fecha"
+        className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full " 
+        placeholder="Fecha Nacimiento" 
+        value={fechaNacimiento}
+        onChange={e => setFechaNacimiento(e.target.value) }/> 
       <label htmlFor="especialidad" className="font-semibold text-sm text-gray-600 pb-1 block" >Especialidad</label>
     <input
     id="especialidad"
@@ -197,6 +340,18 @@ Agregar Profesional
     placeholder="Tipo de profesional" 
     value={especialidad}
     onChange={e => setEspecialidad(e.target.value) }/> 
+   <label htmlFor="sexo" className="font-semibold text-sm text-gray-600 pb-1 block" >Genero</label>
+    <select
+    id="sexo"
+    className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full" 
+    placeholder="sexo" 
+    value={sexo}
+    onChange={e => setSexo(e.target.value) }> 
+    <option value="No especifica" >No específica</option>
+    <option value="Masculino">Masculino</option>
+    <option value="Femenino" >Femenino</option>
+    
+    </select>
 
 
 
@@ -222,7 +377,7 @@ Agregar Profesional
 
     />
     
-    <input  type="submit" className=" bg-blue-500 block w-full font-nunito py-1 rounded-xl hover:bg-blue-700 hover:-translate-y-1 transition-all duration-500 text-white font-semibold mb-2" value='Registrar profesional'/>
+    <input  type="submit" className=" bg-blue-500 block w-full font-nunito py-1 rounded-xl hover:bg-blue-700 hover:-translate-y-1 transition-all duration-500 text-white font-semibold mb-2" value='Registrar Profesional/Paciente'/>
   </form> 
   </Modal>
   <Modal isVisible={showModalEditar} onClose={()=> setShowModalEditar(false)}  >
@@ -231,9 +386,9 @@ Agregar Profesional
               alerta={alerta}
               />}
   <form  className="px-10 py-2 shadow-lg" onSubmit={Editar}  >
-    <label htmlFor="email" className="font-semibold text-sm text-gray-700 pb-0 block" >Correo Electrónico</label>
+    <label htmlFor="email2" className="font-semibold text-sm text-gray-700 pb-0 block" >Correo Electrónico</label>
     <input 
-    id="email"
+    id="email2"
     className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full" 
     placeholder="Ingresar Correo electrónico"
     type="email" 
@@ -241,18 +396,18 @@ Agregar Profesional
     onChange={e => setEmail(e.target.value) }
     />
 
-     <label htmlFor="nombres" className="font-semibold text-sm text-gray-600 pb-1 block" >Nombres</label>
+     <label htmlFor="nombres2" className="font-semibold text-sm text-gray-600 pb-1 block" >Nombres</label>
     <input 
-    id="nombres"
+    id="nombres2"
     className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full" 
     placeholder="Ingresa ambos nombres"
     value={nombres}
     onChange={e => setNombres(e.target.value) } 
 
     />
-     <label htmlFor="apellidos" className="font-semibold text-sm text-gray-600 pb-1 block" >Apellidos</label>
+     <label htmlFor="apellidos2" className="font-semibold text-sm text-gray-600 pb-1 block" >Apellidos</label>
     <input 
-    id="apellidos"
+    id="apellidos2"
     className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full" 
     placeholder="Ingresa ambos apellidos" 
     value={apellidos}
@@ -260,9 +415,9 @@ Agregar Profesional
 
 
     />
-     <label htmlFor="rut" className="font-semibold text-sm text-gray-600 pb-1 block" >Rut</label>
+     <label htmlFor="rut2" className="font-semibold text-sm text-gray-600 pb-1 block" >Rut</label>
     <input 
-    id="rut"
+    id="rut2"
     className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full" 
     placeholder="RUT.Ejemplo:11111111-1" 
     value={rut}
@@ -270,38 +425,38 @@ Agregar Profesional
 
 
     />
-      <label htmlFor="especialidad" className="font-semibold text-sm text-gray-600 pb-1 block" >Especialidad</label>
+      <label htmlFor="especialidad2" className="font-semibold text-sm text-gray-600 pb-1 block" >Especialidad</label>
     <input
-    id="especialidad"
+    id="especialidad2"
     className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full" 
     placeholder="Tipo de profesional" 
     value={especialidad}
     onChange={e => setEspecialidad(e.target.value) }/> 
-        <label htmlFor="sexo" className="font-semibold text-sm text-gray-600 pb-1 block" >Genero</label>
+        <label htmlFor="sexo2" className="font-semibold text-sm text-gray-600 pb-1 block" >Genero</label>
     <select
-    id="sexo"
+    id="sexo2"
     className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full" 
     placeholder="sexo" 
     value={sexo}
     onChange={e => setSexo(e.target.value) }> 
+    <option value="No especifica" >No específica</option>
     <option value="Masculino">Masculino</option>
     <option value="Femenino" >Femenino</option>
-    <option value="No específica" >No específica</option>
     </select>
-        <label htmlFor="telefono" className="font-semibold text-sm text-gray-600 pb-1 block" >Teléfono</label>
+        <label htmlFor="telefono2" className="font-semibold text-sm text-gray-600 pb-1 block" >Teléfono</label>
     <input
-    id="telefono"
+    id="telefono2"
     className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full" 
     placeholder="Teléfono contacto" 
     value={telefono}
     onChange={e => setTelefono(e.target.value) }/> 
-        <label htmlFor="fecha" className="font-semibold text-sm text-gray-600 pb-1 block" >Fecha de Nacimiento</label>
+        <label htmlFor="fecha2" className="font-semibold text-sm text-gray-600 pb-1 block" >Fecha de Nacimiento</label>
         
 
         
     <input 
      type="date"
-    id="fecha"
+    id="fecha2"
     className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full " 
     placeholder="Fecha Nacimiento" 
     value={fechaNacimiento}

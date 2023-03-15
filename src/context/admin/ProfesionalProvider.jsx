@@ -1,8 +1,10 @@
 import{createContext, useState, useEffect} from 'react'
 import clientAxios from '../../config/axios'
+import AdminAuth from '../../hooks/adminAuth'
 const ProfesionalesContext = createContext()
 
 export const ProfesionalProvider = ({children}) => {
+  const { authadmin} = AdminAuth()
 
     const [profesionales, setProfesionales] = useState([])
     const [profesional, setProfesional] = useState({})
@@ -32,12 +34,12 @@ export const ProfesionalProvider = ({children}) => {
      const obtenerProfesionales = async ()=>{
 
         try {
-            const token = localStorage.getItem('token')
-            if(!token) return
+            const tokenAdm = localStorage.getItem('tokenAdm')
+            if(!tokenAdm) return
             const config = {
               headers:{
                   "Content-Type": "application/json",
-                  Authorization: `Bearer ${token}`
+                  Authorization: `Bearer ${tokenAdm}`
               }
             }
             const { data } = await clientAxios("/admin/modulo-profesional",config)
@@ -51,14 +53,14 @@ export const ProfesionalProvider = ({children}) => {
      }
      obtenerProfesionales()
 
-   },[])
+   },[authadmin])
 
     const guardarProfesional = async (profesional)=>{
-      const token = localStorage.getItem('token')
+      const tokenAdm = localStorage.getItem('tokenAdm')
       const config = {
         headers:{
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${tokenAdm}`
         }
       }
       if(profesional.id){
@@ -102,6 +104,36 @@ export const ProfesionalProvider = ({children}) => {
 
     }
 
+    const guardarSoloProfesional = async (profesional)=>{
+      const tokenAdm = localStorage.getItem('tokenAdm')
+      const config = {
+        headers:{
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${tokenAdm}`
+        }
+      }
+      try{
+      
+        const{ data }= await clientAxios.post('admin/modulo-pro',profesional,config)
+      
+          const{ createdAt, updatedAt, __v, ...profesionalAlmacenado} = data
+        setProfesionales ([profesionalAlmacenado, ...profesionales])
+        toastMixin.fire({
+          animation: true,
+          title: 'Registrado correctamente. Email de confirmación enviado'
+        });
+        
+       }
+       catch(error){
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Email o Rut ya registrado',
+        })
+   
+       }
+    }
+
     const setEdicion = (profe) =>{
      setProfesional(profe)
     }
@@ -125,11 +157,11 @@ export const ProfesionalProvider = ({children}) => {
     })
     if(confirmar) {
       try {
-          const token = localStorage.getItem("token");
+          const tokenAdm = localStorage.getItem("tokenAdm");
           const config = {
               headers: {
                   "Content-Type": "application/json",
-                  Authorization: `Bearer ${token}`
+                  Authorization: `Bearer ${tokenAdm}`
               }
           }
           const {data} = await clientAxios.delete(`admin/modulo-profesional/${id}`, config);
@@ -165,6 +197,7 @@ export const ProfesionalProvider = ({children}) => {
     porPagina,
     setPorPagina,
     maximo,
+    guardarSoloProfesional
 
 
    }}

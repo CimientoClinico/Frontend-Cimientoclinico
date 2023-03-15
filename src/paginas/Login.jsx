@@ -10,6 +10,7 @@ const Login = () => {
   const [password, setPassword]= useState('')
   const [alerta, setAlerta]= useState({})
   const [showPwd, setShowPwd] = useState(false)
+  const [loading, setLoading] = useState(false)
 
   const { setAuth } = useAuth()
   const navigate = useNavigate()
@@ -21,25 +22,30 @@ const Login = () => {
         msg:'todos los campos son obligatorios',
         error:true
       });
+      setTimeout(()=> setAlerta({}),5000)
       return
     }
-
+ setLoading(true)
     try {
       const {data} = await clientAxios.post(`/pacientes/login`,{email,password})
       localStorage.setItem('token', data.token)
       setAuth(data)
+      setLoading(false)
       navigate('/paciente')
     } catch (error) {
       setAlerta({
         msg: error.response.data.msg,
         error:true
       })
+      setTimeout(()=> setAlerta({}),5000)
+      setLoading(false)
     }
   }
 
   const { msg}= alerta
     return(
         <>
+ 
 <div className="h-screen flex">
           <div id="primario" className="hidden lg:flex w-full lg:w-1/2 login_img_section
           justify-around items-center">
@@ -54,7 +60,10 @@ const Login = () => {
                   </div>
             <div className="w-full mx-auto px-20 flex-col items-center space-y-6">
                <Link to="/"><img src={login} alt="" /></Link>
-              <h1 className="text-white text-3xl font-nunito font-bold">Ingresa a Cimiento Clínico y agenda tus consultas de telemedicina</h1>
+               
+              <h1 className="text-white text-3xl font-nunito font-bold ">Ingresa a Cimiento Clínico y agenda tus consultas de telemedicina</h1>
+              <Link className='text-indigo-700 font-nunito font-semibold text-3xl hover:text-indigo-500  ' to="/registrar"> <h1 className='animate-bounce'>¿No tienes cuenta? <span className='font-bold '>Registrate aquí</span></h1>  </Link>
+
             </div>
           </div>
           
@@ -63,6 +72,11 @@ const Login = () => {
            
 
             <div className="w-full px-8 md:px-48 lg:px-36">
+            {loading?    <div className=" container text-center">
+            <div class="animate-spin inline-block w-10 h-10 border-[3px] border-current border-t-transparent text-blue-600 rounded-full" role="status" aria-label="loading">
+  <span class="sr-only">Loading...</span>
+</div>
+</div>:''}
             { msg && 
             
             <Alerta
@@ -105,6 +119,7 @@ const Login = () => {
           </div>
                 
               </div>
+
 
               
               <button id="primario" type="submit" className="block w-full font-nunito py-2 rounded-2xl hover:bg-indigo-700 hover:-translate-y-1 transition-all duration-500 text-white font-semibold mb-2">Login</button>

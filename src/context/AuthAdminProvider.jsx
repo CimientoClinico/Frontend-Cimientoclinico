@@ -6,11 +6,26 @@ const AuthAdminContext = createContext()
 const AuthAdminProvider = ({children})=>{
 const [cargando, setCargando ] =useState(true)
 const [ authadmin, setAuthadmin ] = useState({})
+const [theme, setTheme] =  useState("light")
+useEffect(() => {
+    if(theme == "dark"){
+      document.documentElement.classList.add("dark");
+
+    }else{
+        document.documentElement.classList.remove("dark");
+    }
+
+}, [theme])
+
+const handleThemeSwitch=() =>{
+    setTheme (theme === "dark" ? "light": "dark");
+}
+
 
      useEffect(()=>{
         const autenticarUsuario = async() =>{
-            const token = localStorage.getItem('token')
-            if(!token){
+            const tokenAdm = localStorage.getItem('tokenAdm')
+            if(!tokenAdm){
                 setCargando(false)
                 return
     
@@ -20,7 +35,7 @@ const [ authadmin, setAuthadmin ] = useState({})
     
                 headers:{
                     "Content-Type":"application/json",
-                    Authorization:`Bearer ${token}`
+                    Authorization:`Bearer ${tokenAdm}`
                 }
             }
             try {
@@ -38,7 +53,7 @@ const [ authadmin, setAuthadmin ] = useState({})
      }, [])
 
      const cerrarSesion = ()=>{
-        localStorage.removeItem('token')
+        localStorage.removeItem('tokenAdm')
         setAuthadmin({})
       }
 
@@ -48,7 +63,8 @@ return(
         authadmin,
         setAuthadmin,
         cargando,
-        cerrarSesion
+        cerrarSesion,
+        handleThemeSwitch
     }}
     >
         {children}

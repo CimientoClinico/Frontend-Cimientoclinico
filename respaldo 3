@@ -325,8 +325,32 @@ Agregar Profesional
 export default ModuloProfesional
 
 
+onChange={(e) => setImage("image", e.target.files[0])}/>
 
 
 
+<div class="flex  items-center justify-center">
+<form onSubmit={fotoPerfil} method="post" enctype="multipart/form-data">
+<label class="w-30 h-30 flex flex-col items-center px-4 py-1 bg-blue-500  rounded-lg shadow-lg text-white border border-blue cursor-pointer hover:bg-blue hover:text-slate-300">
+<svg class="w-6 h-6" fill="currentColor" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+  <path d="M16.88 9.1A4 4 0 0 1 16 17H5a5 5 0 0 1-1-9.9V7a3 3 0 0 1 4.52-2.59A4.98 4.98 0 0 1 17 8c0 .38-.04.74-.12 1.1zM11 11h3l-4-4-4 4h3v3h2v-3z" />
+</svg>
+<input type="file" />
 
 
+</label> <button type="submit" > mandar</button>
+</form>
+</div>
+      headers:{
+        Accept: 'application/json',
+        'Content-Type': 'multipart/form-data',
+          Authorization:`Bearer ${token}`
+      }
+
+
+      .then(res => {
+        const data = res.data
+        console.log(datos)
+       console.log(data)
+
+      })

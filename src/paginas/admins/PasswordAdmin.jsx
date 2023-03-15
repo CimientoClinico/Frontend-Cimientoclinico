@@ -9,6 +9,7 @@ const PasswordAdmin = () => {
     e.preventDefault();
     if(email === '' || email.length < 6 ){
       setAlerta({msg:'El Email es obligatorio',error:true})
+      setTimeout(()=> setAlerta({}),5000)
       return
     }
 
@@ -18,6 +19,7 @@ const PasswordAdmin = () => {
     } catch (error) {
       setAlerta({msg: error.response.data.msg,
       error:true})
+      setTimeout(()=> setAlerta({}),5000)
     }
   }
   const { msg } = alerta

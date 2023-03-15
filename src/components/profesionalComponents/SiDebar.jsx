@@ -1,43 +1,34 @@
 import React, { useState } from "react";
 import { HiMenuAlt3 } from "react-icons/hi";
-import { MdHome, MdListAlt, MdVoiceChat, MdAccountCircle,MdDarkMode,MdPermDeviceInformation } from "react-icons/md";
-import { FaUserMd } from "react-icons/fa";
-import{BsFillDoorOpenFill, BsPatchQuestion} from "react-icons/bs";
-import {BiNotepad} from "react-icons/bi";
+import { MdHome,  MdVoiceChat, MdAccountCircle,MdFollowTheSigns, MdDarkMode } from "react-icons/md";
+import{BsFillDoorOpenFill} from "react-icons/bs";
 import { Link } from "react-router-dom";
-import useAuth from "../../hooks/useAuth"
-
+import proAuth from "../../hooks/proAuth"
 const Sidebar = () => {
-  const {cerrarSesion,handleThemeSwitch} =  useAuth()
+  const {cerrarSesion, handleThemeSwitch} =  proAuth()
   const menus = [
-    { name: "Inicio", link: "/paciente", icon: MdHome },
-    { name: "Perfil", link: "/paciente/perfil-paciente", icon: MdAccountCircle },
-    { name: "Mi historia clínica", link: "/paciente/historia-clinica", icon: MdListAlt },
-    { name: "Crear consulta", link: "/paciente/consultas", icon: MdVoiceChat },
-    { name: "Mis Horarios disponibles", link: "/paciente/consultas", icon: BiNotepad },
-    { name: "Cargar preguntas", link: "/paciente/consultas", icon: BsPatchQuestion },
-    { name: "Buscar temas de interés", link: "/paciente/historia-clinica", icon: MdPermDeviceInformation },
-    { name: "Buscar Profesionales", link: "/paciente/lista-profesionales", icon: FaUserMd },
-    
-  ];
-  const menus3 = [
-    { name: "DarkMode", boton: "DarkMode", icon: MdDarkMode, margin:20 },
-
+    { name: "Inicio", link: "/profesional", icon: MdHome },
+    { name: "Consultas", link: "/profesional/consultas", icon: MdVoiceChat },
+    { name: "Perfil", link: "/profesional/perfil-profesional", icon: MdAccountCircle },
+    { name: "Portal Paciente", link: "/paciente", icon: MdFollowTheSigns, margin:10 },
   ];
   const menus2 = [
-    { name: "Cerrar Sesión", boton: "Cerrar sesión", icon: BsFillDoorOpenFill },
+    { name: "Cerrar Sesión", boton: "Cerrar sesión", icon: BsFillDoorOpenFill, },
+    
 
   ];
+  const menus3 = [
+    { name: "DarkMode", boton: "DarkMode", icon: MdDarkMode },
 
+  ];
   const [open, setOpen] = useState(true);
   return (
   
         <aside>
-      <div 
-      id="lateral"
-        className={`bg-teal-700 dark:bg-slate-800  mb-0  ${
+      <div
+        className={`bg-blue-500 min-h-screen dark:bg-slate-800 ${
           open ? "w-72" : "w-16"
-        } duration-500 text-gray-100 px-4  `}
+        } duration-500 text-gray-100 px-4`}
       >
         <div className="py-3 flex justify-end">
           <HiMenuAlt3
@@ -56,7 +47,7 @@ const Sidebar = () => {
            <h1 className={`cursor-pointer duration-500 `}> </h1>
          </div> }
          {open ?   <div className="flex gap-x-4 items-center">
-           <h2 className={`cursor-pointer font-nunito duration-500 text-xl `}> Portal Pacientes</h2>
+           <h2 className={`cursor-pointer font-nunito duration-500 text-xl `}> Portal Profesionales</h2>
         
           
            </div>
@@ -160,12 +151,11 @@ const Sidebar = () => {
             
             
           ))}
-
+          
           
         </div>
-  
+        
       </div>
-      
       </aside>
       
       

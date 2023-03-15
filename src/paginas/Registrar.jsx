@@ -5,9 +5,10 @@ import Alerta from '../components/Alerta';
 import clientAxios from "../config/axios";
 const Registrar = () => {
      const [email, setEmail] = useState('')
-     const [Rut, setRut] = useState('')
+     const [rut, setRut] = useState('')
      const [nombres, setNombres] = useState('')
      const [apellidos, setApellidos] = useState('')
+     const [sexo, setSexo] = useState('')
      const [password, setPassword] = useState('')
      const [repetirPassword, setRepetirPassword] = useState('')
      const [alerta, setAlerta ]= useState({})
@@ -17,7 +18,7 @@ const Registrar = () => {
       
       e.preventDefault();
       
-      if([email,Rut,nombres,apellidos,password,repetirPassword].includes('')){
+      if([email,rut,nombres,apellidos,password,repetirPassword].includes('')){
         setAlerta({msg: 'Hay campos vacíos', error: true})
         return;
       }
@@ -26,7 +27,7 @@ const Registrar = () => {
         setAlerta({msg: 'Las contraseñas deben ser iguales', error: true})
         return;
       }
-      if(Rut.length < 9 || Rut.length > 10 ){
+      if(rut.length < 9 || rut.length > 10 ){
         setAlerta({msg: 'RUT no válido. Ejemplo:11111111-1', error: true})
         return;
       }
@@ -36,17 +37,12 @@ const Registrar = () => {
         return;
       }
 
-     
-    
-
-
-      
 
       setAlerta({})
 
       //Peticion al backend para crear usuario
       try{
-         await clientAxios.post('/pacientes',{email,Rut,nombres,apellidos,password})
+         await clientAxios.post('/pacientes',{email,rut,nombres,apellidos,sexo,password})
          setAlerta({
           msg: 'Registrado con éxito. Revisa tu Correo electrónico',
           error: false
@@ -111,7 +107,7 @@ const Registrar = () => {
                 type="text" 
                 name="Rut" 
                 placeholder="RUT con guion identificador.Ejemplo:11111111-1 " 
-                value={Rut}
+                value={rut}
                 onChange={e => setRut(e.target.value) }
                 />
               </div>
@@ -135,9 +131,22 @@ const Registrar = () => {
                  onChange={e => setApellidos(e.target.value) }
                 />
               </div>
+               <div className="flex items-center border-2 mb-8 py-2 px-3 rounded-2xl">
+
+                <select id="Genero" className=" font-normal font-nunito  pl-2 w-full outline-none border-none" 
+                type="text" 
+                name="Genero" 
+                placeholder="Genero" 
+                value={sexo}
+                 onChange={e => setSexo(e.target.value) }> 
+                <option value="Sin datos">Género</option>
+                <option value="No específica" >No específica</option>
+                 <option value="Masculino">Masculino</option>
+                 <option value="Femenino" >Femenino</option>
+                 </select>
+              </div>
               <div className="flex items-center border-2 mb-12 py-2 px-3 rounded-2xl ">
                 <input type={showPwd ? "text" : "password"} className="pl-2 w-full outline-none border-none"
-                 id="password" 
                  placeholder="Ingresa tu contraseña" 
                  value={password}
                  onChange={e => setPassword(e.target.value)}
@@ -156,7 +165,6 @@ const Registrar = () => {
               </div>
               <div className="flex items-center border-2 mb-12 py-2 px-3 rounded-2xl ">
                 <input type={showRPwd ? "text" : "password"} className="pl-2 w-full outline-none border-none"
-                 id="password" 
                  placeholder="Confirma tu contraseña" 
                  value={repetirPassword}
                  onChange={e => setRepetirPassword(e.target.value)}
