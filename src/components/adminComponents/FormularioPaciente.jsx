@@ -208,8 +208,8 @@ Agregar paciente
     value={sexo}
     onChange={e => setSexo(e.target.value) }> 
     <option value="No especifica" >No específica</option>
-    <option value="Masculino">Masculino</option>
-    <option value="Femenino" >Femenino</option>
+    <option value="Hombre">Hombre</option>
+    <option value="Mujer" >Mujer</option>
     </select>
 
 
@@ -292,8 +292,8 @@ Agregar paciente
     value={sexo}
     onChange={e => setSexo(e.target.value) }> 
     <option value="No especifica" >No específica</option>
-    <option value="Masculino">Masculino</option>
-    <option value="Femenino" >Femenino</option>
+    <option value="Hombre">Hombre</option>
+    <option value="Mujer" >Mujer</option>
     </select>
         <label htmlFor="telefono" className="font-semibold text-sm text-gray-600 pb-1 block" >Teléfono</label>
     <input
@@ -380,16 +380,21 @@ Agregar paciente
 
                     ))}
                     
+                
                 </tbody>
             </table>
             </div>
             
-            </div>
-            </div>
           
+            </div>
+            
+            </div>
+
+
         </div>
         <Paginacion pagina={pagina} setPagina={setPagina} maximo={maximo} />
     </div>
+    
     </>
   )
 }

@@ -227,7 +227,6 @@ const fotoPerfil = async (e)  =>{
             <div className="flex items-center border-2 mb-10 py-2 px-3 rounded-2xl">
                 <input 
                 name="telefono"
-                
                 className="  dark:bg-slate-300 font-normal text-sm  font-nunito  pl-2 w-full outline-none border-none"
                  type="text"
        

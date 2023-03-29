@@ -348,8 +348,8 @@ Agregar Profesional
     value={sexo}
     onChange={e => setSexo(e.target.value) }> 
     <option value="No especifica" >No específica</option>
-    <option value="Masculino">Masculino</option>
-    <option value="Femenino" >Femenino</option>
+    <option value="Hombre">Hombre</option>
+    <option value="Mujer" >Mujer</option>
     
     </select>
 
@@ -440,8 +440,8 @@ Agregar Profesional
     value={sexo}
     onChange={e => setSexo(e.target.value) }> 
     <option value="No especifica" >No específica</option>
-    <option value="Masculino">Masculino</option>
-    <option value="Femenino" >Femenino</option>
+    <option value="Hombre">Hombre</option>
+    <option value="Mujer" >Mujer</option>
     </select>
         <label htmlFor="telefono2" className="font-semibold text-sm text-gray-600 pb-1 block" >Teléfono</label>
     <input

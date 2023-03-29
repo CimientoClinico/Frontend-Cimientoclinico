@@ -73,8 +73,8 @@ const Login = () => {
 
             <div className="w-full px-8 md:px-48 lg:px-36">
             {loading?    <div className=" container text-center">
-            <div class="animate-spin inline-block w-10 h-10 border-[3px] border-current border-t-transparent text-blue-600 rounded-full" role="status" aria-label="loading">
-  <span class="sr-only">Loading...</span>
+            <div className="animate-spin inline-block w-10 h-10 border-[3px] border-current border-t-transparent text-blue-600 rounded-full" role="status" aria-label="loading">
+  <span className="sr-only">Loading...</span>
 </div>
 </div>:''}
             { msg && 

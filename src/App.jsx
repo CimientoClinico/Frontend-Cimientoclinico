@@ -36,13 +36,18 @@ import Consultas from "./paginas/pacientes/Consultas"
 import PerfilProfesional from "./paginas/profesionales/PerfilProfesional"
 import ConsultasProfesional from "./paginas/profesionales/ConsultasProfesional"
 import PerfilAdministrador from "./paginas/admins/PerfilAdministrador"
+import Diagnostico from "./paginas/pacientes/Diagnostico"
+import Examenes from "./paginas/pacientes/Examenes"
+import Eventos from "./paginas/pacientes/Eventos"
+import SeguimientoConsultas from "./paginas/pacientes/SeguimientoConsultas"
 import {AuthProvider} from "./context/AuthProvider"
 import {AuthAdminProvider } from "./context/AuthAdminProvider"
 import {AuthProProvider} from "./context/AuthProProvider"
 import { ProfesionalProvider } from "./context/admin/ProfesionalProvider"
 import { AdminProvider } from "./context/admin/AdminProvider"
 import {PacienteProvider} from "./context/admin/PacienteProvider"
-
+import { PreguntasCliProvider } from "./context/paciente/PreguntasCliProvider"
+import { HistoriaCliProvider } from "./context/paciente/HistoriaCliContext"
 
 function App() {
   return (
@@ -53,6 +58,8 @@ function App() {
     <ProfesionalProvider>
     <AdminProvider>
     <PacienteProvider>
+    <PreguntasCliProvider>
+    <HistoriaCliProvider>
     <Routes>
       {/* Pagina principal con Layout header y footer */}
     <Route path="/" element={ <HomeLayout />}>
@@ -89,8 +96,13 @@ function App() {
         <Route index element={ <InicioPacientes/> } />
         <Route path="perfil-paciente" element={ <PerfilPaciente/> } /> 
         <Route path="historia-clinica" element={ <HistoriaClinica/> } />
+        <Route path="diagnosticos" element={ <Diagnostico/> } />
+        <Route path="examenes" element={ <Examenes/> } />
+        <Route path="eventos" element={ <Eventos/> } />
+        <Route path="seguimiento-consulta" element={ <SeguimientoConsultas/> } />
         <Route path="lista-profesionales" element={ <ProfesionalesList/> } />
         <Route path="consultas" element={ <Consultas/> } />
+
 
       </Route>
       <Route path="/admin" element={ <AdminLayout />}>
@@ -109,6 +121,8 @@ function App() {
 
       </Route>
     </Routes>
+    </HistoriaCliProvider>
+    </PreguntasCliProvider>
     </PacienteProvider>  
     </AdminProvider>
     </ProfesionalProvider>

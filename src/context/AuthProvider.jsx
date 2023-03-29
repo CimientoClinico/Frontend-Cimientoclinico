@@ -8,6 +8,8 @@ const AuthProvider = ({children})=>{
 const [theme, setTheme] =  useState("light")
 const [cargando, setCargando] = useState(true)
 const [loading, setLoading] = useState(false)
+
+
     const [auth, setAuth] = useState({})
     const toastMixin = Swal.mixin({
         toast: true,
@@ -66,10 +68,12 @@ const [loading, setLoading] = useState(false)
     }
     autenticarUsuario()
 
- }, [auth])
+ },  [auth])
+ 
 
  const cerrarSesion = ()=>{
     localStorage.removeItem('token')
+    localStorage.removeItem('alertShown')
     setAuth({})
   }
   const actualizarPerfil = async datos =>{
@@ -169,6 +173,75 @@ const actualizarFoto = async (image) =>{
 
 
 
+  const actualizarContacto = async datos =>{
+
+    const confirmar = await Swal.fire({
+        title: '¿Quieres cambiar tu forma de contacto?',
+        text: "Más adelante podras cambiar esta opción",
+        icon: 'info',
+        showCancelButton: true,
+        confirmButtonColor: '#1E90FF',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Si, Guardar'
+        }).then((result) => {
+        if (result.isConfirmed) {
+            return true;
+        } else {
+            return false;
+        }
+    })
+    if(confirmar) { 
+        try {
+    const token = localStorage.getItem('token')
+    if(!token){
+        setCargando(false)
+        return
+    } 
+    const config ={
+        headers:{
+            "Content-Type":"application/json",
+            Authorization:`Bearer ${token}`
+        }
+    }
+    
+        const url = `/pacientes/actualizar-contacto/${datos._id}`
+        const {data} = await clientAxios.put(url,datos,config)
+        toastMixin.fire({
+            animation: true,
+            title: 'Las forma de contactarnos contigo fue actualizada'
+          });
+        
+    } catch (error) {
+        console.log(error)
+    }
+  }
+
+}
+const actualizarEstilodevida = async datos =>{
+        try {
+    const token = localStorage.getItem('token')
+    if(!token){
+        setCargando(false)
+        return
+    } 
+    const config ={
+        headers:{
+            "Content-Type":"application/json",
+            Authorization:`Bearer ${token}`
+        }
+    }
+    
+        const url = `/pacientes/actualizar-nopatologico/${datos._id}`
+        const {data} = await clientAxios.put(url,datos,config)
+
+        
+    } catch (error) {
+        console.log(error)
+    }
+  }
+
+
+
     return(
         <AuthContext.Provider
         value={{
@@ -181,7 +254,13 @@ const actualizarFoto = async (image) =>{
             actualizarFoto,
             loading,
             setLoading,
-            handleThemeSwitch
+            handleThemeSwitch,
+            actualizarContacto,
+            actualizarEstilodevida,
+         
+          
+
+          
    
         }}
         >
