@@ -220,9 +220,9 @@ className="flex font-nunito bg-green-600 text-white justify-center cursor-pointe
     </div>
     : 
     <div>
-         <div className='  md:flex  lg:gap-24 xs:gap-0 '>
-      <div className='md:w-4/6 ml-4 md:mb-0 border  border-gray-200 rounded-md'>
-      <div className='px-1 mt-1 text-md font-nunito'>    { auth.historiaclinica?.alimentacion==='1' ? 
+         <div className='  md:flex  lg:gap-2 xs:gap-0 '>
+      <div className='md:w-5/6 ml-4 md:mb-0 border text-sm border-gray-200 rounded-md'>
+      <div className='px-1 mt-1 font-nunito'>    { auth.historiaclinica?.alimentacion==='1' ? 
       
       <h1> Su calidad de alimentación en las últimas semanas ha sido:  <span className='text-red-600 font-bold'>Crítica 😡</span> </h1>
       :''} </div>

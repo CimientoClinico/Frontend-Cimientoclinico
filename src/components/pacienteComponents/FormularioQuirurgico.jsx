@@ -189,8 +189,8 @@ useEffect(()=>{
     { quirurgicos.length ?
 
 <div className=" flex mt-2 flex-col lg:flex-row px-1">
-<h1 className=" text-gray-700  font-nunito pl-10 pr-1 ">Tus Antecedentes:</h1>
-  <div className="  grid grid-cols-2 gap-1    ">{quirurgicos.map(qui => (
+
+  <div className=" px-8 grid grid-cols-3 gap-1    ">{quirurgicos.map(qui => (
     
     <div key={qui._id} className="flex  ">
        <h2 className="text-gray-500 font-nunito text-sm mt-1">  {qui.nombre},</h2>

@@ -1,5 +1,6 @@
 import useAuth from "../../hooks/useAuth"
 import { Link } from "react-router-dom"
+import { useState } from "react"
 import FormularioAlergia from "../../components/pacienteComponents/FormularioAlergia"
 import FormularioEnfermedad from "../../components/pacienteComponents/FormularioEnfermedades"
 import FormularioFarmaco from "../../components/pacienteComponents/FormularioFarmaco"
@@ -14,6 +15,7 @@ import FormularioDrogas from "../../components/pacienteComponents/FormularioDrog
 import FormularioGinecoobstetrico from "../../components/pacienteComponents/FormularioGinecoobstetrico"
 const HistoriaClinica = () => {
 const {auth} =  useAuth()
+const [ocultarseccion, SetOcultarSeccion] = useState(true)
 const formatearFecha = (fecha) => {
   const nuevaFecha = new Date(fecha)
   nuevaFecha.setMinutes(nuevaFecha.getMinutes() + nuevaFecha.getTimezoneOffset())
@@ -70,14 +72,27 @@ fechaNacimiento=(auth.fechaNacimiento)
 
 
 
-       <div className="py-10 bg-gray-100  bg-opacity-50   ">
+       <div className= "py-10 bg-gray-100  bg-opacity-50   ">
       <div className="mx-auto container max-w-5xl md:w-3/4 shadow-md bg-[#6d7993] ">
-        <div className="bg-gray-100 p-4  bg-opacity-5  rounded-t ">
-          <div className="max-w-sm mx-auto md:w-full md:mx-0 ">
-             <h1 className="text-white font-nunito">Antecedentes Clínicos</h1>
+        <div className=" p-4    rounded-t ">
+        <div className=" flex text-right mr-5">
+        <h1 className="text-left text-white font-nunito">Antecedentes Clínicos</h1>
+        <button  className="p-1  rounded-md inline-flex space-x-1 items-center text-white hover:text-white bg-indigo-400 ml-1  hover:bg-indigo-600 "
+            onClick={()=> SetOcultarSeccion(!ocultarseccion)}>
+                  <span className="text-xs  font-regular  lg:block">{ocultarseccion ? 
+                  <div className="flex gap-2">
+                     🔽    
+                  </div>
+                  :
+                  <div className="flex gap-2">
+                   ▶️                     </div>
+                  } </span>                     
+            </button>
+             
           </div>
+
         </div>
-        <div className="bg-white space-y-1 ">
+        <div className={`${ocultarseccion?'block':'hidden'} xs:block bg-white space-y-1  `}>
         <FormularioEnfermedad/>
           <hr />
           <FormularioFarmaco/>

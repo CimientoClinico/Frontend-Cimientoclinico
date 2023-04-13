@@ -76,7 +76,7 @@ No fumo </label>
       
 </div>
 
-<button className="  bg-[#96858f] hover:bg-indigo-400 px-2 py-2 text-white rounded-md text-rigth ml-10 font-nunito ">Guardar💾</button>
+<button className="  bg-[#96858f] hover:bg-indigo-400 px-2 py-2 text-white rounded-md text-rigth ml-20 font-nunito ">Guardar💾</button>
 </form>
 
 
@@ -86,8 +86,8 @@ No fumo </label>
     :
     <div>
 
-    <div className='  md:flex  lg:gap-24 xs:gap-0 '>
-      <div className='md:w-4/6 ml-4 md:mb-0 border  border-gray-200 rounded-md'>
+    <div className='  md:flex  lg:gap-2 xs:gap-0 '>
+      <div className='md:w-5/6 ml-4  md:mb-0 border   border-gray-200 rounded-md'>
       <h1 className='px-1 mt-1  font-nunito'> { auth.historiaclinica?.fumador==='Si' ? 'El paciente si es fumador 🚬':' El paciente no es fumador 🚭'} </h1>    
       </div>
     <form onSubmit={SiFumador}  >
@@ -97,8 +97,8 @@ No fumo </label>
                [e.target.name] : e.target.value
              })} />
      
-     <div className='md:w-6/6 '>
-          <button  title="Actualizar" className="  bg-[#96858f] px-2 py-2 text-white rounded-md text-rigth  font-nunito  hover:bg-indigo-400 ">Cambiar🔄</button>
+     <div className='md:w-6/6 gap-10'>
+          <button  title="Actualizar" className="  bg-[#96858f] px-2 py-2 text-white rounded-md text-rigth  font-nunito   hover:bg-indigo-400 ">Cambiar🔄</button>
           </div>
 
   </form>

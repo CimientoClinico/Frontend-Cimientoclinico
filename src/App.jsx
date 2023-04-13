@@ -40,6 +40,8 @@ import Diagnostico from "./paginas/pacientes/Diagnostico"
 import Examenes from "./paginas/pacientes/Examenes"
 import Eventos from "./paginas/pacientes/Eventos"
 import SeguimientoConsultas from "./paginas/pacientes/SeguimientoConsultas"
+import FormularioAudit from "./paginas/pacientes/FormularioAudit"
+import VerMotivo from "./paginas/profesionales/VerMotivo"
 import {AuthProvider} from "./context/AuthProvider"
 import {AuthAdminProvider } from "./context/AuthAdminProvider"
 import {AuthProProvider} from "./context/AuthProProvider"
@@ -48,6 +50,7 @@ import { AdminProvider } from "./context/admin/AdminProvider"
 import {PacienteProvider} from "./context/admin/PacienteProvider"
 import { PreguntasCliProvider } from "./context/paciente/PreguntasCliProvider"
 import { HistoriaCliProvider } from "./context/paciente/HistoriaCliContext"
+import Horarios from "./paginas/pacientes/Horarios"
 
 function App() {
   return (
@@ -102,6 +105,8 @@ function App() {
         <Route path="seguimiento-consulta" element={ <SeguimientoConsultas/> } />
         <Route path="lista-profesionales" element={ <ProfesionalesList/> } />
         <Route path="consultas" element={ <Consultas/> } />
+        <Route path="formulario-audit" element={ <FormularioAudit/> } />
+        <Route path="horarios" element={ <Horarios/> } />
 
 
       </Route>
@@ -112,12 +117,14 @@ function App() {
         <Route path="modulo-paciente" element={ <ModuloPaciente/> } />
         <Route path="perfil-admin" element={ <PerfilAdministrador/> } />
         
+        
       </Route>
 
       <Route path="/profesional" element={ <ProfesionalLayout />}>
         <Route index element={ <InicioProfesional/> } />
         <Route path="perfil-profesional" element={ <PerfilProfesional/> } />
         <Route path="consultas" element={ <ConsultasProfesional/> } />
+        <Route path="vermotivo/:id" element={ <VerMotivo/> } />
 
       </Route>
     </Routes>

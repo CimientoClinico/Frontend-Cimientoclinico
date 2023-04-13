@@ -39,12 +39,12 @@ const handleSubmit = async e =>{
     <div className="inline-block mr-2 mt-2">
           <div className="flex">
           <div>
-<input type="radio" name="estadogeneral" id="1" className="peer hidden" value='1' onChange={ e => setPerfil({
+<input type="radio" name="estadogeneral" id="c1" className="peer hidden" value='1' onChange={ e => setPerfil({
                ...perfil,
                [e.target.name] : e.target.value
              })} />
 <label
-htmlFor="1"
+htmlFor="c1"
 className="flex font-nunito text-white justify-center bg-red-700 cursor-pointer select-none rounded-xl p-2 text-center peer-checked:bg-indigo-500 peer-checked:animate-pulse  peer-checked:font-bold peer-checked:text-white"
 >
   😡
@@ -56,13 +56,13 @@ className="flex font-nunito text-white justify-center bg-red-700 cursor-pointer 
 <div className="inline-block mr-2 mt-2">
 <div className="flex">
 <div>
-<input type="radio" name="estadogeneral" id="2" className="peer hidden"   value='2'
+<input type="radio" name="estadogeneral" id="c2" className="peer hidden"   value='2'
 onChange={ e => setPerfil({
                ...perfil,
                [e.target.name] : e.target.value
              })} />
 <label
-htmlFor="2"
+htmlFor="c2"
 className="flex font-nunito bg-red-600 text-white justify-center cursor-pointer select-none rounded-xl p-2 text-center peer-checked:bg-indigo-500 peer-checked:animate-pulse peer-checked:font-bold peer-checked:text-white">
  🤢
   2 </label>
@@ -75,12 +75,12 @@ className="flex font-nunito bg-red-600 text-white justify-center cursor-pointer 
   <div className="inline-block mr-2 mt-2">
 <div className="flex">
 <div>
-<input type="radio" name="estadogeneral" id="3" className="peer hidden"   value='3'onChange={ e => setPerfil({
+<input type="radio" name="estadogeneral" id="c3" className="peer hidden"   value='3'onChange={ e => setPerfil({
                ...perfil,
                [e.target.name] : e.target.value
              })} />
 <label
-htmlFor="3"
+htmlFor="c3"
 className="flex font-nunito bg-red-500 text-white justify-center cursor-pointer select-none rounded-xl p-2 text-center peer-checked:bg-indigo-500 peer-checked:animate-pulse peer-checked:font-bold peer-checked:text-white">
   🤒
  
@@ -220,45 +220,45 @@ className="flex font-nunito bg-green-600 text-white justify-center cursor-pointe
     </div>
     : 
     <div>
-         <div className='  md:flex  lg:gap-24 xs:gap-0 '>
-      <div className='md:w-4/6 ml-4 md:mb-0 border  border-gray-200 rounded-md'>
-      <div className='px-1 mt-1  font-nunito'>    { auth.historiaclinica?.estadogeneral==='1' ? 
+         <div className='  md:flex  lg:gap-2 xs:gap-0 '>
+      <div className='md:w-5/6 ml-4 md:mb-0 border  border-gray-200 rounded-md'>
+      <div className='px-1 mt-1 text-sm  font-nunito'>    { auth.historiaclinica?.estadogeneral==='1' ? 
       
       <h1> Su salud en general en las últimas semanas ha sido:  <span className='text-red-600 font-bold'>Crítica 😡</span> </h1>
       :''} </div>
-       <div className='px-1 mt-1  font-nunito'>    { auth.historiaclinica?.estadogeneral==='2' ? 
+       <div className='px-1 mt-1 text-sm  font-nunito'>    { auth.historiaclinica?.estadogeneral==='2' ? 
       
       <h1> Su salud en general en las últimas semanas ha sido:  <span className='text-red-500 font-bold'>Muy negativa🤢</span> </h1>
       :''} </div> 
-       <div className='px-1 mt-1  font-nunito'>    { auth.historiaclinica?.estadogeneral==='3' ? 
+       <div className='px-1 mt-1 text-sm  font-nunito'>    { auth.historiaclinica?.estadogeneral==='3' ? 
       
       <h1> Su salud en general en las últimas semanas ha sido:  <span className='text-red-400 font-bold'>Negativa 🤒</span> </h1>
       :''} </div> 
-       <div className='px-1 mt-1  font-nunito'>    { auth.historiaclinica?.estadogeneral==='4' ? 
+       <div className='px-1 mt-1 text-sm  font-nunito'>    { auth.historiaclinica?.estadogeneral==='4' ? 
       
       <h1> Su salud en general en las últimas semanas ha sido:  <span className='text-orange-600 font-bold'>Mala  🤧</span> </h1>
       :''} </div> 
-       <div className='px-1 mt-1  font-nunito'>    { auth.historiaclinica?.estadogeneral==='5' ? 
+       <div className='px-1 mt-1 text-sm   font-nunito'>    { auth.historiaclinica?.estadogeneral==='5' ? 
       
       <h1> Su salud en general en las últimas semanas ha sido:  <span className='text-orange-500 font-bold'>Baja 😐</span> </h1>
       :''} </div> 
-       <div className='px-1 mt-1  font-nunito'>    { auth.historiaclinica?.estadogeneral==='6' ? 
+       <div className='px-1 mt-1 text-sm  font-nunito'>    { auth.historiaclinica?.estadogeneral==='6' ? 
       
       <h1>Su salud en general en las últimas semanas ha sido:  <span className='text-yellow-600 font-bold'>Regular 🤨</span> </h1>
       :''} </div>
-       <div className='px-1 mt-1  font-nunito'>    { auth.historiaclinica?.estadogeneral==='7' ? 
+       <div className='px-1 mt-1 text-sm  font-nunito'>    { auth.historiaclinica?.estadogeneral==='7' ? 
       
       <h1> Su salud en general en las últimas semanas ha sido:  <span className='text-yellow-500 font-bold'>Buena 🙂</span> </h1>
       :''} </div>   
-       <div className='px-1 mt-1  font-nunito'>    { auth.historiaclinica?.estadogeneral==='8' ? 
+       <div className='px-1 mt-1 text-sm  font-nunito'>    { auth.historiaclinica?.estadogeneral==='8' ? 
       
       <h1> Su salud en general en las últimas semanas ha sido:  <span className='text-green-500 font-bold'>Positiva 😉</span> </h1>
       :''} </div>   
-       <div className='px-1 mt-1  font-nunito'>    { auth.historiaclinica?.estadogeneral==='9' ? 
+       <div className='px-1 mt-1 text-sm   font-nunito'>    { auth.historiaclinica?.estadogeneral==='9' ? 
       
       <h1> Su salud en general en las últimas semanas ha sido:  <span className='text-green-600 font-bold'>Muy positiva😀</span> </h1>
       :''} </div>   
-       <div className='px-1 mt-1  font-nunito'>    { auth.historiaclinica?.estadogeneral==='10' ? 
+       <div className='px-1 mt-1 text-sm  font-nunito'>    { auth.historiaclinica?.estadogeneral==='10' ? 
       
       <h1> Su salud en general en las últimas semanas ha sido:  <span className='text-green-700 font-bold'>Extremadamente positiva 😄</span> </h1>
       :''} </div>        

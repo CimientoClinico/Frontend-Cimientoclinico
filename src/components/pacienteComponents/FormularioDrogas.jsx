@@ -98,9 +98,9 @@ useEffect(() => {
 <div className={`${ocultarseccion?'block':'hidden'} xs:block `}>
   <div className="md:inline-flex w-full space-y-2 md:space-y-0 p-2 text-gray-700 items-center">
     <div className="flex  ">
-      <h1 className=" font-bold ml-7 mt-1">Alcoholismo: Paciente si consume drogas </h1>
+      <h1 className=" font-bold ml-7 mt-1">Drogas: Si </h1>
     </div>
-<div className="md:w-7/12 text-center md:pl-6">
+<div className="md:w-9/12 text-center ml-16   md:pl-6">
 <form onSubmit={ Sidrogas}>
 <input type="radio" name="drogas" className="peer hidden border border-gray-200 " value='Sin datos' checked
               onChange={ e => setPerfild2({
@@ -139,9 +139,9 @@ useEffect(() => {
 <div className={`${ocultarseccion?'block':'hidden'} xs:block `}>
   <div className="md:inline-flex w-full space-y-4 md:space-y-0 p-2 text-gray-700 items-center">
     <div className="flex">
-      <h1 className=" font-bold ml-7 mt-1">Alcoholismo: Paciente no consume drogas </h1>
+      <h1 className=" font-bold ml-7 mt-1">Drogas: No </h1>
     </div>
-<div className="md:w-7/12 text-center md:pl-6">
+<div className="md:w-9/12 text-center ml-16   md:pl-6">
 <form onSubmit={ Sidrogas}>
 <input type="radio" name="drogas" className="peer hidden border border-gray-200 " value='Sin datos' checked
               onChange={ e => setPerfild2({

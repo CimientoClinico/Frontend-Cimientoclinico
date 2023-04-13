@@ -174,8 +174,7 @@ useEffect(()=>{
     { alergias.length ?
 
 <div className=" flex mt-2 flex-col lg:flex-row px-1	">
-<h1 className=" text-gray-700  font-nunito pl-10 pr-1"> Tus Alergias:</h1>
-  <div className="  grid grid-cols-1 gap-1 ">{alergias.map(ale => (
+  <div className=" px-8 grid grid-cols-3 gap-1 ">{alergias.map(ale => (
     
     <div key={ale._id}>
        <h2 className="text-gray-500 font-nunito text-sm mt-1"> {ale.nombre},</h2>

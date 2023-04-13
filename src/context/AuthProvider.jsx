@@ -8,6 +8,8 @@ const AuthProvider = ({children})=>{
 const [theme, setTheme] =  useState("light")
 const [cargando, setCargando] = useState(true)
 const [loading, setLoading] = useState(false)
+const [motivos, setMotivos] = useState([])
+const [motivo, setMotivo] = useState({})
 
 
     const [auth, setAuth] = useState({})
@@ -240,8 +242,133 @@ const actualizarEstilodevida = async datos =>{
     }
   }
 
+  const guardarMotivoConsulta =  async(motivo) =>{
+    const token = localStorage.getItem('token')
+    const config = {
+      headers:{
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+      }
+    }
+    if(motivo.id){
+     try {
+        const{data}= await clientAxios.put(`/pacientes/actualizar-motivodeconsulta/${motivo.id}`,motivo,config)
+      
+      const motivosActualizados= motivos.map( motivoState => motivoState._id===
+        data._id ? data : motivoState)
+        setMotivos(motivosActualizados)
+     } catch (error) {
+      console.log(error)
+     }
+
+    }else{
+      try {
+     
+        const{ data }= await clientAxios.post('/pacientes/agregar-motivodeconsulta',motivo,config)
+        const{ createdAt, updatedAt, __v, ...motivoAlmacenado} = data
+        setMotivos ([motivoAlmacenado, ...motivos])
+        toastMixin.fire({
+            animation: true,
+            title: 'Motivo de consulta publicado',
+            icon:'success'
+          });
+    
+    } catch (error) {
+      console.log(error.response.data.msg)
+    }
+    }
+ 
+    }
+    const setEdicionMotivo = (motivo) => {
+        setMotivo(motivo)
+      }
+      const eliminarMotivoConsulta = async (id) => {
+        const confirmar = await Swal.fire({
+          title: '¿Estás seguro de eliminar tu motivo de consulta?',
+          text: "!No podrás revertir esto!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#18bca4',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Si, eliminarlo!'
+          }).then((result) => {
+          if (result.isConfirmed) {
+              return true;
+          } else {
+              return false;
+          }
+      })
+      if(confirmar) {
+        try {
+            const token = localStorage.getItem('token')
+            const config = {
+              headers:{
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`
+              }
+            }
+            const {data} = await clientAxios.delete(`/pacientes/eliminar-motivodeconsulta/${id}`, config);
+            const motivoActualizado = motivos.filter(motivosState => motivosState._id !== id);
+            setMotivos(motivoActualizado);
+            toastMixin.fire({
+                animation: true,
+                title: 'Eliminado correctamente'
+              });
+        } catch (error) {
+            console.log(error);
+        }
+    }
+      
+      }
+      const actualizarvisiblemotivo= async datos =>{
+        try {
+    const token = localStorage.getItem('token')
+    if(!token){
+        setCargando(false)
+        return
+    } 
+    const config ={
+        headers:{
+            "Content-Type":"application/json",
+            Authorization:`Bearer ${token}`
+        }
+    }
+    
+        const url = `/pacientes/actualizar-motivovisible/${datos._id}`
+        const {data} = await clientAxios.put(url,datos,config)
+        
+    } catch (error) {
+        console.log(error)
+    }
+        }  
 
 
+      const actualizarHorario = async datos =>{
+        try {
+    const token = localStorage.getItem('token')
+    if(!token){
+        setCargando(false)
+        return
+    } 
+    const config ={
+        headers:{
+            "Content-Type":"application/json",
+            Authorization:`Bearer ${token}`
+        }
+    }
+    
+        const url = `/pacientes/actualizar-horario/${datos._id}`
+        const {data} = await clientAxios.put(url,datos,config)
+        toastMixin.fire({
+            animation: true,
+            title: 'Tu horario a sido guardado'
+          });
+
+        
+    } catch (error) {
+        console.log(error)
+    }
+  }
     return(
         <AuthContext.Provider
         value={{
@@ -257,6 +384,15 @@ const actualizarEstilodevida = async datos =>{
             handleThemeSwitch,
             actualizarContacto,
             actualizarEstilodevida,
+            guardarMotivoConsulta,
+            motivo,
+            motivos,
+            setMotivo,
+            setMotivos,
+            setEdicionMotivo,
+            eliminarMotivoConsulta,
+            actualizarHorario,
+            actualizarvisiblemotivo
          
           
 

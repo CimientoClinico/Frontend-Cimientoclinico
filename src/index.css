@@ -1,3 +1,4 @@
+
 @import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800&display=swap');
 @tailwind base;
 @tailwind components;
@@ -132,4 +133,20 @@ body{
 }
 .fondo{
   background-color: #f0f2f3;
+}
+
+.fc-button {
+  background-color: #5a67d8 !important;
+  color: #fff !important;
+}
+
+.fc-day {
+  border: 1px solid black !important;
+}
+.form-switch {
+  transition: transform 0.2s ease-in-out;
+}
+
+.form-switch:checked {
+  transform: translateX(100%);
 }

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Link } from 'react-router-dom';
 import usePreguntasCli from '../../hooks/paciente/usePreguntasCli';
 const FormularioAlcoholismo = () => {
     const [ perfilD, setPerfild ] = useState({});
@@ -98,9 +99,9 @@ useEffect(() => {
 <div className={`${ocultarseccion?'block':'hidden'} xs:block `}>
   <div className="md:inline-flex w-full space-y-2 md:space-y-0 p-2 text-gray-700 items-center">
     <div className="flex  ">
-      <h1 className=" font-bold ml-7 mt-1">Alcoholismo: Paciente si consume alcohol </h1>
+      <h1 className=" font-bold ml-7 mt-1">Alcoholismo: Si </h1>
     </div>
-<div className="md:w-7/12 text-center md:pl-6">
+<div className="md:w-9/12 text-center ml-8   md:pl-6">
 <form onSubmit={ Sialcoholismo}>
 <input type="radio" name="alcohol" className="peer hidden border border-gray-200 " value='Sin datos' checked
               onChange={ e => setPerfild2({
@@ -115,7 +116,7 @@ useEffect(() => {
 </div>
 
 </div>
-<a href='#' className='font-regular text-sm text-blue-500 hover:text-blue-600 xl:ml-9 mt-1'>Responder formulario AUDIT</a>
+<Link to="/paciente/formulario-audit" className='font-regular text-sm text-blue-500 hover:text-blue-600 xl:ml-9 mt-1'>Responder formulario AUDIT</Link>
 
 </div>
 
@@ -142,9 +143,9 @@ useEffect(() => {
 <div className={`${ocultarseccion?'block':'hidden'} xs:block `}>
   <div className="md:inline-flex w-full space-y-4 md:space-y-0 p-2 text-gray-700 items-center">
     <div className="flex">
-      <h1 className=" font-bold ml-7 mt-1">Alcoholismo: Paciente no consume alcohol </h1>
+      <h1 className=" font-bold ml-7 mt-1">Alcoholismo: No </h1>
     </div>
-<div className="md:w-7/12 text-center md:pl-6">
+<div className="md:w-9/12 text-center ml-6   md:pl-6">
 <form onSubmit={ Sialcoholismo}>
 <input type="radio" name="alcohol" className="peer hidden border border-gray-200 " value='Sin datos' checked
               onChange={ e => setPerfild2({

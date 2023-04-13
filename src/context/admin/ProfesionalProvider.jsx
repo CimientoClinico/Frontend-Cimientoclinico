@@ -11,7 +11,7 @@ export const ProfesionalProvider = ({children}) => {
     const [tablaUsuarios, setTablaUsuarios]= useState([]);
     const [pagina, setPagina] = useState (1);
     const [porPagina, setPorPagina] = useState (7);
-    const maximo = Math.round(profesionales.length / porPagina) 
+    const maximo = Math.ceil(profesionales.length / porPagina) 
 
 
 

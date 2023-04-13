@@ -76,9 +76,9 @@ const handleSubmit = async e =>{
     <div className="container px-2 py-10 mx-auto ">
 
 
- <div class="  mx-auto container max-w-5xl md:w-3/4 shadow-md bg-white ">
+ <div className="  mx-auto container max-w-5xl md:w-3/4 shadow-md bg-white ">
 
-  <div class="col-span-12 border border-gray-400 rounded-lg fondo bg-white p-4 sm:col-span-6 dark:bg-slate-800">
+  <div className="col-span-12 border border-gray-400 rounded-lg fondo bg-white p-4 sm:col-span-6 dark:bg-slate-800">
 
   <h1 className="font-nunito font-semibold text-2xl mb-4 text-indigo-900 text-left dark:text-white">¿Como te gustaría que te contactemos?</h1>
   <div className=" mb-2 flex items-center ">
@@ -96,39 +96,39 @@ const handleSubmit = async e =>{
 <div className="grid grid-cols-1  gap-4 ">
 <form onSubmit={handleSubmit}>
       <div
-    class="container rounded-lg  mx-auto md:grid grid-cols-4 gap-8 bg-indigo-300 p-2">
+    className="container rounded-lg  mx-auto md:grid grid-cols-4 gap-8 bg-indigo-300 p-2">
     <div>
-      <input type="radio" name="contacto" id="1" class="peer hidden"    value='Whatsapp'
+      <input type="radio" name="contacto" id="1" className="peer hidden"    value='Whatsapp'
                   onChange={ e => setPerfil({
                     ...perfil,
                     [e.target.name] : e.target.value
                   })} />
       <label
-        for="1"
-        class="flex font-nunito text-slate-900 justify-center cursor-pointer select-none rounded-xl p-2 text-center peer-checked:bg-green-500 peer-checked:font-bold peer-checked:text-white"
+        htmlFor="1"
+        className="flex font-nunito text-slate-900 justify-center cursor-pointer select-none rounded-xl p-2 text-center peer-checked:bg-green-500 peer-checked:font-bold peer-checked:text-white"
         >Whatsapp  <BsWhatsapp className="mt-1.5 ml-2 " /></label>
     </div>
     <div>
-      <input type="radio" name="contacto" id="2" class="peer hidden"   value='Correo'
+      <input type="radio" name="contacto" id="2" className="peer hidden"   value='Correo'
                   onChange={ e => setPerfil({
                     ...perfil,
                     [e.target.name] : e.target.value
                   })} />
       <label
-        for="2"
-        class="flex font-nunito text-slate-900  justify-center cursor-pointer select-none rounded-xl p-2 text-center peer-checked:bg-red-500 peer-checked:font-bold peer-checked:text-white">
+        htmlFor="2"
+        className="flex font-nunito text-slate-900  justify-center cursor-pointer select-none rounded-xl p-2 text-center peer-checked:bg-red-500 peer-checked:font-bold peer-checked:text-white">
           Correo  <HiOutlineMail className="mt-1.5 ml-2  " /></label>
     </div>
 
     <div>
-      <input type="radio" name="contacto" id="3" class="peer hidden" value='Celular'
+      <input type="radio" name="contacto" id="3" className="peer hidden" value='Celular'
                   onChange={ e => setPerfil({
                     ...perfil,
                     [e.target.name] : e.target.value
                   })} />
       <label
-        for="3"
-        class=" flex font-nunito text-slate-900   justify-center cursor-pointer select-none rounded-xl p-2 text-center peer-checked:bg-blue-500 peer-checked:font-bold peer-checked:text-white">
+        htmlFor="3"
+        className=" flex font-nunito text-slate-900   justify-center cursor-pointer select-none rounded-xl p-2 text-center peer-checked:bg-blue-500 peer-checked:font-bold peer-checked:text-white">
           Celular  <BsFillTelephoneFill className="mt-1.5 ml-2 " /></label>
     </div>
 
@@ -144,9 +144,9 @@ const handleSubmit = async e =>{
 
 <div  className="col-span-9 rounded-lg p-6  dark:bg-slate-800 ">
            
-<div class=" fondo mx-auto grid grid-cols-12 gap-4 bg-zinc-50 p-1 rounded-md  dark:bg-slate-800">
+<div className=" fondo mx-auto grid grid-cols-12 gap-4 bg-zinc-50 p-1 rounded-md  dark:bg-slate-800">
 
-  <div class="col-span-12 rounded-lg fondo bg-white p-4 sm:col-span-6 dark:bg-slate-800">
+  <div className="col-span-12 rounded-lg fondo bg-white p-4 sm:col-span-6 dark:bg-slate-800">
 
   <div className=" mx-auto container max-w-5xl md:w-4/4 shadow-md bg-white  ">      
   <div className="bg-white shadow-md  my-6">
@@ -178,7 +178,7 @@ const handleSubmit = async e =>{
         </tr>
         <tr className="hover:bg-grey-lighter">
         <td className="py-3 px-3 border-b  border-grey-light  border-r  bg-[#96858f] text-white">Tabaquismo:</td>
-          <td className="py-4 px-6 border-b border-grey-light bg-[#d5d5d5]">
+          <td className="py-4 px-2 border-b border-grey-light bg-[#d5d5d5]">
           <FormularioVida/>
           </td>
         </tr>
@@ -188,7 +188,7 @@ const handleSubmit = async e =>{
   </div>
 </div>
   </div>
-  <div class="col-span-12 rounded-lg fondo bg-white p-4 sm:col-span-6 dark:bg-slate-800">
+  <div className="col-span-12 rounded-lg fondo bg-white p-4 sm:col-span-6 dark:bg-slate-800">
   <div className=" mx-auto container max-w-5xl md:w-4/4 shadow-md bg-white  ">      
   <div className="bg-white shadow-md  my-6">
     <table className="text-left w-full border-collapse "> 
@@ -214,7 +214,7 @@ const handleSubmit = async e =>{
         </tr>
         <tr className="hover:bg-grey-lighter">
         <td className="py-3 px-3 border-b  border-grey-light  border-r  bg-[#96858f] text-white">Vacunas:</td>
-          <td className="py-4 px-6 border-b border-grey-light bg-[#d5d5d5]">
+          <td className="py-4 px-3 border-b border-grey-light bg-[#d5d5d5]">
           <FormularioVacuna/>
           </td>
         </tr>
@@ -230,13 +230,13 @@ const handleSubmit = async e =>{
 
 <div  className="col-span-9 bg-sky-600 rounded-lg p-6 mb-8 dark:bg-slate-800 ">
 <div>    
-<div class="mx-auto grid grid-cols-12  bg-sky-600 p-1 rounded-md  dark:bg-slate-800">
+<div className="mx-auto grid grid-cols-12  bg-sky-600 p-1 rounded-md  dark:bg-slate-800">
 
-<div class="col-span-12 rounded-lg    bg-sky-600 p-4 sm:col-span-6  dark:bg-slate-800">
+<div className="col-span-12 rounded-lg    bg-sky-600 p-4 sm:col-span-6  dark:bg-slate-800">
 
 <CarruselImg/>
 </div>
-<div class="col-span-12 text-center rounded-md  fondo p-4 sm:col-span-6 dark:bg-slate-400">
+<div className="col-span-12 text-center rounded-md  fondo p-4 sm:col-span-6 dark:bg-slate-400">
 <p className="text-xl italic font-nunito lg:mt-20 sm:mt-2 text-center flex justify-center">
     Lorem Ipsum is simply dummy text of the printing and 
     typesetting  Lorem Ipsum is simply

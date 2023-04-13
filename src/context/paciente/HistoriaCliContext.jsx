@@ -20,6 +20,15 @@ const HistoriaCliProvider = ({children})=>{
     const [hospitalizacion, setHospitalizacion] = useState({})
     const [urgencias, setUrgencias] = useState([])
     const [urgencia, setUrgencia] = useState({})
+    const [nombre, setNombre] = useState('');
+    const [enfermedadId, setEnfermedadId] = useState('');
+    const [documento, setDocumento] = useState(null);
+    const [examenes, setExamenes] = useState([])
+    const [documentoh, setDocumentoh] = useState(null);
+    const [documentohospitalizacion, setDocumentohospitalizacion] = useState(null);
+    const [nombreh, setNombreh] = useState('');
+    const [fechaingreso, setFechaingreso] = useState('');
+    const [fechasalida, setFechasalida] = useState('');
     const { auth } = useAuth()
     const toastMixin = Swal.mixin({
         toast: true,
@@ -450,6 +459,76 @@ const config ={
  
    }
 
+   const guardarHospitalizacion = async (e) => {
+
+    try {
+    const token = localStorage.getItem('token')
+    if(!token) return
+
+    const config={
+      headers:{
+        'Content-Type': 'multipart/form-data',
+        Authorization: `Bearer ${token}`,
+    }
+    }
+    const formData = new FormData();
+    formData.append('nombre', nombre);
+    formData.append('fechaingreso', fechaingreso);
+    formData.append('fechasalida', fechasalida);
+    formData.append('documento', documento);
+
+      const response = await clientAxios.post('/pacientes/agregar-hospitalizacion', formData, config)
+      toastMixin.fire({
+        animation: true,
+        title: 'Hospitalización cargada en el sistema',
+        icon:'success'
+      });
+    } catch (error) {
+       return{
+        msg: error.response.data.msg,
+        error:true
+    }
+    }
+  };
+  const eliminarHospitalizaciones = async (id) => {
+    const confirmar = await Swal.fire({
+      title: '¿Estás seguro de eliminar esta hospitalización?',
+      text: "!No podrás revertir esto!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#18bca4',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Si, eliminarlo!'
+      }).then((result) => {
+      if (result.isConfirmed) {
+          return true;
+      } else {
+          return false;
+      }
+  })
+  if(confirmar) {
+    try {
+        const token = localStorage.getItem('token')
+        const config = {
+          headers:{
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`
+          }
+        }
+        const {data} = await clientAxios.delete(`/pacientes/eliminar-hospitalizacion/${id}`, config);
+        const hospitalizacionActualizado = hospitalizaciones.filter(hospitalizacionesState => hospitalizacionesState._id !== id);
+        setHospitalizaciones(hospitalizacionActualizado);
+        toastMixin.fire({
+            animation: true,
+            title: 'Eliminado correctamente'
+          });
+    } catch (error) {
+        console.log(error);
+    }
+}
+  
+  }
+
    const cuentaConUrgencias= async datos =>{
     try {
 const token = localStorage.getItem('token')
@@ -560,9 +639,110 @@ const config ={
       });
       
   } catch (error) {
-      console.log(error)
+    toastMixin.fire({
+      animation: true,
+      title: 'Formato no soportado',
+      icon:'error'
+    });
   }
-      }   
+      } 
+      
+      
+      const guardarExamen = async (e) => {
+
+        try {
+        const token = localStorage.getItem('token')
+        if(!token) return
+    
+        const config={
+          headers:{
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${token}`,
+        }
+        }
+        const formData = new FormData();
+        formData.append('nombre', nombre);
+        formData.append('enfermedadId', enfermedadId);
+        formData.append('documento', documento);
+    
+          const response = await clientAxios.post('/pacientes/agregar-examen', formData, config)
+          toastMixin.fire({
+            animation: true,
+            title: 'Examen subido al sistema',
+            icon:'success'
+          });
+        } catch (error) {
+           return{
+            msg: error.response.data.msg,
+            error:true
+        }
+        }
+      };
+      const eliminarExamenes = async (id) => {
+        const confirmar = await Swal.fire({
+          title: '¿Estás seguro de eliminar este examen?',
+          text: "!No podrás revertir esto!",
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#18bca4',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Si, eliminarlo!'
+          }).then((result) => {
+          if (result.isConfirmed) {
+              return true;
+          } else {
+              return false;
+          }
+      })
+      if(confirmar) {
+        try {
+            const token = localStorage.getItem('token')
+            const config = {
+              headers:{
+                  "Content-Type": "application/json",
+                  Authorization: `Bearer ${token}`
+              }
+            }
+            const {data} = await clientAxios.delete(`/pacientes/eliminar-examen/${id}`, config);
+            const examenActualizado = examenes.filter(examenesState => examenesState._id !== id);
+            setExamenes(examenActualizado);
+            toastMixin.fire({
+                animation: true,
+                title: 'Eliminado correctamente'
+              });
+        } catch (error) {
+            console.log(error);
+        }
+    }
+      
+      }
+      
+      const audit = async datos =>{
+        try {
+      const token = localStorage.getItem('token')
+      if(!token){
+        setCargando(false)
+        return
+      } 
+      const config ={
+        headers:{
+            "Content-Type":"application/json",
+            Authorization:`Bearer ${token}`
+        }
+      }
+        const url = `/pacientes/formulario-audit/${datos._id}`
+        const {data} = await clientAxios.put(url,datos,config)
+        toastMixin.fire({
+          animation: true,
+          title: 'Formulario AUDIT guardado',
+          icon:'success'
+        });
+      
+      } catch (error) {
+        console.log(error)
+      }
+      }
+
     return(
         <HistoriaCliContext.Provider
         value={{
@@ -616,7 +796,29 @@ const config ={
             setUrgencia,
             setUrgencias,
             actualizarIdentificacion,
-            actualizarGinecoobstetricos
+            actualizarGinecoobstetricos,
+            nombre,
+            setNombre,
+            documento,
+            setDocumento,
+            enfermedadId,
+            setEnfermedadId,
+            guardarExamen,
+            audit,
+            guardarHospitalizacion,
+            documentohospitalizacion,
+            setDocumentohospitalizacion,
+            eliminarHospitalizaciones,
+            nombreh,
+            setNombreh,
+            fechaingreso,
+            setFechaingreso,
+            fechasalida,
+            setFechasalida,
+            documentoh,
+            setDocumentoh,
+            eliminarExamenes
+
         }}
         >
             {children}

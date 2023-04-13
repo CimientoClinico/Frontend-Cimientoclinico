@@ -10,7 +10,7 @@ export const AdminProvider = ({children}) => {
     const [pagina, setPagina] = useState (1);
     const [porPagina, setPorPagina] = useState (7);
     const { authadmin} = AdminAuth()
-    const maximo = Math.round(admins.length / porPagina) 
+    const maximo = Math.ceil(admins.length / porPagina) 
     const toastMixin = Swal.mixin({
         toast: true,
         icon: 'success',

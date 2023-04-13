@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import clientAxios from "../../config/axios"
 import useHistoriaCli from "../../hooks/paciente/useHistoriaCli"
 import Alerta from "../Alerta"
+import { Link } from "react-router-dom"
 const FormularioHospitalizaciones = () => {
   const [alerta, setAlerta ]= useState({})
   const [nombre, setNombre] = useState('')
@@ -224,20 +225,14 @@ useEffect(()=>{
 <div className="md:flex  lg:gap-24 xs:gap-0 px-5 ">
       <div className="md:w-4/6 ml-4 md:mb-0   ">
         <label className="text-gray-700 font-bold text-md">Hospitalizaciones</label>
-      <input
-            type="text"
-            className="w-11/12 focus:outline-none focus:text-gray-900 mb-1 border border-gray-300 rounded-md placeholder-slate-400 p-2 "
-            placeholder="Ingresa tus hospitalizaciones previa"
-            value={nombre}
-            onChange={e => setNombre(e.target.value) } 
-          />
+
           </div>
      
       <div className="py-3 md:w-6/6  ">
         
-      <button className="text-white w-2/2 mx-auto max-w-sm rounded-md text-center bg-indigo-400 hover:bg-indigo-600 py-2 px-3 inline-flex items-center focus:outline-none md:float-right">
+      <Link to={"/paciente/eventos"} className="text-white w-2/2 mx-auto max-w-sm rounded-md text-center bg-indigo-400 hover:bg-indigo-600 py-2 px-3 inline-flex items-center focus:outline-none md:float-right">
          Agregar💾
-        </button>
+        </Link>
         
 
     </div>
@@ -249,8 +244,8 @@ useEffect(()=>{
     { hospitalizaciones.length ?
 
 <div className=" flex mt-2 flex-col lg:flex-row px-1">
-<h1 className=" text-gray-700  font-nunito pl-10 pr-1 "> Tus Hospitalizaciones:</h1>
-  <div className="  grid grid-cols-2 gap-1 ">{hospitalizaciones.map(hospi => (
+
+  <div className=" px-8  grid grid-cols-3 gap-1 ">{hospitalizaciones.map(hospi => (
     
     <div key={hospi._id} className="flex  ">
        <h2 className="text-gray-500 font-nunito text-sm mt-1"> {hospi.nombre},</h2> 

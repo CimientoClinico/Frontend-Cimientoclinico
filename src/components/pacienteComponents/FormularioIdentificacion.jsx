@@ -1,5 +1,4 @@
 import React from 'react'
-import useAuth from "../../hooks/useAuth"
 import { useState, useEffect } from 'react'
 import useHistoriaCli from "../../hooks/paciente/useHistoriaCli"
 const FormularioIdentificacion = () => {

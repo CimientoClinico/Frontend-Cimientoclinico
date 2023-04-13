@@ -12,7 +12,7 @@ export const PacienteProvider = ({children}) => {
     const { authadmin} = AdminAuth()
     const [porPagina, setPorPagina] = useState (7);
     
-    const maximo = Math.round(pacientes.length / porPagina) 
+    const maximo = Math.ceil(pacientes.length / porPagina) 
 
 
 

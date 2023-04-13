@@ -17,6 +17,7 @@ const FormularioVacuna = () => {
 
     }
  }, [vacuna])
+ 
  useEffect(() => {
   setPerfil3(auth)
 
@@ -143,8 +144,8 @@ useEffect(()=>{
 
 <form onSubmit={handleSubmit}>
 
-    <div className="md:flex  lg:gap-24 xs:gap-0 ">
-      <div className="md:w-4/6 ml-4 md:mb-0  ">
+    <div className="md:flex  lg:gap-2 xs:gap-0 ">
+      <div className="md:w-5/6 ml-4 md:mb-0  ">
       <input
             type="text"
             className="w-11/12 focus:outline-none focus:text-gray-900 bg-[#d5d5d5] border rounded-md placeholder-slate-600 p-2 "
@@ -154,9 +155,9 @@ useEffect(()=>{
           />
           </div>
      
-      <div className="md:w-6/6 ">
+      <div className="md:w-2/6 ">
         
-      <button className="text-white w-2/2 mx-auto max-w-sm rounded-md text-center bg-[#96858f] hover:bg-indigo-400 py-2 px-3 inline-flex items-center focus:outline-none md:float-right">
+      <button className="text-white w-2/2 mx-auto max-w-sm rounded-md text-center bg-[#96858f] hover:bg-indigo-400 py-2 px-3 inline-flex items-center focus:outline-none mr-2 float-right">
          Agregar💾
         </button>
         
@@ -191,7 +192,7 @@ useEffect(()=>{
 
 
 <div>     
-    <div className='  md:flex  lg:gap-24 xs:gap-0 '>
+    <div className='  md:flex  lg:gap-2 xs:gap-0 '>
       <div className='md:w-4/6 ml-4 md:mb-0 border  border-gray-200 rounded-md'>
       <h1 className='px-1 mt-1  font-nunito'> { auth.historiaclinica?.vacuna==='No' ? 'El paciente no tiene vacunas 💉':' '} </h1>    
       </div>

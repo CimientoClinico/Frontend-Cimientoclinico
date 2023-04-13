@@ -2,6 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import HeaderHistoria from "../../components/pacienteComponents/HeaderHistoria"
 import useAuth from "../../hooks/useAuth"
+import FormularioEventos from '../../components/pacienteComponents/FormularioEventos'
 const Eventos = () => {
   const {auth} =  useAuth()
   return (
@@ -25,6 +26,8 @@ const Eventos = () => {
   <h1 className="text-left xl:px-64 font-regular mt-4 font-nunito text-4xl dark:text-white shado"><span className="font-semibold"> {auth.nombres} {auth.apellidos}  </span> </h1>
        </div>
       <HeaderHistoria/>
+
+      <FormularioEventos/>
     
     </>
   )
