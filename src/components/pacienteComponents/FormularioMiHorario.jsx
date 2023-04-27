@@ -12,7 +12,7 @@ const FormularioMiHorario = () => {
 
   const handleSubmit = async e => {
     e.preventDefault()
- 
+
     await actualizarHorario(perfil)
   }
 
@@ -20,15 +20,19 @@ const FormularioMiHorario = () => {
 
   return (
     <>
-      <h1 className='text-lg font-semibold'>Registra tus horarios</h1>
-      <form onSubmit={handleSubmit}>
-        <div className="grid grid-cols-8 sm:grid-cols-4 lg:grid-cols-8 mr-20 gap-0 ">
-        <div className='col-span-4 xs:col-span-2 lg:col-span-1 border-t border-b border-l border-gray-700 '>
-  <div className='border-b border-gray-600'> 
-    <h1 className='font-nunito'>Lunes</h1>
-  </div>
-  <div className=" mt-3">
-    <div className="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+    <h1 className='text-2xl text-gray-600 text-center mt-2'>REGISTRA TUS HORARIOS DE PACIENTE</h1>
+    <form onSubmit={handleSubmit}>
+      <div class="px-3 md:lg:xl:px-40   border-b py-20 bg-opacity-10" >
+        <div >
+        <h1 className='bg-blue-200 text-2xl text-gray-600 font-regular cursor-pointer text-center'>¿Que días estas disponible durante la semana?</h1>
+        <div class=" bg-blue-200 grid grid-cols-3 gap-1">
+  <div class="p-4 flex flex-col items-center text-center group  cursor-pointer">
+    <div class="flex items-center p-6 space-x-12 bg-white rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-500">
+      <div class="flex py-3 px-4 rounded-lg text-gray-500 font-semibold cursor-pointer">
+        <span>Lunes?</span>
+      </div>
+      <div class="bg-yellow-400 py-3 px-5 text-white font-semibold rounded-lg hover:shadow-lg transition duration-3000 cursor-pointer">
+      <div className="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
       <input
         type="checkbox"
         name="lunes"
@@ -45,42 +49,17 @@ const FormularioMiHorario = () => {
         ${perfil.lunes ? 'bg-green-500' : 'bg-red-500 '} transition-all duration-200`}
       ></label>
     </div>
-    <label htmlFor="lunes" className="text-gray-700 font-medium mr-2">{perfil.lunes ? 
-      "Sí puedo" : "No puedo"}
-    </label>
-    {perfil.lunes && (
-      <div className="mt-2 ">
-        <label htmlFor="lunesinicio" className="text-gray-700 font-medium block mb-1">Desde:</label>
-        <input type="time" id="lunesinicio" name="lunesinicio" 
-        
-         value={perfil.lunesinicio || ''}
-         onChange={ e => setPerfil({
-           ...perfil,
-           [e.target.name] : e.target.value
-         })}
-         />
-         
-
-<label htmlFor="lunesfin" className="text-gray-700 font-medium block mb-1">Hasta:</label>
-        <input type="time" id="lunesfin" name="lunesfin" 
-         value={perfil.lunesfin || ''}
-         onChange={ e => setPerfil({
-           ...perfil,
-           [e.target.name] : e.target.value
-         })}
-         />
       </div>
-      
-    )}
+    </div>
   </div>
-</div>
 
-<div className='col-span-4 xs:col-span-2 lg:col-span-1 border border-gray-700 '>
-  <div className='border-b border-gray-600'> 
-    <h1 className='font-nunito'>Martes</h1>
-  </div>
-  <div className=" mt-3">
-    <div className="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+  <div class="p-4 flex flex-col items-center text-center group  cursor-pointer">
+    <div class="flex items-center p-6 space-x-12 bg-white rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-500">
+      <div class="flex py-3 px-4 rounded-lg text-gray-500 font-semibold cursor-pointer">
+        <span>Martes?</span>
+      </div>
+      <div class="bg-yellow-400 py-3 px-5 text-white font-semibold rounded-lg hover:shadow-lg transition duration-3000 cursor-pointer">
+      <div className="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
       <input
         type="checkbox"
         name="martes"
@@ -97,41 +76,16 @@ const FormularioMiHorario = () => {
         ${perfil.martes ? 'bg-green-500' : 'bg-red-500 '} transition-all duration-200`}
       ></label>
     </div>
-    <label htmlFor="martes" className="text-gray-700 font-medium mr-2">{perfil.martes ? 
-      "Sí puedo" : "No puedo"}
-    </label>
-    {perfil.martes && (
-      <div className="mt-2 ">
-        <label htmlFor="martesinicio" className="text-gray-700 font-medium block mb-1">Desde:</label>
-        <input type="time" id="martesinicio" name="martesinicio" 
-         value={perfil.martesinicio || ''}
-         onChange={ e => setPerfil({
-           ...perfil,
-           [e.target.name] : e.target.value
-         })}
-         />
-
-<label htmlFor="martesfin" className="text-gray-700 font-medium block mb-1">Hasta:</label>
-        <input type="time" id="lunesfin" name="martesfin" 
-         value={perfil.martesfin || ''}
-         onChange={ e => setPerfil({
-           ...perfil,
-           [e.target.name] : e.target.value
-         })}
-         />
       </div>
-      
-    )}
+    </div>
   </div>
-</div>
-
-
-<div className='col-span-4 xs:col-span-2 lg:col-span-1 border-t border-b border-l border-gray-700 '>
-  <div className='border-b border-gray-600'> 
-    <h1 className='font-nunito'>Miercoles</h1>
-  </div>
-  <div className=" mt-3">
-    <div className="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+  <div class="p-4 flex flex-col items-center text-center group  cursor-pointer">
+    <div class="flex items-center p-6 space-x-12 bg-white rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-500">
+      <div class="flex py-3 px-4 rounded-lg text-gray-500 font-semibold cursor-pointer">
+        <span>Miercoles?</span>
+      </div>
+      <div class="bg-yellow-400 py-3 px-5 text-white font-semibold rounded-lg hover:shadow-lg transition duration-3000 cursor-pointer">
+      <div className="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
       <input
         type="checkbox"
         name="miercoles"
@@ -148,42 +102,16 @@ const FormularioMiHorario = () => {
         ${perfil.miercoles ? 'bg-green-500' : 'bg-red-500 '} transition-all duration-200`}
       ></label>
     </div>
-    <label htmlFor="miercoles" className="text-gray-700 font-medium mr-2">{perfil.miercoles ? 
-      "Sí puedo" : "No puedo"}
-    </label>
-    {perfil.miercoles && (
-      <div className="mt-2 ">
-        <label htmlFor="miercolesinicio" className="text-gray-700 font-medium block mb-1">Desde:</label>
-        <input type="time" id="miercolesinicio" name="miercolesinicio" 
-         value={perfil.miercolesinicio || ''}
-         onChange={ e => setPerfil({
-           ...perfil,
-           [e.target.name] : e.target.value
-         })}
-         />
-
-<label htmlFor="miercolesfin" className="text-gray-700 font-medium block mb-1">Hasta:</label>
-        <input type="time" id="lunesfin" name="miercolesfin" 
-         value={perfil.miercolesfin || ''}
-         onChange={ e => setPerfil({
-           ...perfil,
-           [e.target.name] : e.target.value
-         })}
-         />
       </div>
-      
-    )}
+    </div>
   </div>
-</div>
-
-
-
-<div className='col-span-4 xs:col-span-2 lg:col-span-1 border border-gray-700 '>
-  <div className='border-b border-gray-600'> 
-    <h1 className='font-nunito'>Jueves</h1>
-  </div>
-  <div className=" mt-3">
-    <div className="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+  <div class="p-4 flex flex-col items-center text-center group  cursor-pointer">
+    <div class="flex items-center p-6 space-x-12 bg-white rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-500">
+      <div class="flex py-3 px-4 rounded-lg text-gray-500 font-semibold cursor-pointer">
+        <span>Jueves?</span>
+      </div>
+      <div class="bg-yellow-400 py-3 px-5 text-white font-semibold rounded-lg hover:shadow-lg transition duration-3000 cursor-pointer">
+      <div className="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
       <input
         type="checkbox"
         name="jueves"
@@ -200,42 +128,16 @@ const FormularioMiHorario = () => {
         ${perfil.jueves ? 'bg-green-500' : 'bg-red-500 '} transition-all duration-200`}
       ></label>
     </div>
-    <label htmlFor="jueves" className="text-gray-700 font-medium mr-2">{perfil.jueves ? 
-      "Sí puedo" : "No puedo"}
-    </label>
-    {perfil.jueves && (
-      <div className="mt-2 ">
-        <label htmlFor="juevesinicio" className="text-gray-700 font-medium block mb-1">Desde:</label>
-        <input type="time" id="juevesinicio" name="juevesinicio" 
-         value={perfil.juevesinicio || ''}
-         onChange={ e => setPerfil({
-           ...perfil,
-           [e.target.name] : e.target.value
-         })}
-         />
-
-<label htmlFor="juevesfin" className="text-gray-700 font-medium block mb-1">Hasta:</label>
-        <input type="time" id="lunesfin" name="juevesfin" 
-         value={perfil.juevesfin || ''}
-         onChange={ e => setPerfil({
-           ...perfil,
-           [e.target.name] : e.target.value
-         })}
-         />
       </div>
-      
-    )}
+    </div>
   </div>
-</div>
-
-
-
-<div className='col-span-4 xs:col-span-2 lg:col-span-1 border-t border-b border-l border-gray-700 '>
-  <div className='border-b border-gray-600'> 
-    <h1 className='font-nunito'>Viernes</h1>
-  </div>
-  <div className=" mt-3">
-    <div className="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+  <div class="p-4 flex flex-col items-center text-center group  cursor-pointer">
+    <div class="flex items-center p-6 space-x-12 bg-white rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-500">
+      <div class="flex py-3 px-4 rounded-lg text-gray-500 font-semibold cursor-pointer">
+        <span>Viernes?</span>
+      </div>
+      <div class="bg-yellow-400 py-3 px-5 text-white font-semibold rounded-lg hover:shadow-lg transition duration-3000 cursor-pointer">
+      <div className="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
       <input
         type="checkbox"
         name="viernes"
@@ -252,43 +154,53 @@ const FormularioMiHorario = () => {
         ${perfil.viernes ? 'bg-green-500' : 'bg-red-500 '} transition-all duration-200`}
       ></label>
     </div>
-    <label htmlFor="viernes" className="text-gray-700 font-medium mr-2">{perfil.viernes ? 
-      "Sí puedo" : "No puedo"}
-    </label>
-    {perfil.viernes && (
-      <div className="mt-2 ">
-        <label htmlFor="viernesinicio" className="text-gray-700 font-medium block mb-1">Desde:</label>
-        <input type="time" id="viernesinicio" name="viernesinicio" 
-         value={perfil.viernesinicio || ''}
-         onChange={ e => setPerfil({
-           ...perfil,
-           [e.target.name] : e.target.value
-         })}
-         />
-
-<label htmlFor="viernesfin" className="text-gray-700 font-medium block mb-1">Hasta:</label>
-        <input type="time" id="viernesfin" name="viernesfin" 
-         value={perfil.viernesfin || ''}
-         onChange={ e => setPerfil({
-           ...perfil,
-           [e.target.name] : e.target.value
-         })}
-         />
       </div>
-      
-    )}
+    </div>
   </div>
+  <div className='p-4  flex flex-col items-center text-center group  cursor-pointer'>
+  <div class=" bg-white rounded-lg shadow-lg hover:shadow-xl transition duration-500 cursor-pointer">
+  <div class=" px-4 bg-white rounded-t-lg text-gray-500 font-semibold cursor-pointer">
+  <h1 className='text-lg'>Tu Horario para la semana</h1>
+  </div>
+  <div class="grid grid-cols-2 gap-2 bg-white rounded-b-lg">
+    <div class="flex items-center justify-center py-2 px-4 gap-1 text-gray-500 font-semibold cursor-pointer">
+      <h1 className='text-sm'>Inicio: </h1>
+      <input type="time" id="horasemanainicio" name="horasemanainicio"
+      className='border rounded-md  border-blue-200' 
+         value={perfil.horasemanainicio || ''}
+         onChange={ e => setPerfil({
+           ...perfil,
+           [e.target.name] : e.target.value
+         })}
+         />
+    </div>
+    <div class="flex items-center justify-center py-2 px-2 gap-1 text-gray-500 font-semibold cursor-pointer">
+    <h1 className='text-sm'>Fin: </h1>
+    <input type="time" id="horasemanafin" name="horasemanafin" 
+    className='border rounded-md  border-blue-200 '
+         value={perfil.horasemanafin|| ''}
+         onChange={ e => setPerfil({
+           ...perfil,
+           [e.target.name] : e.target.value
+         })}
+         />
+    </div>
+  </div>
+
 </div>
-
-
-
-
-<div className='col-span-4 xs:col-span-2 lg:col-span-1 border border-gray-700 '>
-  <div className='border-b border-gray-600'> 
-    <h1 className='font-nunito'>Sábado</h1>
-  </div>
-  <div className=" mt-3">
-    <div className="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+</div>
+</div>
+    
+<div>
+  <h1 className='bg-red-200 text-2xl text-gray-600 font-regular cursor-pointer text-center'>¿Que días estas disponible los fines de semana?</h1>
+<div class=" bg-red-200 grid grid-cols-3 gap-1">
+  <div class="p-4 flex flex-col items-center text-center group  cursor-pointer">
+    <div class="flex items-center p-6 space-x-12 bg-white rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-500">
+      <div class="flex py-3 px-4 rounded-lg text-gray-500 font-semibold cursor-pointer">
+        <span>Sábado?</span>
+      </div>
+      <div class="bg-yellow-400 py-3 px-5 text-white font-semibold rounded-lg hover:shadow-lg transition duration-3000 cursor-pointer">
+      <div className="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
       <input
         type="checkbox"
         name="sabado"
@@ -305,42 +217,17 @@ const FormularioMiHorario = () => {
         ${perfil.sabado ? 'bg-green-500' : 'bg-red-500 '} transition-all duration-200`}
       ></label>
     </div>
-    <label htmlFor="sabado" className="text-gray-700 font-medium mr-2">{perfil.sabado ? 
-      "Sí puedo" : "No puedo"}
-    </label>
-    {perfil.sabado && (
-      <div className="mt-2 ">
-        <label htmlFor="sabadoinicio" className="text-gray-700 font-medium block mb-1">Desde:</label>
-        <input type="time" id="sabadoinicio" name="sabadoinicio" 
-         value={perfil.sabadoinicio || ''}
-         onChange={ e => setPerfil({
-           ...perfil,
-           [e.target.name] : e.target.value
-         })}
-         />
-
-<label htmlFor="sabadofin" className="text-gray-700 font-medium block mb-1">Hasta:</label>
-        <input type="time" id="lunesfin" name="sabadofin" 
-         value={perfil.sabadofin || ''}
-         onChange={ e => setPerfil({
-           ...perfil,
-           [e.target.name] : e.target.value
-         })}
-         />
       </div>
-      
-    )}
+    </div>
   </div>
-</div>
 
-
-
-<div className='col-span-4 xs:col-span-2 lg:col-span-1 border border-gray-700 '>
-  <div className='border-b border-gray-600'> 
-    <h1 className='font-nunito'>Domingo</h1>
-  </div>
-  <div className=" mt-3">
-    <div className="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+  <div class="p-4 flex flex-col items-center text-center group  cursor-pointer">
+    <div class="flex items-center p-6 space-x-6 bg-white rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-500">
+      <div class="flex py-3 px-4 rounded-lg text-gray-500 font-semibold cursor-pointer">
+        <span>Domingo?</span>
+      </div>
+      <div class="bg-yellow-400 py-3 px-5 text-white font-semibold rounded-lg hover:shadow-lg transition duration-3000 cursor-pointer">
+      <div className="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
       <input
         type="checkbox"
         name="domingo"
@@ -357,47 +244,54 @@ const FormularioMiHorario = () => {
         ${perfil.domingo ? 'bg-green-500' : 'bg-red-500 '} transition-all duration-200`}
       ></label>
     </div>
-    <label htmlFor="domingo" className="text-gray-700 font-medium mr-2">{perfil.domingo ? 
-      "Sí puedo" : "No puedo"}
-    </label>
-    {perfil.domingo && (
-      <div className="mt-2 ">
-        <label htmlFor="domingoinicio" className="text-gray-700 font-medium block mb-1">Desde:</label>
-        <input type="time" id="domingoinicio" name="domingoinicio" 
-         value={perfil.domingoinicio || ''}
-         onChange={ e => setPerfil({
-           ...perfil,
-           [e.target.name] : e.target.value
-         })}
-         />
-
-<label htmlFor="domingofin" className="text-gray-700 font-medium block mb-1">Hasta:</label>
-        <input type="time" id="lunesfin" name="domingofin" 
-         value={perfil.domingofin || ''}
-         onChange={ e => setPerfil({
-           ...perfil,
-           [e.target.name] : e.target.value
-         })}
-         />
       </div>
-      
-    )}
+    </div>
   </div>
+  <div className='p-4  flex flex-col items-center text-center group  cursor-pointer'>
+  <div class=" bg-white rounded-lg shadow-lg hover:shadow-xl transition duration-500 cursor-pointer">
+  <div class=" px-4 bg-white rounded-t-lg text-gray-500 font-semibold cursor-pointer">
+  <h1 className='text-lg'>Tu Horario para el fin de semana </h1>
+  </div>
+  <div class="grid grid-cols-2 gap-2 bg-white rounded-b-lg">
+    <div class="flex items-center justify-center py-2 px-4 gap-1 text-gray-500 font-semibold cursor-pointer">
+      <h1 className='text-sm'>Inicio: </h1>
+      <input type="time" id="horafindesemanainicio" name="horafindesemanainicio" 
+         className='border rounded-md  border-red-200'
+         value={perfil.horafindesemanainicio || ''}
+         onChange={ e => setPerfil({
+           ...perfil,
+           [e.target.name] : e.target.value
+         })}
+         />
+    </div>
+    <div class="flex items-center justify-center py-2 px-2 gap-1 text-gray-500 font-semibold cursor-pointer">
+    <h1 className='text-sm'>Fin: {''} </h1>
+    <input type="time" id="horafindesemanafin" name="horafindesemanafin" 
+    className='border rounded-md  border-red-200'
+         value={perfil.horafindesemanafin || ''}
+         onChange={ e => setPerfil({
+           ...perfil,
+           [e.target.name] : e.target.value
+         })}
+         />
+    </div>
+  </div>
+
+</div>
 </div>
 
+</div>
+</div>
+  </div>
+  <div class="w-full   bg-indigo-600 shadow-xl shadow-indigo-200 py-10 px-20 flex justify-between items-center">
+  <p class=" text-white"> <span class="text-4xl font-medium">Tus horarios son importantes...</span>  <span class="text-lg">Con esto los profesionales veran tu disponibilidad! </span></p>
+  <input type="submit" value="GUARDAR TUS HORARIOS"class="px-5 py-3  font-medium text-slate-700 shadow-xl  hover:bg-white duration-150  bg-yellow-400"/>
+  </div>
 
-
-
-          <div className='col-span-4 sm:col-span-2 lg:col-span-1 ml-2 mt-10 border-gray-700 '>
-          <input type="submit" value="Guardar Horario" className="mt-4 px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white font-regular text-md rounded cursor-pointer" />
-          </div>
-        </div>
- 
-      </form>
-
+    </div>
+    </form>
     </>
   )
 }
 
 export default FormularioMiHorario;
-

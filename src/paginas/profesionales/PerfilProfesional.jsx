@@ -116,7 +116,7 @@ const cambiarContraseña = async e =>{
 : 
 
 <div className="">
-                  { authpro.image === undefined ? <img src={sinfoto}/> :<Image cloudName="dde62spnz" publicId={authpro.image.public_id}>
+                  { authpro.image === undefined ? <img src={sinfoto}/> :<Image cloudName="dde62spnz" width="150" publicId={authpro.image.public_id}>
                  </Image> }
 
    </div>}

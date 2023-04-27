@@ -1,17 +1,54 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { HiMenuAlt3 } from "react-icons/hi";
-import { MdHome,  MdVoiceChat, MdAccountCircle,MdFollowTheSigns, MdDarkMode } from "react-icons/md";
+import { MdHome,  MdVoiceChat, MdAccountCircle,MdFollowTheSigns, MdDarkMode,MdContentPaste } from "react-icons/md";
 import{BsFillDoorOpenFill} from "react-icons/bs";
 import { Link } from "react-router-dom";
 import proAuth from "../../hooks/proAuth"
+import clientAxios from "../../config/axios";
 const Sidebar = () => {
-  const {cerrarSesion, handleThemeSwitch} =  proAuth()
+  const {cerrarSesion, handleThemeSwitch, authpro} =  proAuth()
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [consultas, setConsultas] = useState([]);
+  const handleNotificationClick = () => {
+    setShowNotifications(true);
+    setOpen(true);
+  };
+
+  const handleCloseNotifications = () => {
+    setShowNotifications(false);
+  };
+  useEffect(()=>{
+    const obtenerMotivosConsulta = async() =>{
+      try {
+        const tokenPro = localStorage.getItem('tokenPro')
+        if(!tokenPro) return
+  
+        const config={
+          headers:{
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${tokenPro}`
+        }
+        }
+        const { data } = await clientAxios.get('/profesional/obtener-lista-consultas',config)
+         setConsultas(data)
+      } catch (error) {
+        console.log(error)
+      }
+  
+    }
+    obtenerMotivosConsulta()      
+  },[consultas])
+  const consultaspro =  consultas.filter(con => con.profesional._id === authpro._id && con.leido===false) 
+  const numNotificaciones= consultaspro.length
   const menus = [
     { name: "Inicio", link: "/profesional", icon: MdHome },
-    { name: "Consultas", link: "/profesional/consultas", icon: MdVoiceChat },
+    { name: `Tus Consultas` , link: "/profesional/consultas", icon: MdVoiceChat},
+    { name: "Motivos de consulta", link: "/profesional/lista-motivos-consulta", icon: MdContentPaste },
     { name: "Perfil", link: "/profesional/perfil-profesional", icon: MdAccountCircle },
     { name: "Portal Paciente", link: "/paciente", icon: MdFollowTheSigns, margin:10 },
   ];
+
+
   const menus2 = [
     { name: "Cerrar Sesión", boton: "Cerrar sesión", icon: BsFillDoorOpenFill, },
     
@@ -22,9 +59,10 @@ const Sidebar = () => {
 
   ];
   const [open, setOpen] = useState(true);
+
   return (
   
-        <aside>
+      <aside>
       <div
         className={`bg-blue-500 min-h-screen dark:bg-slate-800 ${
           open ? "w-72" : "w-16"
@@ -56,101 +94,128 @@ const Sidebar = () => {
          </div> }
      
         <div className="mt-4 flex flex-col gap-4 relative">
-          {menus?.map((menu, i) => (
-            <Link
-              to={menu?.link}
-              key={i}
-              className={` ${
-                menu?.margin && "mt-5"
-              } group flex items-center text-sm  gap-3.5 font-medium p-2 hover:bg-gray-800 rounded-md`}
-            >
-              <div>{React.createElement(menu?.icon, { size: "20" })}</div>
-              <h2
-                style={{
-                  transitionDelay: `${i + 3}00ms`,
-                }}
-                className={`whitespace-pre duration-500 ${
-                  !open && "opacity-0 translate-x-28 overflow-hidden"
-                }`}
-              >
-                {menu?.name}
-              </h2>
-              <h2
-                className={`${
-                  open && "hidden"
-                } absolute left-48 bg-white font-semibold whitespace-pre text-gray-900 rounded-md drop-shadow-lg px-0 py-0 w-0 overflow-hidden group-hover:px-2 group-hover:py-1 group-hover:left-14 group-hover:duration-300 group-hover:w-fit  `}
-              >
-                {menu?.name}
-              </h2>
-          
-            </Link>
 
-            
-          ))}
+
+        {menus?.map((menu, i) => (
+  <Link to={menu.link} key={i}>
+    <button onClick={handleNotificationClick}
+      className={` ${
+        menu?.margin && "mt-5"
+      } group flex items-center text-sm  gap-3.5 font-medium p-2 rounded-md ${open ? "hover:bg-gray-800" : "hover:bg-opacity-0"}`}
+    >
+      {menu?.link === "/profesional/consultas" ? (
+        <div>{React.createElement(menu?.icon, { size: "20" })}
+          {!open && numNotificaciones > 0 && (
+            <div className="bg-red-500 text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center ml-2">
+              {numNotificaciones}
+            </div>
+          )}
+        </div>
+      ) : (
+        <div>{React.createElement(menu?.icon, { size: "20" })}</div>
+      )}
+
+      <h2
+        style={{
+          transitionDelay: `${i + 3}00ms`,
+        }}
+        className={`whitespace-pre duration-500 ${
+          !open && "opacity-0 translate-x-28 overflow-hidden"
+        }`}
+      >
+        {menu?.name}
+      </h2>
+
+      <h2
+        className={`${
+          open && "hidden"
+        } absolute left-48 bg-white font-semibold whitespace-pre text-gray-900 rounded-md drop-shadow-lg px-0 py-0 w-0 overflow-hidden group-hover:px-2 group-hover:py-1 group-hover:left-14 group-hover:duration-300 group-hover:w-fit  `}
+      >
+        {menu?.name}
+      </h2>
+
+      {open && menu?.name && menu?.name !== "Tus Consultas" && (
+        <h2
+          className={`${
+            open && "hidden"
+          } absolute left-48 bg-white font-semibold whitespace-pre text-gray-900 rounded-md drop-shadow-lg px-0 py-0 w-0 overflow-hidden group-hover:px-2 group-hover:py-1 group-hover:left-14 group-hover:duration-300 group-hover:w-fit  `}
+        >
+          {menu?.name}
+        </h2>
+      )}
+
+      {open && menu?.name === "Tus Consultas" && numNotificaciones > 0 && (
+        <div className="bg-red-500 rounded-full px-2 py-0.5 ">
+          {numNotificaciones}
+        </div>
+      )}
+    </button>
+  </Link>
+))}
+
+
+
+
 
 {menus3?.map((menu3, i) => (
-            <button onClick={handleThemeSwitch}
-              to={menu3.boton}
-              key={i}
-              className={` ${
-                menu3?.margin && "mt-5"
-              } group flex items-center text-sm  gap-3.5 font-medium p-2 hover:bg-gray-800 rounded-md  `}
-            >
-              <div>{React.createElement(menu3?.icon, { size: "20" })}</div>
-              <h2
-                style={{
-                  transitionDelay: `${i + 3}00ms`,
-                }}
-                className={`whitespace-pre duration-500 ${
-                  !open && "opacity-0 translate-x-28 overflow-hidden"
-                }`}
-              >
-                {menu3?.name}
-              </h2>
-              <h2
-                className={`${
-                  open && "hidden"
-                } absolute left-48 bg-white font-semibold whitespace-pre text-gray-900 rounded-md drop-shadow-lg px-0 py-0 w-0 overflow-hidden group-hover:px-2 group-hover:py-1 group-hover:left-14 group-hover:duration-300 group-hover:w-fit  `}
-              >
-                {menu3?.name}
-              </h2>
-          
-            </button>
-            
-            
-          ))}
+  <button onClick={handleThemeSwitch}
+    to={menu3.boton}
+    key={i}
+    className={` ${
+      menu3?.margin && "mt-5"
+    } group flex items-center text-sm gap-3.5 font-medium p-2 hover:bg-gray-800 rounded-md ${
+      open ? "" : "hover:bg-opacity-0"
+    }`}
+  >
+    <div>{React.createElement(menu3?.icon, { size: "20" })}</div>
+    <h2
+      style={{
+        transitionDelay: `${i + 3}00ms`,
+      }}
+      className={`whitespace-pre duration-500 ${
+        !open && "opacity-0 translate-x-28 overflow-hidden"
+      }`}
+    >
+      {menu3?.name}
+    </h2>
+    <h2
+      className={`${
+        open ? "hidden" : "block"
+      } absolute left-48 bg-white font-semibold whitespace-pre text-gray-900 rounded-md drop-shadow-lg px-0 py-0 w-0 overflow-hidden group-hover:px-2 group-hover:py-1 group-hover:left-14 group-hover:duration-300 group-hover:w-fit`}
+    >
+      {menu3?.name}
+    </h2>
+  </button>
+))}
 
 {menus2?.map((menu2, i) => (
-            <button onClick={cerrarSesion}
-              to={menu2.boton}
-              key={i}
-              className={` ${
-                menu2?.margin && "mt-5"
-              } group flex items-center text-sm  gap-3.5 font-medium p-2 hover:bg-gray-800 rounded-md`}
-            >
-              <div>{React.createElement(menu2?.icon, { size: "20" })}</div>
-              <h2
-                style={{
-                  transitionDelay: `${i + 3}00ms`,
-                }}
-                className={`whitespace-pre duration-500 ${
-                  !open && "opacity-0 translate-x-28 overflow-hidden"
-                }`}
-              >
-                {menu2?.name}
-              </h2>
-              <h2
-                className={`${
-                  open && "hidden"
-                } absolute left-48 bg-white font-semibold whitespace-pre text-gray-900 rounded-md drop-shadow-lg px-0 py-0 w-0 overflow-hidden group-hover:px-2 group-hover:py-1 group-hover:left-14 group-hover:duration-300 group-hover:w-fit  `}
-              >
-                {menu2?.name}
-              </h2>
-          
-            </button>
-            
-            
-          ))}
+  <button onClick={cerrarSesion}
+    to={menu2.boton}
+    key={i}
+    className={` ${
+      menu2?.margin && "mt-5"
+    } group flex items-center text-sm gap-3.5 font-medium p-2 rounded-md ${open ? "hover:bg-gray-800" : "hover:bg-opacity-0"}`}
+  >
+    <div>{React.createElement(menu2?.icon, { size: "20" })}</div>
+    <h2
+      style={{
+        transitionDelay: `${i + 3}00ms`,
+      }}
+      className={`whitespace-pre duration-500 ${
+        !open && "opacity-0 translate-x-28 overflow-hidden"
+      }`}
+    >
+      {menu2?.name}
+    </h2>
+    <h2
+      className={`${
+        open && "hidden"
+      } absolute left-48 bg-white font-semibold whitespace-pre text-gray-900 rounded-md drop-shadow-lg px-0 py-0 w-0 overflow-hidden group-hover:px-2 group-hover:py-1 group-hover:left-14 group-hover:duration-300 group-hover:w-fit  `}
+    >
+      {menu2?.name}
+    </h2>
+  </button>
+))}
           
           
         </div>

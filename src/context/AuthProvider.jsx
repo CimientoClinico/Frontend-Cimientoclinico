@@ -257,6 +257,10 @@ const actualizarEstilodevida = async datos =>{
       const motivosActualizados= motivos.map( motivoState => motivoState._id===
         data._id ? data : motivoState)
         setMotivos(motivosActualizados)
+        toastMixin.fire({
+            animation: true,
+            title: 'Motivo de consulta actualizado'
+          });
      } catch (error) {
       console.log(error)
      }
@@ -267,11 +271,7 @@ const actualizarEstilodevida = async datos =>{
         const{ data }= await clientAxios.post('/pacientes/agregar-motivodeconsulta',motivo,config)
         const{ createdAt, updatedAt, __v, ...motivoAlmacenado} = data
         setMotivos ([motivoAlmacenado, ...motivos])
-        toastMixin.fire({
-            animation: true,
-            title: 'Motivo de consulta publicado',
-            icon:'success'
-          });
+        Swal.fire('¡Listo!', 'El motivo fue publicado y será revisado si esta visible', 'success');
     
     } catch (error) {
       console.log(error.response.data.msg)

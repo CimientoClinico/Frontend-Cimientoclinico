@@ -15,6 +15,7 @@ const FormularioMotivoConsulta = () => {
     const { motivo,guardarMotivoConsulta,motivos, setMotivos, setEdicionMotivo,eliminarMotivoConsulta} =  useAuth()
     const [pagina, setPagina] = useState (1);
    const [porPagina, setPorPagina] = useState (3);
+   const [isLoading, setIsLoading] = useState(true);
 
     
     const maximo = Math.ceil(motivos.length / porPagina) 
@@ -51,6 +52,7 @@ const FormularioMotivoConsulta = () => {
             }
             const { data } = await clientAxios.get('/pacientes/obtener-motivodeconsultas',config)
             setMotivos(data)
+            setIsLoading(false);
           } catch (error) {
             console.log(error)
           }
@@ -105,11 +107,12 @@ const FormularioMotivoConsulta = () => {
             e.preventDefault();
             if([titulo, descripcion].includes('')){
                 setAlerta({msg: 'Hay campos vacíos', error: true})
-                setTimeout(()=> setAlerta({}),5000)
+                setTimeout(()=> setAlerta({}),4000)
                 return;
             }
             if (!consentimiento) {
                 setAlerta({msg: 'Acepte el consentimiento antes de publicar su caso', error: true})
+                setTimeout(()=> setAlerta({}),4000)
                 return;
               }
             setAlerta({})
@@ -198,6 +201,24 @@ const FormularioMotivoConsulta = () => {
   </form>
 </div>
 
+{isLoading ?
+  <div className="sk-circle">
+  <div className="sk-circle1 sk-child"></div>
+  <div className="sk-circle2 sk-child"></div>
+  <div className="sk-circle3 sk-child"></div>
+  <div className="sk-circle4 sk-child"></div>
+  <div className="sk-circle5 sk-child"></div>
+  <div className="sk-circle6 sk-child"></div>
+  <div className="sk-circle7 sk-child"></div>
+  <div className="sk-circle8 sk-child"></div>
+  <div className="sk-circle9 sk-child"></div>
+  <div className="sk-circle10 sk-child"></div>
+  <div className="sk-circle11 sk-child"></div>
+  <div className="sk-circle12 sk-child"></div>
+</div>
+  
+    : 
+
   <div className="w-3/4 p-10 shadow-lg">
   { motivos.length?
   <div className="flex flex-col px-10">
@@ -249,6 +270,7 @@ const FormularioMotivoConsulta = () => {
       </div>
       </div>:<h1 className="font-semibold text-xl">Aquí se publicaran tus motivos de consultas</h1> }
   </div>
+    }
 </div>
 
     </>

@@ -1,46 +1,371 @@
-import { Outlet } from 'react-router-dom'
-const HomeLayout = () => {
-  return (
-    <>
-    <header>
-    <nav className="bg-white shadow-lg border-gray-200 px-4 lg:px-6 py-3.5 dark:bg-gray-800 ">
-        <div className="flex flex-wrap justify-between items-center mx-auto max-w-screen-xl">
-            <a href="" id="textologo" className="flex items-center"> <span className="self-center text-2xl font-bold whitespace-nowrap ">Cimiento Clínico</span>
-            </a>
-            <div className="flex items-center lg:order-2">
-                <a id="primario" href="#" className="text-white font-nunito hover:bg-primary-800 focus:ring-4 focus:ring-primary-300 font-normal rounded-xl text-sm px-4 lg:px-5 py-2 lg:py-2.5 mr-2 dark:bg-primary-600 dark:hover:bg-primary-700 focus:outline-none dark:focus:ring-primary-800">Ingresar</a>
-                <button data-collapse-toggle="mobile-menu-2" type="button" className="inline-flex items-center p-2 ml-1 text-sm text-gray-500 rounded-lg lg:hidden hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-gray-200 dark:text-gray-400 dark:hover:bg-gray-700 dark:focus:ring-gray-600" aria-controls="mobile-menu-2" aria-expanded="false">
-                    <span className="sr-only">Open main menu</span>
-                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"></path></svg>
-                    <svg className="hidden w-6 h-6" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg>
-                </button>
-            </div>
-            <div className="hidden justify-between items-center w-full lg:flex lg:w-auto lg:order-1" id="mobile-menu-2">
-                <ul className="flex flex-col mt-4 font-medium lg:flex-row lg:space-x-12 lg:mt-0">
-                    <li>
-                    <a href="#" className=" font-nunito block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700">Reservas</a>
-                    </li>
-                    <li>
-                        <a href="#" className=" font-nunito block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent font-normal lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700">Ficha Médica</a>
-                    </li>
-                    <li>
-                        <a href="#" className=" font-nunito block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent font-normal lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700">Nosotros</a>
-                    </li>
-                    <li>
-                        <a href="#" className=" font-nunito block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent font-normal  lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700">Preguntas frecuentes</a>
-                    </li>
-                    <li>
-                        <a href="#" className=" font-nunito block py-2 pr-4 pl-3 text-gray-700 border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent font-normal lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700">Contacto</a>
-                    </li>
-                </ul>
-            </div>
+      <h1 className='text-lg font-semibold'>Registra tus horarios</h1>
+      <form onSubmit={handleSubmit}>
+        <div className="grid grid-cols-8 sm:grid-cols-4 lg:grid-cols-8 mr-20 gap-0 ">
+        <div className='col-span-4 xs:col-span-2 lg:col-span-1 border-t border-b border-l border-gray-700 '>
+  <div className='border-b border-gray-600'> 
+    <h1 className='font-nunito'>Lunes</h1>
+  </div>
+  <div className=" mt-3">
+    <div className="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+      <input
+        type="checkbox"
+        name="lunes"
+        id="lunes"
+        className="form-switch absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"
+        checked={perfil.lunes || false}
+        onChange={ e => setPerfil({
+          ...perfil,
+          [e.target.name] : e.target.checked
+        })} />
+      <label
+        htmlFor="lunes"
+        className={`toggle-label block overflow-hidden h-6 rounded-full cursor-pointer 
+        ${perfil.lunes ? 'bg-green-500' : 'bg-red-500 '} transition-all duration-200`}
+      ></label>
+    </div>
+    <label htmlFor="lunes" className="text-gray-700 font-medium mr-2">{perfil.lunes ? 
+      "Sí puedo" : "No puedo"}
+    </label>
+    {perfil.lunes && (
+      <div className="mt-2 ">
+        <label htmlFor="lunesinicio" className="text-gray-700 font-medium block mb-1">Desde:</label>
+        <input type="time" id="lunesinicio" name="lunesinicio" 
+
+         value={perfil.lunesinicio || ''}
+         onChange={ e => setPerfil({
+           ...perfil,
+           [e.target.name] : e.target.value
+         })}
+         />
+
+
+<label htmlFor="lunesfin" className="text-gray-700 font-medium block mb-1">Hasta:</label>
+        <input type="time" id="lunesfin" name="lunesfin" 
+         value={perfil.lunesfin || ''}
+         onChange={ e => setPerfil({
+           ...perfil,
+           [e.target.name] : e.target.value
+         })}
+         />
+      </div>
+
+    )}
+  </div>
+</div>
+
+<div className='col-span-4 xs:col-span-2 lg:col-span-1 border border-gray-700 '>
+  <div className='border-b border-gray-600'> 
+    <h1 className='font-nunito'>Martes</h1>
+  </div>
+  <div className=" mt-3">
+    <div className="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+      <input
+        type="checkbox"
+        name="martes"
+        id="martes"
+        className="form-switch absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"
+        checked={perfil.martes || false}
+        onChange={ e => setPerfil({
+          ...perfil,
+          [e.target.name] : e.target.checked
+        })} />
+      <label
+        htmlFor="martes"
+        className={`toggle-label block overflow-hidden h-6 rounded-full cursor-pointer 
+        ${perfil.martes ? 'bg-green-500' : 'bg-red-500 '} transition-all duration-200`}
+      ></label>
+    </div>
+    <label htmlFor="martes" className="text-gray-700 font-medium mr-2">{perfil.martes ? 
+      "Sí puedo" : "No puedo"}
+    </label>
+    {perfil.martes && (
+      <div className="mt-2 ">
+        <label htmlFor="martesinicio" className="text-gray-700 font-medium block mb-1">Desde:</label>
+        <input type="time" id="martesinicio" name="martesinicio" 
+         value={perfil.martesinicio || ''}
+         onChange={ e => setPerfil({
+           ...perfil,
+           [e.target.name] : e.target.value
+         })}
+         />
+
+<label htmlFor="martesfin" className="text-gray-700 font-medium block mb-1">Hasta:</label>
+        <input type="time" id="lunesfin" name="martesfin" 
+         value={perfil.martesfin || ''}
+         onChange={ e => setPerfil({
+           ...perfil,
+           [e.target.name] : e.target.value
+         })}
+         />
+      </div>
+
+    )}
+  </div>
+</div>
+
+
+<div className='col-span-4 xs:col-span-2 lg:col-span-1 border-t border-b border-l border-gray-700 '>
+  <div className='border-b border-gray-600'> 
+    <h1 className='font-nunito'>Miercoles</h1>
+  </div>
+  <div className=" mt-3">
+    <div className="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+      <input
+        type="checkbox"
+        name="miercoles"
+        id="miercoles"
+        className="form-switch absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"
+        checked={perfil.miercoles || false}
+        onChange={ e => setPerfil({
+          ...perfil,
+          [e.target.name] : e.target.checked
+        })} />
+      <label
+        htmlFor="miercoles"
+        className={`toggle-label block overflow-hidden h-6 rounded-full cursor-pointer 
+        ${perfil.miercoles ? 'bg-green-500' : 'bg-red-500 '} transition-all duration-200`}
+      ></label>
+    </div>
+    <label htmlFor="miercoles" className="text-gray-700 font-medium mr-2">{perfil.miercoles ? 
+      "Sí puedo" : "No puedo"}
+    </label>
+    {perfil.miercoles && (
+      <div className="mt-2 ">
+        <label htmlFor="miercolesinicio" className="text-gray-700 font-medium block mb-1">Desde:</label>
+        <input type="time" id="miercolesinicio" name="miercolesinicio" 
+         value={perfil.miercolesinicio || ''}
+         onChange={ e => setPerfil({
+           ...perfil,
+           [e.target.name] : e.target.value
+         })}
+         />
+
+<label htmlFor="miercolesfin" className="text-gray-700 font-medium block mb-1">Hasta:</label>
+        <input type="time" id="lunesfin" name="miercolesfin" 
+         value={perfil.miercolesfin || ''}
+         onChange={ e => setPerfil({
+           ...perfil,
+           [e.target.name] : e.target.value
+         })}
+         />
+      </div>
+
+    )}
+  </div>
+</div>
+
+
+
+<div className='col-span-4 xs:col-span-2 lg:col-span-1 border border-gray-700 '>
+  <div className='border-b border-gray-600'> 
+    <h1 className='font-nunito'>Jueves</h1>
+  </div>
+  <div className=" mt-3">
+    <div className="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+      <input
+        type="checkbox"
+        name="jueves"
+        id="jueves"
+        className="form-switch absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"
+        checked={perfil.jueves || false}
+        onChange={ e => setPerfil({
+          ...perfil,
+          [e.target.name] : e.target.checked
+        })} />
+      <label
+        htmlFor="jueves"
+        className={`toggle-label block overflow-hidden h-6 rounded-full cursor-pointer 
+        ${perfil.jueves ? 'bg-green-500' : 'bg-red-500 '} transition-all duration-200`}
+      ></label>
+    </div>
+    <label htmlFor="jueves" className="text-gray-700 font-medium mr-2">{perfil.jueves ? 
+      "Sí puedo" : "No puedo"}
+    </label>
+    {perfil.jueves && (
+      <div className="mt-2 ">
+        <label htmlFor="juevesinicio" className="text-gray-700 font-medium block mb-1">Desde:</label>
+        <input type="time" id="juevesinicio" name="juevesinicio" 
+         value={perfil.juevesinicio || ''}
+         onChange={ e => setPerfil({
+           ...perfil,
+           [e.target.name] : e.target.value
+         })}
+         />
+
+<label htmlFor="juevesfin" className="text-gray-700 font-medium block mb-1">Hasta:</label>
+        <input type="time" id="lunesfin" name="juevesfin" 
+         value={perfil.juevesfin || ''}
+         onChange={ e => setPerfil({
+           ...perfil,
+           [e.target.name] : e.target.value
+         })}
+         />
+      </div>
+
+    )}
+  </div>
+</div>
+
+
+
+<div className='col-span-4 xs:col-span-2 lg:col-span-1 border-t border-b border-l border-gray-700 '>
+  <div className='border-b border-gray-600'> 
+    <h1 className='font-nunito'>Viernes</h1>
+  </div>
+  <div className=" mt-3">
+    <div className="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+      <input
+        type="checkbox"
+        name="viernes"
+        id="viernes"
+        className="form-switch absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"
+        checked={perfil.viernes || false}
+        onChange={ e => setPerfil({
+          ...perfil,
+          [e.target.name] : e.target.checked
+        })} />
+      <label
+        htmlFor="viernes"
+        className={`toggle-label block overflow-hidden h-6 rounded-full cursor-pointer 
+        ${perfil.viernes ? 'bg-green-500' : 'bg-red-500 '} transition-all duration-200`}
+      ></label>
+    </div>
+    <label htmlFor="viernes" className="text-gray-700 font-medium mr-2">{perfil.viernes ? 
+      "Sí puedo" : "No puedo"}
+    </label>
+    {perfil.viernes && (
+      <div className="mt-2 ">
+        <label htmlFor="viernesinicio" className="text-gray-700 font-medium block mb-1">Desde:</label>
+        <input type="time" id="viernesinicio" name="viernesinicio" 
+         value={perfil.viernesinicio || ''}
+         onChange={ e => setPerfil({
+           ...perfil,
+           [e.target.name] : e.target.value
+         })}
+         />
+
+<label htmlFor="viernesfin" className="text-gray-700 font-medium block mb-1">Hasta:</label>
+        <input type="time" id="viernesfin" name="viernesfin" 
+         value={perfil.viernesfin || ''}
+         onChange={ e => setPerfil({
+           ...perfil,
+           [e.target.name] : e.target.value
+         })}
+         />
+      </div>
+
+    )}
+  </div>
+</div>
+
+
+
+
+<div className='col-span-4 xs:col-span-2 lg:col-span-1 border border-gray-700 '>
+  <div className='border-b border-gray-600'> 
+    <h1 className='font-nunito'>Sábado</h1>
+  </div>
+  <div className=" mt-3">
+    <div className="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+      <input
+        type="checkbox"
+        name="sabado"
+        id="sabado"
+        className="form-switch absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"
+        checked={perfil.sabado || false}
+        onChange={ e => setPerfil({
+          ...perfil,
+          [e.target.name] : e.target.checked
+        })} />
+      <label
+        htmlFor="sabado"
+        className={`toggle-label block overflow-hidden h-6 rounded-full cursor-pointer 
+        ${perfil.sabado ? 'bg-green-500' : 'bg-red-500 '} transition-all duration-200`}
+      ></label>
+    </div>
+    <label htmlFor="sabado" className="text-gray-700 font-medium mr-2">{perfil.sabado ? 
+      "Sí puedo" : "No puedo"}
+    </label>
+    {perfil.sabado && (
+      <div className="mt-2 ">
+        <label htmlFor="sabadoinicio" className="text-gray-700 font-medium block mb-1">Desde:</label>
+        <input type="time" id="sabadoinicio" name="sabadoinicio" 
+         value={perfil.sabadoinicio || ''}
+         onChange={ e => setPerfil({
+           ...perfil,
+           [e.target.name] : e.target.value
+         })}
+         />
+
+<label htmlFor="sabadofin" className="text-gray-700 font-medium block mb-1">Hasta:</label>
+        <input type="time" id="lunesfin" name="sabadofin" 
+         value={perfil.sabadofin || ''}
+         onChange={ e => setPerfil({
+           ...perfil,
+           [e.target.name] : e.target.value
+         })}
+         />
+      </div>
+
+    )}
+  </div>
+</div>
+
+
+
+<div className='col-span-4 xs:col-span-2 lg:col-span-1 border border-gray-700 '>
+  <div className='border-b border-gray-600'> 
+    <h1 className='font-nunito'>Domingo</h1>
+  </div>
+  <div className=" mt-3">
+    <div className="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
+      <input
+        type="checkbox"
+        name="domingo"
+        id="domingo"
+        className="form-switch absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer"
+        checked={perfil.domingo || false}
+        onChange={ e => setPerfil({
+          ...perfil,
+          [e.target.name] : e.target.checked
+        })} />
+      <label
+        htmlFor="domingo"
+        className={`toggle-label block overflow-hidden h-6 rounded-full cursor-pointer 
+        ${perfil.domingo ? 'bg-green-500' : 'bg-red-500 '} transition-all duration-200`}
+      ></label>
+    </div>
+    <label htmlFor="domingo" className="text-gray-700 font-medium mr-2">{perfil.domingo ? 
+      "Sí puedo" : "No puedo"}
+    </label>
+    {perfil.domingo && (
+      <div className="mt-2 ">
+        <label htmlFor="domingoinicio" className="text-gray-700 font-medium block mb-1">Desde:</label>
+        <input type="time" id="domingoinicio" name="domingoinicio" 
+         value={perfil.domingoinicio || ''}
+         onChange={ e => setPerfil({
+           ...perfil,
+           [e.target.name] : e.target.value
+         })}
+         />
+
+<label htmlFor="domingofin" className="text-gray-700 font-medium block mb-1">Hasta:</label>
+        <input type="time" id="lunesfin" name="domingofin" 
+         value={perfil.domingofin || ''}
+         onChange={ e => setPerfil({
+           ...perfil,
+           [e.target.name] : e.target.value
+         })}
+         />
+      </div>
+
+    )}
+  </div>
+</div>
+
+          <div className='col-span-4 sm:col-span-2 lg:col-span-1 ml-2 mt-10 border-gray-700 '>
+          <input type="submit" value="Guardar Horario" className="mt-4 px-4 py-2 bg-blue-500 hover:bg-blue-700 text-white font-regular text-md rounded cursor-pointer" />
+          </div>
         </div>
-    </nav>
-</header>
 
-    <Outlet />
-    </>
-  );
-};
-
-export default HomeLayout;
+      </form>

@@ -34,7 +34,9 @@ import HistoriaClinica from "./paginas/pacientes/HistoriaClinica"
 import ProfesionalesList from "./paginas/pacientes/ProfesionalesList"
 import Consultas from "./paginas/pacientes/Consultas"
 import PerfilProfesional from "./paginas/profesionales/PerfilProfesional"
-import ConsultasProfesional from "./paginas/profesionales/ConsultasProfesional"
+import ConsultasAceptadas from "./paginas/profesionales/ConsultasAceptadas"
+import ConsultasPendientes from "./paginas/profesionales/ConsultasPendientes"
+import ConsultasRechazadas from "./paginas/profesionales/ConsultasRechazadas"
 import PerfilAdministrador from "./paginas/admins/PerfilAdministrador"
 import Diagnostico from "./paginas/pacientes/Diagnostico"
 import Examenes from "./paginas/pacientes/Examenes"
@@ -51,6 +53,10 @@ import {PacienteProvider} from "./context/admin/PacienteProvider"
 import { PreguntasCliProvider } from "./context/paciente/PreguntasCliProvider"
 import { HistoriaCliProvider } from "./context/paciente/HistoriaCliContext"
 import Horarios from "./paginas/pacientes/Horarios"
+import Agenda from "./paginas/pacientes/Agenda"
+import ListaMotivosConsulta from "./paginas/profesionales/ListaMotivosConsulta"
+import NotificacionesConsulta from "./paginas/pacientes/NotificacionesConsulta"
+import VerMasConsulta from "./paginas/pacientes/VerMasConsulta"
 
 function App() {
   return (
@@ -107,6 +113,9 @@ function App() {
         <Route path="consultas" element={ <Consultas/> } />
         <Route path="formulario-audit" element={ <FormularioAudit/> } />
         <Route path="horarios" element={ <Horarios/> } />
+        <Route path="agenda" element={ <Agenda/> } />
+        <Route path="notificaciones" element={ <NotificacionesConsulta/> } />
+        <Route path="vermas-consulta/:id" element={ <VerMasConsulta/> } />
 
 
       </Route>
@@ -123,8 +132,11 @@ function App() {
       <Route path="/profesional" element={ <ProfesionalLayout />}>
         <Route index element={ <InicioProfesional/> } />
         <Route path="perfil-profesional" element={ <PerfilProfesional/> } />
-        <Route path="consultas" element={ <ConsultasProfesional/> } />
+        <Route path="consultas" element={ <ConsultasAceptadas/> } />
+        <Route path="consultas-pendientes" element={ <ConsultasPendientes/> } />
+        <Route path="consultas-rechazadas" element={ <ConsultasRechazadas/> } />
         <Route path="vermotivo/:id" element={ <VerMotivo/> } />
+        <Route path="lista-motivos-consulta" element={ <ListaMotivosConsulta/> } />
 
       </Route>
     </Routes>

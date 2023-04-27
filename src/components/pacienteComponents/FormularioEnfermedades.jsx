@@ -5,6 +5,7 @@ import Alerta from "../Alerta"
 const FormularioEnfermedad = () => {
   const [alerta, setAlerta ]= useState({})
   const [nombre, setNombre] = useState('')
+  const [fechadiagnostico, setFechadiagnostico] = useState('')
   const [id, setId] = useState(null)
   const {enfermedad,guardarEnfermedad, enfermedades, auth,cuentaConEnfermedad, setEnfermedades} =  useHistoriaCli()
   const [ocultarseccion, SetOcultarSeccion] = useState(true)
@@ -18,6 +19,7 @@ const FormularioEnfermedad = () => {
   useEffect(() => {
     if(enfermedad?.nombre){
      setNombre(enfermedad.nombre)
+     setNombre(enfermedad.fechadiagnostico)
      setId(enfermedad._id)
 
     }
@@ -56,14 +58,15 @@ useEffect(()=>{
       //AGREGANDO ENFERMEDAD
       const handleSubmit = async e =>{
         e.preventDefault();
-        if([nombre].includes('')){
+        if([nombre,fechadiagnostico].includes('')){
           setAlerta({msg: 'Hay campos vacíos', error: true})
           setTimeout(()=> setAlerta({}),5000)
           return;
         }
         setAlerta({})
-        guardarEnfermedad({nombre})
+        guardarEnfermedad({nombre,fechadiagnostico})
         setNombre('')
+        setFechadiagnostico('')
       
        }
 
@@ -169,6 +172,17 @@ useEffect(()=>{
             value={nombre}
             onChange={e => setNombre(e.target.value) } 
           />
+          <div>
+          <label className="text-gray-700 font-bold text-md" htmlFor="fechadiagnostico ">Fecha del diagnóstico</label>
+          <input
+             id="fechadiagnostico"
+            type="date"
+            className="w-11/12 focus:outline-none focus:text-gray-900 mb-1 border border-gray-300 rounded-md placeholder-slate-400 p-2 "
+            placeholder="Escribe aquí los diagnósticos que presentas"
+            value={fechadiagnostico}
+            onChange={e => setFechadiagnostico(e.target.value) } 
+          />
+          </div>
           </div>
      
       <div className="py-3 md:w-6/6  ">

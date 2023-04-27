@@ -1,0 +1,19 @@
+import FullCalendar from '@fullcalendar/react' 
+import dayGridPlugin from '@fullcalendar/daygrid' 
+import esLocale from '@fullcalendar/core/locales/es';
+import { AiOutlineCalendar } from "react-icons/ai";
+
+
+
+<div className=" calendar-container">
+  <button class="show-calendar-btn"><AiOutlineCalendar/></button>
+  <div class="calendar">
+    <FullCalendar
+      plugins={[dayGridPlugin]}
+      initialView="dayGridMonth"
+      locale={esLocale}
+      dayMaxEvents={true}
+      height={300}
+    />
+  </div>
+</div>
