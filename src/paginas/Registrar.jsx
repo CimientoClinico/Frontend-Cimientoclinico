@@ -63,7 +63,7 @@ const Registrar = () => {
     return(
         <>
       <div className="h-screen flex">
-          <div id="primario" className="hidden lg:flex w-full lg:w-1/2 login_img_section
+          <div  className="bg-lila-100 hidden lg:flex w-full lg:w-1/2 login_img_section
           justify-around items-center">
             <div 
                   className=" 
@@ -90,7 +90,7 @@ const Registrar = () => {
             <form className="bg-white rounded-md shadow-2xl p-5" 
             onSubmit={handleSubmit}
             >
-              <h1 id="textologo"className="font-extrabold font-nunito text-2xl mb-1 text-center">Cimiento Clínico</h1>
+              <h1 className=" text-lila-200 font-extrabold font-nunito text-2xl mb-1 text-center">Cimiento Clínico</h1>
               <p className="text-md font-nunito text-gray-400 font-normal mb-8 text-center">Registro en el sistema</p>
               <div className="flex items-center border-2 mb-8 py-2 px-3 rounded-2xl">
                 <input id="email" className=" font-normal font-nunito  pl-2 w-full outline-none border-none" 
@@ -186,9 +186,9 @@ const Registrar = () => {
 
 
               
-              <button id="primario" type="submit" className="block w-full font-nunito py-2 rounded-2xl hover:bg-indigo-700 hover:-translate-y-1 transition-all duration-500 text-white font-semibold mb-2">Registrate</button>
+              <button  type="submit" className=" bg-lila-200  block w-full font-nunito py-2 rounded-2xl hover:bg-lila-300 hover:-translate-y-1 transition-all duration-500 text-white font-semibold mb-2">Registrate</button>
               <div className="flex justify-between mt-4">
-                <Link  to="/ingresa" className="text-sm ml-2 hover:text-teal-700 cursor-pointer hover:-translate-y-1 duration-500 transition-all">Ya tienes una cuenta? Ingresa aquí</Link>
+                <Link  to="/ingresa" className="text-sm ml-2 hover:text-lila-300 cursor-pointer hover:-translate-y-1 duration-500 transition-all">Ya tienes una cuenta? Ingresa aquí</Link>
 
               </div>
               

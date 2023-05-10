@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import clientAxios from '../../config/axios';
 import useHistoriaCli from "../../hooks/paciente/useHistoriaCli"
-import{ AiFillDelete} from "react-icons/ai"
+
 const TablaHospitalizaciones = () => {
   const [examenes, setExamenes] = useState([]);
 
@@ -106,9 +106,8 @@ const TablaHospitalizaciones = () => {
                     <div className="text-sm font-nunito font-medium text-gray-900">
                     <button
   onClick={() => eliminarHospitalizaciones(examen._id)}
-  className="flex bg-red-500 hover:bg-red-700 text-white text-sm font-nunito font-semibold py-1 px-2 border border-red-500 rounded">
-    <h3>Eliminar</h3>
-  <AiFillDelete />
+  className="flex bg-coral-200 hover:bg-coral-300 text-white text-sm font-nunito font-semibold py-2 px-2 border rounded">
+    <h3>Eliminar 🗑️</h3>
   </button>
                     </div>
                   </div>

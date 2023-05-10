@@ -58,7 +58,7 @@ useEffect(()=>{
       //AGREGANDO ENFERMEDAD
       const handleSubmit = async e =>{
         e.preventDefault();
-        if([nombre,fechadiagnostico].includes('')){
+        if([nombre].includes('')){
           setAlerta({msg: 'Hay campos vacíos', error: true})
           setTimeout(()=> setAlerta({}),5000)
           return;
@@ -118,7 +118,7 @@ useEffect(()=>{
      className=" flex font-nunito  bg-indigo-300 text-white    justify-center cursor-pointer select-none rounded-lg  px-3.5 py-2  text-center peer-checked:bg-green-500 peer-checked:font-bold peer-checked:text-white">
        No❌</label>
  </div>
- <button className="text-white w-1/2 mx-auto max-w-sm rounded-md text-center bg-indigo-400 hover:bg-indigo-600 py-2 px-4 inline-flex items-center focus:outline-none md:float-right">
+ <button className="text-white w-1/2 mx-auto max-w-sm rounded-md text-center bg-lila-200 hover:bg-lila-100 py-2 px-4 inline-flex items-center focus:outline-none md:float-right">
    Guardar💾
   </button>
  </div>
@@ -173,12 +173,12 @@ useEffect(()=>{
             onChange={e => setNombre(e.target.value) } 
           />
           <div>
-          <label className="text-gray-700 font-bold text-md" htmlFor="fechadiagnostico ">Fecha del diagnóstico</label>
+          <label className="text-gray-700 font-bold text-md" htmlFor="fechadiagnostico ">¿Cuando fue tu diagnóstico?</label>
           <input
              id="fechadiagnostico"
-            type="date"
+            type="text"
             className="w-11/12 focus:outline-none focus:text-gray-900 mb-1 border border-gray-300 rounded-md placeholder-slate-400 p-2 "
-            placeholder="Escribe aquí los diagnósticos que presentas"
+            placeholder="Escribe en que año o desde cuando recuerdas tener este diagnóstico"
             value={fechadiagnostico}
             onChange={e => setFechadiagnostico(e.target.value) } 
           />
@@ -187,7 +187,7 @@ useEffect(()=>{
      
       <div className="py-3 md:w-6/6  ">
         
-      <button className="text-white w-2/2 mx-auto max-w-sm rounded-md text-center bg-indigo-400 hover:bg-indigo-600 py-2 px-3 inline-flex items-center focus:outline-none md:float-right">
+      <button className="text-white w-2/2 mx-auto max-w-sm rounded-md text-center bg-lila-200 hover:bg-lila-100 py-2 px-4 inline-flex items-center focus:outline-none md:float-right">
          Agregar💾
         </button>
         
@@ -262,7 +262,7 @@ useEffect(()=>{
                ...perfil4,
                [e.target.name] : e.target.value
              })} />
-<button className="text-white w-2/2 mx-auto max-w-sm rounded-md text-center bg-indigo-400 hover:bg-indigo-600 py-2 px-4 inline-flex items-center focus:outline-none md:float-right">
+<button className="text-white w-2/2 mx-auto max-w-sm rounded-md text-sm text-center bg-lila-200 hover:bg-lila-100 py-2 px-4 inline-flex items-center focus:outline-none md:float-right">
     Actualizar🔄
   </button>
   </form>

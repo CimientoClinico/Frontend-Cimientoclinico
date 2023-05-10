@@ -4,12 +4,12 @@ const HeaderPublico = () =>{
     const [navbar, setNavbar] = useState(false);
 return(
     <header>
-    <nav   className= " bg-white  drop-shadow-2xl px-4 lg:px-4 py-3.5  w-full ">
+    <nav   className= "drop-shadow-2xl px-4 lg:px-4 py-3.5  w-full ">
            <div className=" justify-between px-4 mx-auto lg:max-w-12xl   md:items-center md:flex md:px-20 lg:px-40  ">
                <div>
                    <div className="flex items-center justify-between py-3 md:py-2 md:block">
                        <a href="/">
-                           <h1 id="textologo" className="font-nunito   text-3xl font-bold text-white">Cimiento Clínico</h1>
+                           <h1  className="font-nunito   text-4xl font-regular text-lila-200">Cimiento Clínico</h1>
                        </a>
                        <div className="lg:hidden">
                            <button
@@ -46,23 +46,14 @@ return(
                        className={`flex-1 justify-self-center pb-3 mt-8 lg:block md:pb-0 md:mt-0  ${
                            navbar ? "block" : "hidden"
                        }`}>
-                       <ul className="items-center justify-center space-y-8 lg:flex lg:space-x-12 md:space-x-3 sm:space-x-0 md:space-y-0 ">
-                           <li className="font-nunito font-normal block py-2 pr-4 pl-3 text-black border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700">
+                       <ul className=" text-lg items-center justify-center space-y-8 lg:flex lg:space-x-12 md:space-x-3 sm:space-x-0 md:space-y-0 ">
+                           <li className="  block py-2 pr-4 pl-3 text-black border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700">
                                <a href="#">Sobre Nosotros</a>
                            </li>
-                           <li className="font-nunito font-normal block py-2 pr-4 pl-3 text-black border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700">
-                               <a href="#">Preguntas frecuentes</a>
-                           </li>
-                           <li className="font-nunito font-normal block py-2 pr-4 pl-3 text-black border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700">
-                               <a href="#">Seguridad de datos</a>
-                           </li>
-                           <li className="font-nunito font-normal block py-2 pr-4 pl-3 text-black border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700">
+                           <li className="  block py-2 pr-4 pl-3 text-black border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700">
                                <a href="#">Trabaja con nosotros</a>
                            </li>
-                           <li className="font-nunito font-normal block py-2 pr-4 pl-3 text-black border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700">
-                               <a href="#">Visión y Misión</a>
-                           </li>
-                           <li className="font-nunito  font-normal block py-2 pr-4 pl-3 text-black border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700">
+                           <li className="  block py-2 pr-4 pl-3 text-black border-b border-gray-100 hover:bg-gray-50 lg:hover:bg-transparent lg:border-0 lg:hover:text-primary-700 lg:p-0 dark:text-gray-400 lg:dark:hover:text-white dark:hover:bg-gray-700 dark:hover:text-white lg:dark:hover:bg-transparent dark:border-gray-700">
                                <a href="#">Contacto</a>
                            </li>
                        </ul>

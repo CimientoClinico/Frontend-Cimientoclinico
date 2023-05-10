@@ -219,6 +219,27 @@ const actualizarFoto = async (image) =>{
   }
 
 }
+const ContactoVacio= async datos =>{
+    try {
+const token = localStorage.getItem('token')
+if(!token){
+    setCargando(false)
+    return
+} 
+const config ={
+    headers:{
+        "Content-Type":"application/json",
+        Authorization:`Bearer ${token}`
+    }
+}
+    const url = `/pacientes/actualizar-contacto/${datos._id}`
+    const {data} = await clientAxios.put(url,datos,config)
+    return data // devolver los datos actualizados
+    
+} catch (error) {
+    console.log(error)
+}
+    }
 const actualizarEstilodevida = async datos =>{
         try {
     const token = localStorage.getItem('token')
@@ -392,7 +413,8 @@ const actualizarEstilodevida = async datos =>{
             setEdicionMotivo,
             eliminarMotivoConsulta,
             actualizarHorario,
-            actualizarvisiblemotivo
+            actualizarvisiblemotivo,
+            ContactoVacio
          
           
 

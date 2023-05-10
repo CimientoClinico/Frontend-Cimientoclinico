@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import clientAxios from "../../config/axios"
 import useAuth from "../../hooks/useAuth"
 import Alerta from "../Alerta"
+import { Link } from "react-router-dom"
 import{AiFillEdit, AiFillDelete} from "react-icons/ai"
 import{IoMdEyeOff,IoMdEye} from "react-icons/io"
 import { Paginacion } from "../Paginacion"
@@ -131,11 +132,11 @@ const FormularioMotivoConsulta = () => {
           
         <div className="w-1/3 bg-gray-200 p-10 shadow-lg">
         {msg && <Alerta alerta={alerta} />}
-        <div className=" bg-indigo-500 rounded-t">
+        <div className=" bg-lila-300 rounded-t">
         <h1 className=" text-white py-5 text-xl text-center mt-8 ">Publica tu motivo de consulta</h1>
     
         </div>
-  <form onSubmit={handleSubmit} className="bg-indigo-400 px-7 py-7 rounded-b ">
+  <form onSubmit={handleSubmit} className="bg-lila-100 px-7 py-7 rounded-b ">
     
     <label className=" text-white" htmlFor="campo1">¿Cúal es tu motivo de consulta? <span className="text-red-600 text-lg">*</span></label>
     <textarea
@@ -195,8 +196,8 @@ const FormularioMotivoConsulta = () => {
       </label>
     </div>
 
-    <input type="submit" className="bg-indigo-600 w-full p-3 text-white
-        uppercase font-bold hover:bg-indigo-700 cursor-pointer transition-colors rounded-md"
+    <input type="submit" className="bg-lila-200 w-full p-3 text-white
+        uppercase font-bold hover:bg-lila-300 cursor-pointer transition-colors rounded-md"
         value={id ? 'Actualizar tu caso': 'Publicar tu caso'} />
   </form>
 </div>
@@ -232,7 +233,7 @@ const FormularioMotivoConsulta = () => {
                 (pagina - 1 ) * porPagina + porPagina
                 ).map((motivo) => (
 
-<div key={motivo._id} className="bg-white rounded-lg shadow-md w-full mb-10  ">
+<div key={motivo._id} className="bg-white rounded-lg shadow-lg  w-full mb-10  ">
   <div className="p-4">
     <h2 className="text-lg font-medium text-gray-800 text-center">{motivo.titulo}</h2>
     <span className="inline-block bg-gray-200 rounded-full px-3 py-1 text-xs font-semibold text-gray-700">Publicado: {formatearFecha(motivo.fecha)}</span>
@@ -245,19 +246,25 @@ const FormularioMotivoConsulta = () => {
    
   <button
   onClick={() => setEdicionMotivo(motivo)}
-  className="flex bg-teal-500 hover:bg-teal-700 text-white text-sm font-nunito font-semibold py-1 px-2  border border-teal-500 rounded">
+  className="flex bg-lila-200 hover:bg-lila-300 text-white text-sm font-nunito font-semibold py-1 px-2   rounded">
   <h3>Editar</h3>
 <AiFillEdit className="mt-0.5 text-lg" />
  </button>
  <button
   onClick={() => eliminarMotivoConsulta(motivo._id)}
-  className="flex bg-red-500 hover:bg-red-700 text-white text-sm font-nunito font-semibold py-1 px-2 border border-red-500 rounded">
+  className="flex bg-coral-200 hover:bg-coral-300 text-white text-sm font-nunito font-semibold py-1 px-2   rounded">
     <h3>Eliminar</h3>
   <AiFillDelete className="mt-0.5 text-lg" />
   </button>
+  <Link
+  to={`/paciente/vermas-motivo/${motivo._id}`}
+  className=" flex rounded-md bg-blue-400 hover:bg-blue-700 text-white text-sm font-nunito font-semibold py-1 px-2"
+>
+  Ver detalle
+</Link>
  
-  <button className=" flex rounded-md bg-indigo-400 hover:bg-indigo-700 text-white text-sm font-nunito font-semibold py-1 px-2"  onClick={() => actualizarVisible(motivo._id, !motivo.visible)}>
-            {motivo.visible ?<   IoMdEyeOff title="Hacer visible" className="mt-0.5 text-lg"/>   :  <IoMdEye title="Ocultar"  className="mt-0.5 text-lg"/>  }
+  <button className=" flex rounded-md bg-slate-600 hover:bg-slate-500 text-white text-sm font-nunito font-semibold py-1 px-2"  onClick={() => actualizarVisible(motivo._id, !motivo.visible)}>
+            {motivo.visible ?<   IoMdEyeOff title="Ocultar" className="mt-0.5 text-lg"/>   :  <IoMdEye title="Hacer visible"  className="mt-0.5 text-lg"/>  }
           </button>
 
   </div>

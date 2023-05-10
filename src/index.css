@@ -1,5 +1,5 @@
 
-@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:wght@300;400;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700;900&display=swap');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -23,7 +23,7 @@ color: #99D9D9;
 }
 
 body{
-    background-color: 	#f0f2f3;
+    background-color: #ffff;
 }
 #requisitos{
     background-color: #077070;
@@ -354,4 +354,24 @@ body{
     -webkit-transform: scale(1);
             transform: scale(1);
   }
+}
+.fondocalendario {
+  background-color: purple;
+  color: white;
+}
+
+
+.rbc-event-content {
+  font-size: 12px;
+}
+.pixelated-image {
+  filter: blur(20px);
+  background-color: #999999;
+}
+.flex-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: auto;
 }

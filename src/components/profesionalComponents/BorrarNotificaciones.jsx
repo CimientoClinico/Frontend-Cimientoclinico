@@ -39,10 +39,8 @@ const BorrarNotificaciones = () => {
   return (
     <>
 
-<div className="flex justify-end">
-<button className="bg-red-500 px-2 py-2 text-white rounded-lg text-xs" onClick={handleSubmit}>Quitar Notificaciones🗑️</button>
-</div>
-
+ <button className='text-white text-sm hover:text-gray-300 bg-indigo-600 px-3 py-1 xl:rounded-t-lg xs:rounded-md font-regular flex  ' onClick={handleSubmit}>Limpiar notificaciones <span className="">🧹</span>
+ </button>
 
     </>
   )

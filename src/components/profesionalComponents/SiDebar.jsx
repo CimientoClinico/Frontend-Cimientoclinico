@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { HiMenuAlt3 } from "react-icons/hi";
-import { MdHome,  MdVoiceChat, MdAccountCircle,MdFollowTheSigns, MdDarkMode,MdContentPaste } from "react-icons/md";
+import { MdHome,  MdVoiceChat, MdAccountCircle,MdFollowTheSigns,MdPaid, MdDarkMode,MdContentPaste } from "react-icons/md";
 import{BsFillDoorOpenFill} from "react-icons/bs";
 import { Link } from "react-router-dom";
 import proAuth from "../../hooks/proAuth"
@@ -45,6 +45,7 @@ const Sidebar = () => {
     { name: `Tus Consultas` , link: "/profesional/consultas", icon: MdVoiceChat},
     { name: "Motivos de consulta", link: "/profesional/lista-motivos-consulta", icon: MdContentPaste },
     { name: "Perfil", link: "/profesional/perfil-profesional", icon: MdAccountCircle },
+    { name: "Tarifas", link: "/profesional/tarifas", icon: MdPaid },
     { name: "Portal Paciente", link: "/paciente", icon: MdFollowTheSigns, margin:10 },
   ];
 
@@ -64,7 +65,7 @@ const Sidebar = () => {
   
       <aside>
       <div
-        className={`bg-blue-500 min-h-screen dark:bg-slate-800 ${
+        className={`bg-coral-200 min-h-screen dark:bg-slate-800 ${
           open ? "w-72" : "w-16"
         } duration-500 text-gray-100 px-4`}
       >
@@ -101,7 +102,7 @@ const Sidebar = () => {
     <button onClick={handleNotificationClick}
       className={` ${
         menu?.margin && "mt-5"
-      } group flex items-center text-sm  gap-3.5 font-medium p-2 rounded-md ${open ? "hover:bg-gray-800" : "hover:bg-opacity-0"}`}
+      } group flex items-center text-sm  gap-3.5 font-medium p-2 rounded-md ${open ? "hover:bg-coral-100" : "hover:bg-opacity-0"}`}
     >
       {menu?.link === "/profesional/consultas" ? (
         <div>{React.createElement(menu?.icon, { size: "20" })}
@@ -163,7 +164,7 @@ const Sidebar = () => {
     key={i}
     className={` ${
       menu3?.margin && "mt-5"
-    } group flex items-center text-sm gap-3.5 font-medium p-2 hover:bg-gray-800 rounded-md ${
+    } group flex items-center text-sm gap-3.5 font-medium p-2 hover:bg-coral-100 rounded-md ${
       open ? "" : "hover:bg-opacity-0"
     }`}
   >
@@ -194,7 +195,7 @@ const Sidebar = () => {
     key={i}
     className={` ${
       menu2?.margin && "mt-5"
-    } group flex items-center text-sm gap-3.5 font-medium p-2 rounded-md ${open ? "hover:bg-gray-800" : "hover:bg-opacity-0"}`}
+    } group flex items-center text-sm gap-3.5 font-medium p-2 rounded-md ${open ? "hover:bg-coral-100" : "hover:bg-opacity-0"}`}
   >
     <div>{React.createElement(menu2?.icon, { size: "20" })}</div>
     <h2

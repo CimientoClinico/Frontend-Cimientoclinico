@@ -4,7 +4,7 @@ const HeaderHistoria = () => {
   const location = useLocation();
   return (
     <>
-      <header className="pt-6 bg-teal-600 ">
+      <header className="pt-6 bg-lila-300 ">
      
      <div className="container mx-auto flex flex-col md:flex-row justify-center items-center font-nunito   ">
          <nav className="flex flex-col items-center md:flex-row xl:gap-1 sm:gap-1 xl:mt-2 lg:mt-0  ">

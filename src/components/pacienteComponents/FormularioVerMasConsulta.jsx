@@ -1,10 +1,13 @@
 import { useEffect,useState } from "react";
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import clientAxios from "../../config/axios";
 import { Image} from "cloudinary-react";
+import useAuth from "../../hooks/useAuth"
 const FormularioVerMasConsulta = () => {
     const [consulta, setConsulta] = useState([]);
     const { id } = useParams();
+    const navigate = useNavigate()
+    const {auth} =  useAuth()
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (!token) return;
@@ -30,6 +33,7 @@ const FormularioVerMasConsulta = () => {
         };
       
         fetchData();
+
       }, []);
       const calcularEdad = (fechaNacimiento) => {
         const hoy = new Date();
@@ -47,6 +51,75 @@ const FormularioVerMasConsulta = () => {
         const nuevaFecha = new Date(fecha)
         nuevaFecha.setMinutes(nuevaFecha.getMinutes() + nuevaFecha.getTimezoneOffset())
         return new Intl.DateTimeFormat('es-CL', {dateStyle: 'long'}).format(nuevaFecha) }
+        const handleCambiarEstado = async (id) => {
+            Swal.fire({
+              title: '¿Estás seguro que quieres rechazar esta propuesta de consulta?',
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Sí, rechazar',
+              cancelButtonText: 'Cancelar',
+            }).then(async (result) => {
+              if (result.isConfirmed) {
+                try {
+                  const token = localStorage.getItem('token')
+                  if(!token){
+                    setCargando(false)
+                    return
+                  } 
+                  const config ={
+                    headers:{
+                        "Content-Type":"application/json",
+                        Authorization:`Bearer ${token}`
+                    }
+                  }
+                  const response = await clientAxios.put(`/pacientes/rechazar-consulta/${id}`, {
+                    estado: 'rechazada',
+                  }, config);
+        
+                  if (response.status === 200) {
+                    Swal.fire({
+                      title: 'La consulta fue rechazada con éxito',
+                      text: '',
+                      icon: 'success',
+                      confirmButtonColor: '#3085d6',
+                      confirmButtonText: 'Ok',
+                    });
+                    navigate(`/paciente/rechazar-consulta/${id}`)
+                  }
+                } catch (error) {
+                  console.error(error);
+                  Swal.fire({
+                    title: 'Hubo un error',
+                    text: 'No se pudo cambiar el estado de la consulta',
+                    icon: 'error',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Ok',
+                  });
+                }
+              }
+            });
+          };
+          
+          if (!consulta || consulta.length === 0) {
+            return <p>Cargando...</p>;
+          }
+          if (Array.isArray(consulta) && consulta.length > 0 && consulta[0].paciente !== auth._id) {
+            return (
+                <div className=" bg-coral-100 w-full h-screen flex flex-col items-center justify-center">
+
+                <div className="flex flex-col items-center justify-center">
+                    <h1 className="text-3xl font-bold  font-nunito md:text-6xl lg:text-9xl text-white  mt-12">403</h1>
+                    <h2 className="text-3xl font-semibold  font-nunito md:text-4xl lg:text-5xl text-white mt-12">No tienes permiso</h2>
+                    <img  className="h-96"  src="https://res.cloudinary.com/dde62spnz/image/upload/v1683307824/Imagenes%20sitio/mano_nvygfz.png" alt="" />
+                    <p className="md:text-lg font-nunito  lg:text-xl text-white mt-8">Lo sentimos no tienes el permiso para ver esta sección</p>
+
+                </div>
+            </div>
+              );
+          }
+        
   return (
     <> 
 
@@ -220,7 +293,7 @@ const FormularioVerMasConsulta = () => {
 
     
                 <div className="bg-white p-3 shadow-sm rounded-sm">
-                           <p className="text-center text-lg font-bold text-gray-600">Mensaje del profesional</p>
+                           <p className="text-center text-lg font-bold text-gray-600">Tu Mótivo de consulta</p>
                     <div className="grid grid-cols-3">
                         <div>
                         <div className="flex items-center space-x-2 font-semibold text-gray-900 leading-8 mb-3">
@@ -291,7 +364,8 @@ const FormularioVerMasConsulta = () => {
           </button>
           <button
             type="button"
-            className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-3 mb-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2  sm:ml-3 sm:w-auto sm:text-sm">
+            className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-3 mb-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2  sm:ml-3 sm:w-auto sm:text-sm"
+            onClick={() => handleCambiarEstado(con._id)}>
             Rechazar
           </button>
                     </div>

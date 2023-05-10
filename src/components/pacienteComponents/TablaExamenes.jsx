@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import clientAxios from '../../config/axios';
-import{ AiFillDelete} from "react-icons/ai"
 import useHistoriaCli from "../../hooks/paciente/useHistoriaCli"
 const TablaExamenes = () => {
   const [examenes, setExamenes] = useState([]);
@@ -38,7 +37,7 @@ const TablaExamenes = () => {
           <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nombre del examen</th>
           <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Enfermedad</th>
           <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Documento</th>
-         
+          <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Acción</th>
         </tr>
       </thead>
       <tbody className="bg-white divide-y divide-gray-200">
@@ -57,7 +56,8 @@ const TablaExamenes = () => {
             <div className="flex items-center">
                   <div className="ml-4">
                     <div className="text-sm font-nunito font-medium text-gray-900">
-                    {examen.enfermedad.nombre}
+                    {examen.enfermedad ? examen.enfermedad.nombre : "Sin enfermedad asociada"}
+
                     </div>
                   </div>
                 </div>          
@@ -69,7 +69,7 @@ const TablaExamenes = () => {
                <div className="flex items-center">
                   <div className="ml-4">
                     <div className="text-sm font-medium text-gray-900">
-                     <a href={examen.documento?.secure_url} download="nombre_del_archivo" className="bg-indigo-400 hover:bg-indigo-700 text-white font-nunito font-semibold py-2 px-4 rounded inline-flex items-center">
+                     <a href={examen.documento?.secure_url} download="nombre_del_archivo" className="bg-lila-200 hover:bg-lila-100 text-white font-nunito font-semibold py-2 px-4 rounded inline-flex items-center">
                      Descargar Examen
                      📥
                       </a>  
@@ -90,9 +90,9 @@ const TablaExamenes = () => {
                     <div className="text-sm font-nunito font-medium text-gray-900">
                     <button
   onClick={() => eliminarExamenes(examen._id)}
-  className="flex bg-red-500 hover:bg-red-700 text-white text-sm font-nunito font-semibold py-1 px-2 border border-red-500 rounded">
-    <h3>Eliminar</h3>
-  <AiFillDelete />
+  className="flex bg-coral-200 hover:bg-coral-300 text-white text-sm font-nunito font-semibold py-2 px-2 border rounded">
+    <h3>Eliminar 🗑️</h3>
+  
   </button>
                     </div>
                   </div>

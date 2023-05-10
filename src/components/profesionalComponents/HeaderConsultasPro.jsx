@@ -2,7 +2,7 @@ import { Link, useLocation } from "react-router-dom"
 import { useState, useEffect } from "react";
 import clientAxios from "../../config/axios";
 import proAuth from "../../hooks/proAuth"
-
+import BorrarNotificaciones from "./BorrarNotificaciones";
 const HeaderConsultasPro = () => {
   const location = useLocation();
   const [consultas, setConsultas] = useState([]);
@@ -72,12 +72,15 @@ const HeaderConsultasPro = () => {
   const numNotificacionesPendientes= consultasproPendientes.length
   const consultasproRechazada =  consultas.filter(con => con.profesional._id === authpro._id && con.leido===false && con.estado ==='rechazada') 
   const numNotificacionesRechazada= consultasproRechazada.length
+  const consultasproFinalizadas =  consultas.filter(con => con.profesional._id === authpro._id && con.leido===false && con.estado ==='finalizado') 
+  const numNotificacionesFinalizadas= consultasproFinalizadas.length
   
   return (
     <>
-      <header className="pt-6 bg-blue-500 ">
+      <header className="pt-10 bg-coral-100 ">
      <div className="container mx-auto flex flex-col md:flex-row justify-center items-center font-nunito   ">
-         <nav className="flex flex-col items-center md:flex-row xl:gap-1 sm:gap-1 xl:mt-2 lg:mt-0  ">
+<nav className="flex flex-col items-start md:flex-row justify-content: flex-start xl:gap-1 sm:gap-1 xl:mt-2 lg:mt-0">
+
          
 
   { numNotificacionesAceptadas > 0 ?
@@ -108,7 +111,16 @@ const HeaderConsultasPro = () => {
   :   <Link to="/profesional/consultas-rechazadas"  className={`text-white text-sm hover:text-gray-300 bg-red-500 px-3 py-1 xl:rounded-t-lg xs:rounded-md font-regular flex ${location.pathname === '/profesional/consultas-rechazadas' && 'text-gray-300  '}`}>Consultas rechazadas
     </Link>
 }
-
+{ numNotificacionesFinalizadas > 0 ?
+ <Link to="/profesional/consultas-finalizadas"  className={`text-white text-sm hover:text-gray-300 bg-green-800 px-3 py-1 xl:rounded-t-lg xs:rounded-md font-regular flex ${location.pathname === '/profesional/consultas-finalizadas' && 'text-gray-300  '}`}>Consultas finalizadas
+ <div className="bg-green-800 text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center ml-2">
+            {numNotificacionesFinalizadas}
+            </div>
+ </Link>
+  :   <Link to="/profesional/consultas-finalizadas"  className={`text-white text-sm hover:text-gray-300 bg-green-800 px-3 py-1 xl:rounded-t-lg xs:rounded-md font-regular flex ${location.pathname === '/profesional/consultas-finalizadas' && 'text-gray-300  '}`}>Consultas finalizadas
+    </Link>
+}
+<BorrarNotificaciones/>
          </nav>
      </div>
    </header>

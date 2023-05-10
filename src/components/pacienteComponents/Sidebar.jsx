@@ -3,7 +3,6 @@ import { HiMenuAlt3 } from "react-icons/hi";
 import { MdHome, MdListAlt, MdVoiceChat, MdAccountCircle,MdDarkMode,MdPermDeviceInformation } from "react-icons/md";
 import { FaUserMd } from "react-icons/fa";
 import{BsFillDoorOpenFill, BsPatchQuestion,BsFillBellFill} from "react-icons/bs";
-import{TfiAgenda} from "react-icons/tfi";
 import {BiNotepad} from "react-icons/bi";
 import { Link } from "react-router-dom";
 import useAuth from "../../hooks/useAuth"
@@ -15,6 +14,7 @@ const Sidebar = () => {
   const [showNotifications, setShowNotifications] = useState(false);
   const [motivos, setMotivos] = useState([]);
   const [consultas, setConsultas] = useState([]);
+  const [consultasProximas, setConsultasProximas] = useState([]);
   const { auth} =  useAuth()
 
   const handleNotificationClick = () => {
@@ -68,17 +68,40 @@ useEffect(()=>{
   }
   obtenerMotivosConsulta()      
 },[consultas])
+useEffect(() => {
+  const token = localStorage.getItem('token')
+  if(!token) return
+
+  const config={
+    headers:{
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`
+    }
+  }
+
+  const obtenerConsultasProximas = async () => {
+    const respuesta = await clientAxios.get('/pacientes/proxima-consulta',config);
+    setConsultasProximas(respuesta.data);
+  };
+
+  obtenerConsultasProximas();
+}, []);
 const consultasPendientes = consultas.filter(con => con.paciente === auth._id && con.estado === 'pendiente'  && con.leidopaciente===false );
-const  motivosfiltrados = motivos
-.filter(motivo => motivo.estado === "publicado"&& consultas.some( con => con.motivoconsulta===motivo._id && con.paciente===auth._id && con.estado==='pendiente') ) 
-const numNotificaciones= consultasPendientes.length
+const consultasProximasFiltradas = consultasProximas.filter(con => con.estado ==='pagado' && con.paciente._id === auth._id  );
+const consultasCombinadas = consultasPendientes.concat(consultasProximasFiltradas);
+const motivosfiltrados = motivos
+  .filter(motivo => motivo.estado === "publicado" && 
+    (consultas.some(con => con.motivoconsulta === motivo._id && con.paciente === auth._id && con.estado === 'pendiente') || 
+    consultasProximasFiltradas.some(con => con.motivoconsulta === motivo._id && con.paciente === auth._id && con.estado === 'pendiente'))
+  ) 
+
+const numNotificaciones = consultasPendientes.length + consultasProximasFiltradas.length;
   const menus = [
     { name: "Inicio", link: "/paciente", icon: MdHome },
     { name: "Perfil", link: "/paciente/perfil-paciente", icon: MdAccountCircle },
     { name: "Mi historia clínica", link: "/paciente/historia-clinica", icon: MdListAlt },
     { name: "Motivos de consulta", link: "/paciente/consultas", icon: MdVoiceChat },
     { name: "Mis Horarios", link: "/paciente/agenda", icon: BiNotepad },
-    { name: "Mi agenda", link: "/paciente/horarios", icon: TfiAgenda },
     { name: "Cargar preguntas", link: "/paciente/consultas", icon: BsPatchQuestion },
     { name: "Buscar temas de interés", link: "/paciente/historia-clinica", icon: MdPermDeviceInformation },
     { name: "Buscar Profesionales", link: "/paciente/lista-profesionales", icon: FaUserMd },
@@ -103,9 +126,9 @@ const numNotificaciones= consultasPendientes.length
         <aside>
       <div 
       id="lateral"
-        className={`bg-teal-700 dark:bg-slate-800  mb-0  ${
+        className={`bg-lila-100 dark:bg-slate-800  mb-0  ${
           open ? "w-72" : "w-16"
-        } duration-500 text-gray-100 px-4  `}
+        } duration-500 text-white  px-4  `}
       >
         <div className="py-3 flex justify-end">
         <HiMenuAlt3
@@ -120,7 +143,7 @@ const numNotificaciones= consultasPendientes.length
         </div>
         {open ?   <div className="flex gap-x-4 items-center">
            <h1 className={`cursor-pointer font-nunito font-extrabold duration-500 text-2xl `}> Cimiento Clínico</h1>
-        
+         
           
            </div>
             : <div className="flex gap-x-4 items-center">
@@ -128,7 +151,7 @@ const numNotificaciones= consultasPendientes.length
          </div> }
          {open ?   <div className="flex gap-x-4 items-center">
            <h2 className={`cursor-pointer font-nunito duration-500 text-xl `}> Portal Pacientes</h2>
-        
+
           
            </div>
             : <div className="flex gap-x-4 items-center">
@@ -142,7 +165,7 @@ const numNotificaciones= consultasPendientes.length
     key={i}
     className={` ${
       menu4?.margin && "mt-5"
-    } group flex items-center text-sm  gap-3.5 font-medium p-2 hover:bg-gray-800 rounded-md`}
+    } group flex items-center text-sm  gap-3.5 font-medium p-2 hover:bg-lila-200 rounded-md`}
   >
     <div>{React.createElement(menu4?.icon, { size: "20" })}
       {!open && numNotificaciones > 0 && (
@@ -183,16 +206,24 @@ const numNotificaciones= consultasPendientes.length
       <div className="flex justify-end">
         <button className="text-sm font-semibold" onClick={handleCloseNotifications}>Cerrar❌</button>
       </div>
-      <div className=" pl-2">
-        {consultasPendientes.slice(0, 3).map((con) => (
-               <div key={con._id} className="mb-4">
-                <h1 className="text-white text-sm px-0.5 font-regular font-semibold"> Nueva propuesta de Consulta</h1>
-               <p className="text-white text-xs px-0.5 font-regular">Con el profesional {con.profesional.nombres} {con.profesional.apellidos} {`(${con.profesional.especialidad})`}  </p>
-                <div className="border mr-1 border-gray-700 rounded-md px-0.5">
-               </div>
-     
-             </div>
-        ))}
+      <div className="">
+      {consultasCombinadas.slice(0, 3).map((con) => (
+  <div key={con._id} className="mb-4">
+    {con.estado === 'pendiente' ? (
+      <>
+        <h1 className="text-white text-sm px-0.5 font-regular font-semibold"> Nueva propuesta de Consulta</h1>
+        <p className="text-white text-xs px-0.5 font-regular">Con el profesional {con.profesional.nombres} {con.profesional.apellidos} {`(${con.profesional.especialidad})`}  </p>
+      </>
+    ) : (
+      <div className="bg-lila-300 rounded-md">
+      < h1 className="text-white text-sm px-0.5 font-regular font-semibold"> RECORDATORIO DE CONSULTA</h1>
+      <p className="text-white text-xs px-0.5 font-regular">{con.paciente.nombres} recuerda que tienes una consulta para {new Date(con.fecha).toLocaleDateString()} a las {con.horarioinicio} <span className="text-lg">📅</span> </p>
+      </div>
+    )}
+    <div className="border mr-1 border-gray-700 rounded-md px-0.5"></div>
+  </div>
+))}
+
       </div>
      
       {numNotificaciones  > 0 && showNotifications &&(
@@ -220,7 +251,7 @@ const numNotificaciones= consultasPendientes.length
               key={i}
               className={` ${
                 menu?.margin && "mt-5"
-              } group flex items-center text-sm  gap-3.5 font-medium p-2 hover:bg-gray-800 rounded-md`}
+              } group flex items-center text-sm  gap-3.5 font-medium p-2 hover:bg-lila-200 rounded-md`}
             >
               <div>{React.createElement(menu?.icon, { size: "20" })}</div>
               <h2
@@ -254,7 +285,7 @@ const numNotificaciones= consultasPendientes.length
               key={i}
               className={` ${
                 menu3?.margin && "mt-5"
-              } group flex items-center text-sm  gap-3.5 font-medium p-2 hover:bg-gray-800 rounded-md  `}
+              } group flex items-center text-sm  gap-3.5 font-medium p-2 hover:bg-lila-200 rounded-md  `}
             >
               <div>{React.createElement(menu3?.icon, { size: "20" })}</div>
               <h2
@@ -287,7 +318,7 @@ const numNotificaciones= consultasPendientes.length
               key={i}
               className={` ${
                 menu2?.margin && "mt-5"
-              } group flex items-center text-sm  gap-3.5 font-medium p-2 hover:bg-gray-800 rounded-md`}
+              } group flex items-center text-sm  gap-3.5 font-medium p-2 hover:bg-lila-200 rounded-md`}
             >
               <div>{React.createElement(menu2?.icon, { size: "20" })}</div>
               <h2

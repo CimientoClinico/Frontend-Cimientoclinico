@@ -1,6 +1,7 @@
 import { useState, createContext } from "react";
 import clientAxios from "../../config/axios";
 import useAuth from "../../hooks/useAuth"
+
 const HistoriaCliContext = createContext()
 
 const HistoriaCliProvider = ({children})=>{
@@ -678,6 +679,8 @@ const config ={
         }
         }
       };
+
+
       const eliminarExamenes = async (id) => {
         const confirmar = await Swal.fire({
           title: '¿Estás seguro de eliminar este examen?',

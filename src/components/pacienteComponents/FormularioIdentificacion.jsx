@@ -80,7 +80,7 @@ const handleSubmit = async e =>{
             <input 
                 name="ocupacion"
                 type="text"
-                className=" font-normal font-nunito w-full outline-none border-none text-gray-600"
+                className=" font-normal w-full outline-none border-none text-gray-600"
                   placeholder="Ingresa tu ocupación" 
                   value={perfil.ocupacion || ''}
                   onChange={ e => setPerfil({
@@ -102,7 +102,7 @@ const handleSubmit = async e =>{
                     <input 
                     name="previsionsalud"
                     type="text" 
-                    className=" font-normal font-nunito w-full outline-none border-none text-gray-600"
+                    className=" font-normal  w-full outline-none border-none text-gray-600"
                       placeholder="Ingresa tu previsión de salud" 
                       value={perfil.previsionsalud || ''}
                       onChange={ e => setPerfil({
@@ -125,7 +125,7 @@ const handleSubmit = async e =>{
                 <input  
                 name="escolaridad"
                 type="text"
-                className=" font-normal font-nunito w-full outline-none border-none text-gray-600"
+                className=" font-normal  w-full outline-none border-none text-gray-600"
                   placeholder="Ingresa tu escolaridad"
                   value={perfil.escolaridad || ''}
                   onChange={ e => setPerfil({
@@ -140,7 +140,7 @@ const handleSubmit = async e =>{
           <hr />
           <div className='bg-white flex justify-center mt-2'>
           
-            <button className='px-10 py-3 rounded-md text-center mb-2 text-white  bg-indigo-400 hover:bg-indigo-600  '>Guardar💾</button>
+            <button className='px-10 py-3 rounded-md text-center mb-2 text-white  bg-lila-200 hover:bg-lila-100  '>Guardar 💾</button>
 
   </div>
 

@@ -47,12 +47,12 @@ const LoginProfesional = () => {
   const { msg}= alerta
   return (
     <>
-    <div className="bg-blue-400 h-screen w-screen">
+    <div className="bg-coral-200 h-screen w-screen">
     <div className="flex flex-col items-center flex-1 h-full justify-center px-4 sm:px-0">
         <div className="flex rounded-lg shadow-lg w-full sm:w-3/4 lg:w-3/4 bg-white sm:mx-0" >
         <div className="flex flex-col w-full md:w-1/2 p-4">
                 <div className="flex flex-col flex-1 justify-center mb-8">
-                <h1 id="textologo" className="font-bold font-nunito text-center text-4xl ">Cimiento Clínico</h1>
+                <h1  className="text-coral-200 font-bold font-nunito text-center text-4xl ">Cimiento Clínico</h1>
     <h3 className="font-semibold font-nunito text-center text-lg mb-5">Portal Profesionales</h3>
                     <div className="w-full mt-4">
                     {loading?    <div className=" container text-center">
@@ -104,21 +104,21 @@ const LoginProfesional = () => {
               </div>
 
                             <div className="flex flex-col mt-8">
-                                <button type="submit" className=" font-nunito font-regular bg-blue-500 hover:bg-blue-700 text-white text-sm font-semibold py-2 px-4 rounded-lg hover:-translate-y-1 transition-all duration-500">
+                                <button type="submit" className=" font-nunito font-regular bg-coral-200 hover:bg-coral-300 text-white text-sm font-semibold py-2 px-4 rounded-lg hover:-translate-y-1 transition-all duration-500">
                                       Iniciar Sesión
                                 </button>
                             </div>
                         </form>
                         <div className=" ml-20 flex  mt-4">
-                <Link to="/reset-pass-pro" className=" text-sm ml-2 hover:text-teal-700 cursor-pointer hover:-translate-y-1 duration-500 transition-all">Olvidaste tu contraseña?</Link>
-                <Link to="/" className=" text-sm ml-2 hover:text-teal-700 cursor-pointer hover:-translate-y-1 duration-500 transition-all">Registra tu cuenta aquí</Link>
+                <Link to="/reset-pass-pro" className=" text-sm ml-2 hover:text-coral-300 cursor-pointer hover:-translate-y-1 duration-500 transition-all">Olvidaste tu contraseña?</Link>
+                <Link to="/" className=" text-sm ml-2 hover:text-coral-300 cursor-pointer hover:-translate-y-1 duration-500 transition-all">Registra tu cuenta aquí</Link>
 
               </div>
                     </div>
                 </div>
             </div>
             <div className="hidden md:block md:w-1/2 rounded-r-lg " ><img className='' src={loginpro} alt="" />
-              <Link className='text-blue-800 font-nunito font-semibold  text-2xl hover:text-blue-500  ' to="/registrar"> <h1 className='animate-bounce py-10 px-10'>¿Quieres trabajar con nosotros? <span className='font-bold '>Registrate aquí</span></h1>  </Link>
+              <Link className='text-coral-300 font-nunito font-semibold  text-2xl hover:text-coral-100  ' to="/registrar"> <h1 className='animate-bounce py-10 px-10'>¿Quieres trabajar con nosotros? <span className='font-bold '>Registrate aquí</span></h1>  </Link>
             </div>
 
         </div>

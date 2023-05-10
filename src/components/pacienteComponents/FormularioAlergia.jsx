@@ -108,7 +108,7 @@ useEffect(()=>{
      className=" flex font-nunito  bg-indigo-300 text-white    justify-center cursor-pointer select-none rounded-lg  px-3.5 py-2  text-center peer-checked:bg-green-500 peer-checked:font-bold peer-checked:text-white">
        No❌</label>
  </div>
- <button className="text-white w-1/2 mx-auto max-w-sm rounded-md text-center bg-indigo-400 hover:bg-indigo-600 py-2 px-4 inline-flex items-center focus:outline-none md:float-right">
+ <button className="text-white w-1/2 mx-auto max-w-sm rounded-md text-center bg-lila-200 hover:bg-lila-100 py-2 px-4 inline-flex items-center focus:outline-none md:float-right">
    Guardar💾
   </button>
  </div>
@@ -162,7 +162,7 @@ useEffect(()=>{
      
       <div className="py-3 md:w-6/6  ">
         
-      <button className="text-white w-2/2 mx-auto max-w-sm rounded-md text-center bg-indigo-400 hover:bg-indigo-600 py-2 px-3 inline-flex items-center focus:outline-none md:float-right">
+      <button className="text-white w-2/2 mx-auto max-w-sm rounded-md text-center bg-lila-200 hover:bg-lila-100 py-2 px-4 inline-flex items-center focus:outline-none md:float-right">
          Agregar💾
         </button>
         
@@ -217,7 +217,7 @@ useEffect(()=>{
                ...perfilale4,
                [e.target.name] : e.target.value
              })} />
-<button className="text-white w-2/2 mx-auto max-w-sm rounded-md text-center bg-indigo-400 hover:bg-indigo-600 py-2 px-4 inline-flex items-center focus:outline-none md:float-right mr-4">
+<button className="text-white w-2/2 mx-auto max-w-sm rounded-md text-center bg-lila-200 hover:bg-lila-100 py-2 px-3 inline-flex items-center focus:outline-none md:float-right mr-4">
     Actualizar🔄
   </button>
   </form>

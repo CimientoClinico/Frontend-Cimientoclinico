@@ -3,11 +3,11 @@ const FooterPublico = () =>{
 
     return(
         
-        <footer id="footer" className="relative pt-8 pb-6">
+        <footer className=" bg-lila-300 relative pt-8 pb-6">
   <div className="container mx-auto px-4">
     <div className="flex flex-wrap text-left lg:text-left">
       <div className="w-full lg:w-6/12 px-4">
-        <h4 id="textoclaro"className="text-4xl font-nunito text-white font-bold">Cimiento Clínico</h4>
+        <h4 className="text-4xl font-nunito text-white font-regular">Cimiento Clínico</h4>
         <h5 className="text-lg mt-0 mb-2 font-nunito text-white font-regular">
           Lorem ipsum dolor sit amet consectetur adipisicing elit. 
         </h5>
@@ -23,56 +23,26 @@ const FooterPublico = () =>{
       <div className="w-full lg:w-6/12 px-4">
         <div className="flex flex-wrap items-top mb-6">
           <div className="w-full lg:w-4/12 px-4 ml-auto">
-            <span className="block uppercase text-white   text-sm font-semibold mb-2">Servicios</span>
+            <span className="block  text-white   text-sm font-semibold mb-2">Servicios</span>
             <ul className="list-unstyled">
               <li>
-                <a className="text-white  font-regular block pb-2 text-sm" href="#">Lorem Ipsum is</a>
+                <a className="block  text-white   text-sm font-semibold mb-2" href="#">Datos de seguridad</a>
               </li>
               <li>
-                <a className="text-white  font-regular block pb-2 text-sm" href="#">Lorem Ipsum is</a>
-              </li>
-              <li>
-                <a className="text-white  font-regular block pb-2 text-sm" href="#">Lorem Ipsum is</a>
-              </li>
-              <li>
-                <a className="text-white  font-regular block pb-2 text-sm" href="#">Lorem Ipsum is</a>
+                <a className="block  text-white   text-sm font-semibold mb-2" href="#">Misión visión</a>
               </li>
             </ul>
           </div>
           <div className="w-full lg:w-4/12 px-4">
-            <span className="block uppercase text-white   text-sm font-semibold mb-2">Preguntas frecuentes</span>
+            <span className="block text-white   text-sm font-semibold mb-2">Preguntas frecuentes</span>
             <ul className="list-unstyled">
               <li>
-                <a className="text-white  font-regular block pb-2 text-sm" href="#">Lorem Ipsum is</a>
+                <a className="block  text-white   text-sm font-semibold mb-2" href="#">Contacto</a>
               </li>
-              <li>
-                <a className="text-white  font-regular block pb-2 text-sm" href="#">Lorem Ipsum is</a>
-              </li>
-              <li>
-                <a className="text-white  font-regular block pb-2 text-sm" href="#">Lorem Ipsum is</a>
-              </li>
-              <li>
-                <a className="text-white  font-regular block pb-2 text-sm" href="#">Lorem Ipsum is</a>
-              </li>
+          
             </ul>
           </div>
-          <div className="w-full lg:w-4/12 px-4">
-            <span className="block uppercase text-white   text-sm font-semibold mb-2">Contacto</span>
-            <ul className="list-unstyled">
-              <li>
-                <a className="text-white  font-regular block pb-2 text-sm" href="#">Lorem Ipsum is</a>
-              </li>
-              <li>
-                <a className="text-white  font-regular block pb-2 text-sm" href="#">Lorem Ipsum is</a>
-              </li>
-              <li>
-                <a className="text-white  font-regular  block pb-2 text-sm" href="#">Lorem Ipsum is</a>
-              </li>
-              <li>
-                <a className="text-white  font-regular  block pb-2 text-sm" href="#">Lorem Ipsum is</a>
-              </li>
-            </ul>
-          </div>
+
         </div>
       </div>
     </div>

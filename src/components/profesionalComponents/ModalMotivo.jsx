@@ -2,10 +2,14 @@ import {  useState,useEffect } from "react";
 import moment from 'moment-timezone';
 import { Link } from "react-router-dom";
 import clientAxios from "../../config/axios";
+import dayjs from 'dayjs';
+import 'dayjs/locale/es';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
 export const ModalMotivo = ({ motivo, onClose}) => {
 
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
-  const [mensaje, setMensaje] = useState('');
+  const [mensaje, setMensaje] = useState('Hola, estoy interesado en tomar tu caso a través de Cimiento Clínico');
   const [fecha, setFecha] = useState('');
   const [horarioinicio, setHoraInicio] = useState('');
   const [horariofin, setHoraFin] = useState('');
@@ -14,7 +18,7 @@ export const ModalMotivo = ({ motivo, onClose}) => {
   const [esTarifaGlobal, setEsTarifaGlobal] = useState(true);
   const[ tarifas, setTarifas]= useState([])
   const[ tarifasglobales, setTarifasglobales]= useState([])
-
+  const fechaActualChile = dayjs().tz('America/Santiago');
   const abrirFormulario = () => {
     setMostrarFormulario(true);
   };
@@ -95,8 +99,12 @@ export const ModalMotivo = ({ motivo, onClose}) => {
         Swal.fire('¡Error!', 'Por favor, agrege hora de fin para la consulta.', 'error');
         return;
       }
-      if (esTarifaGlobal && tarifaId) {
+      if (tarifaGlobalId && tarifaId) {
         Swal.fire('¡Error!', 'No puede agregar una tarifa global y una tarifa personalizada al mismo tiempo.', 'error');
+        return;
+      }
+      if (!tarifaGlobalId && !tarifaId) {
+        Swal.fire('¡Error!', 'Agrege una tarifa para la consulta', 'error');
         return;
       }
   
@@ -193,7 +201,7 @@ export const ModalMotivo = ({ motivo, onClose}) => {
             <li key={enfermedad._id} className="mb-4">
               <h4 className="text-md font-bold mb-2">{enfermedad.nombre}</h4>
               {enfermedad.fechadiagnostico ? (
-                <p className="text-gray-700 mb-2">Fecha de diagnóstico: {formatearFecha(enfermedad.fechadiagnostico)}</p>
+                <p className="text-gray-700 mb-2">Fecha de diagnóstico: {enfermedad.fechadiagnostico}</p>
               ) : (
                 ''
               )}
@@ -364,112 +372,19 @@ export const ModalMotivo = ({ motivo, onClose}) => {
                   
                   <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Formulario consulta</h3>
                   <h1 className="text-md "> ⌚ Horarios disponibles Paciente:</h1>
-                
-                {motivo.paciente.lunes === false && motivo.paciente.martes === false && motivo.paciente.miercoles === false 
-                && motivo.paciente.jueves === false  && motivo.paciente.viernes === false   && motivo.paciente.sabado === false 
-                 && motivo.paciente.domingo === false 
-                 ?'Paciente no tiene horarios agregados':  
-                 <div className=" grid grid-cols-2  mr-20 gap-2 w-full rounded-md  bg-gray-200 py-4 px-2 text-sm text-gray-800"> 
-                 
-                  {motivo.paciente.lunes === true && motivo.paciente.lunesinicio && motivo.paciente.lunesfin  ? 
-                    <div className="bg-indigo-300 px-2 rounded-lg">
-                      <h1 className="font-semibold">Lunes</h1>
-                  <p className="text-sm"> {motivo.paciente.lunesdia.split(',').map((num) => {
-                    const date = new Date();
-                    date.setDate(num);
-                    const mes = date.toLocaleString('es', {month: 'long'});
-                    return ` ${num} de ${mes}`;
-                  }).join(', ')}
-                      </p>
-                  <div>{' Horario:'} {motivo.paciente.lunesinicio}  {'-'} {motivo.paciente.lunesfin}</div>     
-                     </div>        
-                  : ''}
-      {motivo.paciente.martes === true && motivo.paciente.martesinicio && motivo.paciente.martesfin  ? 
-    <div className="bg-indigo-300 px-2 rounded-lg">
-        <h1 className="font-semibold">Martes</h1>
-        <p className="text-sm"> {motivo.paciente.martesdia.split(',').map((num) => {
-            const date = new Date();
-            date.setDate(num);
-            const mes = date.toLocaleString('es', {month: 'long'});
-            return ` ${num} de ${mes}`;
-        }).join(', ')}
-        </p>
-        <div>{' Horario:'} {motivo.paciente.martesinicio}  {'-'} {motivo.paciente.martesfin}</div>     
-    </div>        
-: ''}
-
-{motivo.paciente.miercoles === true && motivo.paciente.miercolesinicio && motivo.paciente.miercolesfin  ? 
-    <div className="bg-indigo-300 px-2 rounded-lg">
-        <h1 className="font-semibold">Miércoles</h1>
-        <p className="text-sm"> {motivo.paciente.miercolesdia.split(',').map((num) => {
-            const date = new Date();
-            date.setDate(num);
-            const mes = date.toLocaleString('es', {month: 'long'});
-            return ` ${num} de ${mes}`;
-        }).join(', ')}
-        </p>
-        <div>{' Horario:'} {motivo.paciente.miercolesinicio}  {'-'} {motivo.paciente.miercolesfin}</div>     
-    </div>        
-: ''}
-{motivo.paciente.jueves === true && motivo.paciente.juevesinicio && motivo.paciente.juevesfin ? 
-  <div className="bg-indigo-300 px-2 rounded-lg">
-    <h1 className="font-semibold">Jueves</h1>
-    <p className="text-sm"> {motivo.paciente.juevesdia.split(',').map((num) => {
-      const date = new Date();
-      date.setDate(num);
-      const mes = date.toLocaleString('es', {month: 'long'});
-      return ` ${num} de ${mes}`;
-    }).join(', ')}
-    </p>
-    <div>{' Horario:'} {motivo.paciente.juevesinicio}  {'-'} {motivo.paciente.juevesfin}</div>     
-  </div>            
-: ''}
-
-{motivo.paciente.viernes === true && motivo.paciente.viernesinicio && motivo.paciente.viernesfin ? 
-  <div className="bg-indigo-300 px-2 rounded-lg">
-    <h1 className="font-semibold">Viernes</h1>
-    <p className="text-sm"> {motivo.paciente.viernesdia.split(',').map((num) => {
-      const date = new Date();
-      date.setDate(num);
-      const mes = date.toLocaleString('es', {month: 'long'});
-      return ` ${num} de ${mes}`;
-    }).join(', ')}
-    </p>
-    <div>{' Horario:'} {motivo.paciente.viernesinicio}  {'-'} {motivo.paciente.viernesfin}</div>     
-  </div>            
-: ''}
-
-{motivo.paciente.sabado === true && motivo.paciente.sabadoinicio && motivo.paciente.sabadofin ? 
-  <div className="bg-indigo-300 px-2 rounded-lg">
-    <h1 className="font-semibold">Sábado</h1>
-    <p className="text-sm"> {motivo.paciente.sabadodia.split(',').map((num) => {
-      const date = new Date();
-      date.setDate(num);
-      const mes = date.toLocaleString('es', {month: 'long'});
-      return ` ${num} de ${mes}`;
-    }).join(', ')}
-    </p>
-    <div>{' Horario:'} {motivo.paciente.sabadoinicio}  {'-'} {motivo.paciente.sabadofin}</div>     
-  </div>            
-: ''}
-
-{motivo.paciente.domingo === true && motivo.paciente.domingoinicio && motivo.paciente.domingofin ? 
-  <div className="bg-indigo-300 px-2 rounded-lg">
-    <h1 className="font-semibold">Domingo</h1>
-    <p className="text-sm"> {motivo.paciente.domingodia.split(',').map((num) => {
-      const date = new Date();
-      date.setDate(num);
-      const mes = date.toLocaleString('es', {month: 'long'});
-      return ` ${num} de ${mes}`;
-    }).join(', ')}
-    </p>
-    <div>{' Horario:'} {motivo.paciente.domingoinicio}  {'-'} {motivo.paciente.domingofin}</div>     
-  </div>            
-: ''}
-                 </div>
-                 
-
-                }  
+                  <div className='bg-lila-100 rounded-lg'>
+                  {motivo.horariopaciente ? 
+  <div className="grid grid-cols-3 grid-flow-row gap-4 px-1 py-2 mt-4">
+    {motivo.horariopaciente.filter((horario) => dayjs(horario.fecha).isSameOrAfter(fechaActualChile, 'day')).map((horario) => (
+        <div key={horario._id} className="bg-gray-100 py-2 px-1 text-xs text-gray-800 rounded-md">
+            <h4 className="text-xs font-regular mb-2">{dayjs(horario.fecha).format('DD-MM-YYYY')}</h4>
+            <h4 className="text-xs font-regular mb-2">{horario.horarioinicio} - {horario.horariofin}</h4>
+        </div>
+    ))}
+  </div>
+  : <p className="mt-4">Sin horarios</p>
+}
+</div>
                
                 
   <div class="mb-4">
@@ -483,57 +398,70 @@ export const ModalMotivo = ({ motivo, onClose}) => {
    ></textarea>
     </div>
     <div>
- <div className="bg-blue-400 px-1 py-1 rounded-lg w-3/4">
+ <div className="bg-lila-300 px-1 py-1 rounded-lg w-3/4">
   
   <h1 className="text-white text-xs"> <span className="font-bold">Nota:</span> Solo puedes agregar un tipo de tarifa para cada consulta. </h1>
  </div>
-<div className="flex px-2 justify-between w-full pt-2">
-      <div class="mb-4">
-        <label for="valor" class="block text-gray-700 font-bold mb-2">
-          Tarifas globales:
-        </label>
-        <select
-          className="w-full border border-gray-300 p-2 rounded-lg appearance-none"
-          value={tarifaGlobalId}
-          onChange={(e) => {setTarifaGlobal(e.target.value);
-            setEsTarifaGlobal(true);}} 
-        >
-          <option value="">Selecciona una tarifa global</option>
-          {tarifasglobales.map((tari) => (
-            <option key={tari._id} value={tari._id}>
-              {tari.nombre} ({'$'}{tari.valor.toLocaleString('es-CL')}, {tari.tiempo} {'Min'})
-            </option>
-          ))}
-        </select>
-        {tarifas.length > 0 ? (
-         ''
-        ) : (
-          <button className="text-blue-500 hover:text-blue700">Crea tus propias tarifas</button>
-        )}
-      </div>
+ <div className="flex px-2 justify-center gap-2 flex-wrap">
+  <div className="mb-4 flex flex-col items-center justify-center">
+    <label for="valor" className=" text-gray-700 font-bold mb-2">
+      Tarifas globales:
+    </label>
+    <select
+      className="w-50 border max-w-2xl border-gray-300 p-2 rounded-lg "
+      value={tarifaGlobalId}
+      onChange={(e) => {
+        setTarifaGlobal(e.target.value);
+        setEsTarifaGlobal(e.target.value !== '');
+      }}
+    >
+      <option value="">Selecciona una tarifa global</option>
+      {tarifasglobales.map((tari) => (
+        <option key={tari._id} value={tari._id}>
+          {tari.nombre} ({'$'}
+          {tari.valor.toLocaleString('es-CL')}, {tari.tiempo} {'Min'})
+        </option>
+      ))}
+    </select>
 
-      <div class="mb-4">
-        <label for="valor" class="block text-gray-700 font-bold mb-2">
-          Tarifas personalizadas:
-        </label>
-        <select
-          className="w-full border border-gray-300 p-2 rounded-lg appearance-none"
-          value={tarifaId}
-          onChange={(e) => {
-            setTarifaId(e.target.value);
-            setEsTarifaGlobal(false);
-          }}
-        >
-          <option value="">Selecciona una tarifa</option>
-          {tarifas.map((tari) => (
-            <option key={tari._id} value={tari._id}>
-               {tari.nombre} ({'$'}{tari.valor.toLocaleString('es-CL')}, {tari.tiempo} {'Min'})
-            </option>
-          ))}
-        </select>
+  </div>
 
-      </div>
-</div>      
+  <div className="mb-4 flex flex-col items-center justify-center ">
+    <label for="valor" className="block text-gray-700 font-bold mb-2">
+      Tarifas personalizadas:
+    </label>
+    <select
+      className="w-64 max-w-5xl border border-gray-300 p-2 rounded-lg"
+      value={tarifaId}
+      onChange={(e) => {
+        setTarifaId(e.target.value);
+        if (e.target.value === '') {
+          setEsTarifaGlobal(true);
+        } else {
+          setEsTarifaGlobal(false);
+        }
+      }}
+    >
+      <option value="">Selecciona una tarifa</option>
+      {tarifas.map((tari) => (
+        <option key={tari._id} value={tari._id}>
+          {tari.nombre} ({'$'}
+          {tari.valor.toLocaleString('es-CL')}, {tari.tiempo} {'Min'})
+        </option>
+      ))}
+    </select>
+  </div>
+  <div>
+      {tarifas.length > 0 ? (
+        ''
+      ) : (
+        <Link to={'/profesional/tarifas'} className="text-blue-500 hover:text-blue-700 ">
+          Crea tus propias tarifas
+        </Link>
+      )}
+    </div>
+</div>
+   
 
   </div>
 
@@ -545,7 +473,9 @@ export const ModalMotivo = ({ motivo, onClose}) => {
   name="fecha"
   value={fecha}
   onChange={(e) => setFecha(e.target.value)}
-  class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
+  min={new Date().toISOString().split('T')[0]}
+  class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+/>
   </div>
   <div class="mb-4">
   <label for="horaInicio" class="block text-gray-700 font-bold mb-2">Hora de inicio</label>
@@ -578,10 +508,10 @@ export const ModalMotivo = ({ motivo, onClose}) => {
             </div>
             <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
               <span class="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
-                <button class="bg-blue-500 px-2 py-2 rounded-md text-white hover:bg-blue-700" onClick={() =>enviarNotificacion()}>Tomar este caso</button>
+                <button class="bg-lila-200 px-2 py-2 rounded-md text-white hover:bg-lila-100" onClick={() =>enviarNotificacion()}>Tomar este caso</button>
               </span>
                         <span className="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
-                        <button type="button" onClick={cerrarFormulario} className="inline-flex justify-center w-full rounded-md border border-gray-300 px-4 py-2 bg-white text-base leading-6 font-medium text-gray-700 shadow-sm hover:text-gray-500 focus:outline-none focus:border-blue-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5">
+                        <button type="button" onClick={cerrarFormulario} className="inline-flex justify-center w-full rounded-md  px-4 py-2 bg-coral-200 hover:bg-coral-100 text-white text-base leading-6 font-medium  shadow-sm  focus:outline-none  focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5">
                         Cancelar
                         </button>
                         </span>
@@ -591,7 +521,7 @@ export const ModalMotivo = ({ motivo, onClose}) => {
                         </div>
                         ) : (
                           <div className=" bg-gray-50 px-4 py-3 sm:px-6 sm:flex justify-center">
-                        <button onClick={abrirFormulario} className="  w-full inline-flex justify-center rounded-md border border-transparent px-10 py-2 mb-2 bg-blue-600  font-regular text-white hover:bg-blue-700  sm:ml-3 sm:w-auto sm:text-md">
+                        <button onClick={abrirFormulario} className="  w-full inline-flex justify-center rounded-md border border-transparent px-10 py-2 mb-2 bg-lila-300  font-regular text-white hover:bg-lila-200  sm:ml-3 sm:w-auto sm:text-md">
                         Tomar caso
                         </button>
                         </div>
@@ -601,11 +531,11 @@ export const ModalMotivo = ({ motivo, onClose}) => {
           <button
             onClick={onClose}
             type="button"
-            className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 mb-2 bg-red-600 text-base font-medium text-white hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2  sm:ml-3 sm:w-auto sm:text-sm"
+            className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 mb-2 bg-coral-200 text-base font-medium text-white hover:bg-coral-100 focus:outline-none focus:ring-2 focus:ring-offset-2  sm:ml-3 sm:w-auto sm:text-sm"
           >
             Cerrar
           </button>
-          <button className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 mb-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2  sm:ml-3 sm:w-auto sm:text-sm ">
+          <button className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 mb-2 bg-lila-200 text-base font-medium text-white hover:bg-lila-100 focus:outline-none focus:ring-2 focus:ring-offset-2  sm:ml-3 sm:w-auto sm:text-sm ">
         <Link to={`/profesional/vermotivo/${motivo._id}`}>Abrir Mótivo</Link>
       </button>
         </div>

@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import clientAxios from "../../config/axios";
 import proAuth from "../../hooks/proAuth"
 import HeaderConsultasPro from "./HeaderConsultasPro";
-import BorrarNotificaciones from "./BorrarNotificaciones";
+import { Link } from "react-router-dom";
 const ListaConsultaAceptadas = () => {
     const [consultas, setConsultas] = useState([]);
     const {authpro} =  proAuth()
@@ -57,52 +57,56 @@ const ListaConsultaAceptadas = () => {
     <div>
       
     { consultaspro.length?
-     <div className="container mx-auto mt-10">  
-       <BorrarNotificaciones/>
-       <div className="  container mx-auto shadow-lg mt-1">
-       <div className="-mx-4 flex flex-wrap">
-         <div className="w-full px-4">
-           <div className="max-w-full overflow-x-auto overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
-                 <table className="border-collapse w-full min-w-full divide-y divide-gray-300">
-                     <thead className="bg-green-600 ">
-                         <tr>
-                             <th scope="col" className=" font-nunito pr-3 text-center text-sm  font-semibold text-white sm:pl-6">Motivo de consulta</th>
-                             <th scope="col" className="px-3 py-3.5 font-nunito text-center text-sm font-semibold text-white">Fecha de la consulta</th>
-                             <th scope="col" className="px-3 py-3.5 font-nunito text-center text-sm font-semibold text-white">Hora de inicio</th>
-                             <th scope="col" className="px-3 py-3.5 font-nunito  text-center text-sm font-semibold text-white">Hora de fin</th>
-                             <th scope="col" className="px-3 py-3.5 font-nunito text-center text-sm font-semibold text-white">Tarifa</th>
-                             <th scope="col" className="px-3 py-3.5 font-nunito text-center text-sm font-semibold text-white">Fecha de creación</th>
-                             <th scope="col" className="px-3 py-3.5 font-nunito text-center text-sm font-semibold text-white">Estado</th>
-                             <th scope="col" className="font-bold font-nunito text-center text-white ">Acciones </th>
-                         </tr>
-                     </thead>
-                     <tbody className="divide-y divide-gray-200 bg-white">
-                     {consultaspro.map(consulta => (
-                         <tr key={consulta._id}>
-                             <td className="text-center py-4 pl-4 pr-3 text-sm font-semibold text-gray-900 sm:pl-6">{consulta.motivoconsulta.titulo}</td>
-                             <td className="text-center px-3 py-4 text-sm">{ formatearFecha(consulta.fecha) }</td>
-                             <td className="text-center px-3 py-4 text-sm">{consulta.horarioinicio} </td>
-                             <td className="text-center px-3 py-4 text-sm">{consulta.horariofin} </td>
-                             {consulta.tarifaGlobal 
-                            ?
-                            <td className="text-center px-3 py-4 text-sm"> {'$'}{consulta.tarifaGlobal.valor.toLocaleString('es-CL')}</td>
-                            :
-                            <td className="text-center px-3 py-4 text-sm"> {'$'}{consulta.tarifa.valor.toLocaleString('es-CL')}</td>
+      <div className="container mx-auto mt-10">
+  <div className="container mx-auto shadow-lg mt-1">
+    <div className="-mx-4 flex flex-wrap">
+      <div className="w-full px-4">
+        <div className="max-w-full overflow-x-auto overflow-hidden shadow ring-1 ring-black ring-opacity-5 md:rounded-lg">
+          <table className="border-collapse w-full min-w-full divide-y divide-gray-300">
+            <thead className="bg-green-600 ">
+              <tr>
+                <th scope="col" className=" font-nunito pr-3 text-center text-sm font-semibold text-white sm:pl-6">Motivo de consulta</th>
+                <th scope="col" className="px-3 py-3.5 font-nunito text-center text-sm font-semibold text-white ">Fecha de la consulta</th>
+                <th scope="col" className="px-3 py-3.5 font-nunito text-center text-sm font-semibold text-white hidden md:table-cell">Hora de inicio</th>
+                <th scope="col" className="px-3 py-3.5 font-nunito text-center text-sm font-semibold text-white hidden md:table-cell">Hora de fin</th>
+                <th scope="col" className="px-3 py-3.5 font-nunito text-center text-sm font-semibold text-white">Tarifa</th>
+                <th scope="col" className="px-3 py-3.5 font-nunito text-center text-sm font-semibold text-white hidden md:table-cell">Fecha de creación</th>                <th scope="col" className="font-bold font-nunito text-center text-sm  text-white">Acciones </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-200 bg-white">
+              {consultaspro.map(consulta => (
+              <tr key={consulta._id}>
+                <td className="text-center py-4 pl-4 pr-3 text-sm font-semibold text-gray-900 sm:pl-6">{consulta.motivoconsulta.titulo}</td>
+                <td className="text-center px-3 py-4 text-sm ">{ formatearFecha(consulta.fecha) }</td>
+                <td className="text-center px-3 py-4 text-sm hidden md:table-cell">{consulta.horarioinicio} </td>
+                <td className="text-center px-3 py-4 text-sm hidden md:table-cell">{consulta.horariofin} </td>
+                {consulta.tarifaGlobal 
+                ?
+                <td className="text-center px-3 py-4 text-sm "> {'$'}{consulta.tarifaGlobal.valor.toLocaleString('es-CL')}</td>
+                :
+                <td className="text-center px-3 py-4 text-sm"> {'$'}{consulta.tarifa.valor.toLocaleString('es-CL')}</td>
                             }
-                          <td className="text-center px-3 py-4 text-sm">{ formatearFecha(consulta.fechaCreacion) } </td>
+                          <td className="text-center px-3 py-4 text-sm hidden md:table-cell">{ formatearFecha(consulta.fechaCreacion) } </td>
  
-                             <td className="text-center px-3 py-4 text-sm">
-                                 <span className="flex justify-center">
-                                 {(consulta.estado === 'pagado'? 'Aceptada' :'' )}
-                                 </span>
-                             </td>   
-                             <td className="  md:border md:border-grey-500 text-center block md:table-cell">  
-                             <button
-                             className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-nunito font-semibold mr-1 py-1 px-2  rounded">Ver más
-                             </button>
-                           
-                             
-                             </td>
+                             <td className="py-3 pr-3 text-center block sm:hidden">
+  <Link  to={`/profesional/consulta/${consulta._id}`} className="bg-green-500 hover:bg-green-400 text-white text-sm font-nunito font-semibold mr-1 py-1 px-2 rounded">
+    Ver más
+  </Link>
+</td>
+
+<td className="hidden sm:table-cell md:border md:border-grey-500 text-center">
+  <Link to={`/profesional/consulta/${consulta._id}`} className="bg-green-500 hover:bg-green-400 text-white text-sm font-nunito font-semibold mr-1 py-1 px-2 rounded">
+    Ver más
+  </Link>
+</td>
+
+<td className="hidden sm:hidden">
+  <div className="flex justify-center">
+    <Link to={`/profesional/consulta/${consulta._id}`} className="bg-green-500 hover:bg-green-400 text-white text-sm font-nunito font-semibold mr-1 py-1 px-2 rounded">
+      Ver más
+    </Link>
+  </div>
+</td>
                              </tr>
                          ))}
                      </tbody>
@@ -114,7 +118,7 @@ const ListaConsultaAceptadas = () => {
        </div>
       :
       <div className="flex justify-center py-10  ">
-        <div className="bg-blue-400 px-10 py-10 rounded-lg">
+        <div className="bg-lila-200 px-10 py-10 rounded-lg">
         <h1 className="text-2xl text-white">Aún no tienes Consultas Aceptadas</h1>
         </div>
      

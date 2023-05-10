@@ -33,7 +33,7 @@ useEffect(() => {
 
 
 
-   <div className="md:flex  lg:gap-24 xs:gap-0 ">
+   <div className="md:flex  lg:gap-14 xs:gap-0 ">
     <div className="sm:w-1/6 xl:w-3/6 ml-4 md:mb-0 ">
     <h1 className="text-gray-600 font-nunito font-semibold text-lg py-5 xl:ml-20 xs:ml-0 ">¿Eres fumador?</h1>
     </div>
@@ -63,7 +63,7 @@ useEffect(() => {
      className=" flex font-nunito  bg-indigo-300 text-white    justify-center cursor-pointer select-none rounded-lg  px-3.5 py-2  text-center peer-checked:bg-green-500 peer-checked:font-bold peer-checked:text-white">
        No❌</label>
  </div>
- <button className="text-white w-1/2 mx-auto max-w-sm rounded-md text-center bg-indigo-400 hover:bg-indigo-600 py-2 px-4 inline-flex items-center focus:outline-none md:float-right">
+ <button className="text-white  w-1/2 mx-auto max-w-sm rounded-md text-center bg-lila-200 hover:bg-lila-100 py-2 px-3 text-md inline-flex items-center focus:outline-none md:float-right">
    Guardar💾
   </button>
  </div>
@@ -98,16 +98,16 @@ useEffect(() => {
 <div className={`${ocultarseccion?'block':'hidden'} xs:block `}>
   <div className="md:inline-flex w-full space-y-2 md:space-y-0 p-2 text-gray-700 items-center">
     <div className="flex  ">
-      <h1 className=" font-bold ml-5 mt-1">Tabaquismo: Si </h1>
+      <h1 className=" font-bold ml-7 mt-1">Tabaquismo: Si </h1>
     </div>
-<div className="md:w-9/12 text-center ml-10 md:pl-6">
+<div className="md:w-8/12 text-center ml-20 md:pl-6">
 <form onSubmit={ SiFumador}>
 <input type="radio" name="fumador" className="peer hidden border border-gray-200 " value='Sin datos' checked
               onChange={ e => setPerfild2({
                ...perfild2,
                [e.target.name] : e.target.value
              })} />
-<button className="text-white w-2/2 mx-auto max-w-sm rounded-md text-center bg-indigo-400 hover:bg-indigo-600 py-2 px-4 inline-flex items-center focus:outline-none md:float-right mr-5">
+<button className="text-white w-2/2 text-sm mx-auto max-w-sm rounded-md text-center bg-lila-200 hover:bg-lila-100 py-2 px-3 inline-flex items-center focus:outline-none md:float-right mr-1">
     Actualizar🔄
   </button>
   </form>
@@ -141,14 +141,14 @@ useEffect(() => {
     <div className="flex">
       <h1 className=" font-bold ml-5 mt-1">Tabaquismo: No</h1>
     </div>
-<div className="md:w-9/12 text-center ml-20 md:pl-6">
+<div className="md:w-8/12 text-center ml-20 md:pl-6">
 <form onSubmit={ SiFumador}>
 <input type="radio" name="fumador" className="peer hidden border border-gray-200 " value='Sin datos' checked
               onChange={ e => setPerfild2({
                ...perfild2,
                [e.target.name] : e.target.value
              })} />
-<button className="text-white w-2/2 mx-auto max-w-sm rounded-md text-center bg-indigo-400 hover:bg-indigo-600 py-2 px-4 inline-flex items-center focus:outline-none md:float-right xl:mr-16">
+<button className="text-white text-sm w-2/2 mx-auto max-w-sm rounded-md text-center bg-lila-200 hover:bg-lila-100 py-2 px-3 inline-flex items-center focus:outline-none md:float-right mr-1 ">
     Actualizar🔄
   </button>
   </form>

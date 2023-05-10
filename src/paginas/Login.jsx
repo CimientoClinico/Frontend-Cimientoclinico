@@ -47,7 +47,7 @@ const Login = () => {
         <>
  
 <div className="h-screen flex">
-          <div id="primario" className="hidden lg:flex w-full lg:w-1/2 login_img_section
+          <div className=" bg-lila-100 hidden lg:flex w-full lg:w-1/2 login_img_section
           justify-around items-center">
             <div 
                   className=" 
@@ -62,7 +62,7 @@ const Login = () => {
                <Link to="/"><img src={login} alt="" /></Link>
                
               <h1 className="text-white text-3xl font-nunito font-bold ">Ingresa a Cimiento Clínico y agenda tus consultas de telemedicina</h1>
-              <Link className='text-indigo-700 font-nunito font-semibold text-3xl hover:text-indigo-500  ' to="/registrar"> <h1 className='animate-bounce'>¿No tienes cuenta? <span className='font-bold '>Registrate aquí</span></h1>  </Link>
+              <Link className='text-lila-300 font-nunito font-semibold text-3xl hover:text-indigo-500  ' to="/registrar"> <h1 className='animate-bounce'>¿No tienes cuenta? <span className='font-bold '>Registrate aquí</span></h1>  </Link>
 
             </div>
           </div>
@@ -82,7 +82,7 @@ const Login = () => {
             <Alerta
             alerta={alerta}/>}
             <form onSubmit={handleSubmit} className="bg-white rounded-md shadow-2xl p-5">
-              <h1  id="textologo"className="font-extrabold font-nunito text-2xl mb-1 text-center">Cimiento Clínico</h1>
+              <h1 className="text-lila-200 font-extrabold font-nunito text-2xl mb-1 text-center">Cimiento Clínico</h1>
               <p className="text-md font-nunito text-gray-400 font-normal mb-8 text-center">Inicio de sesión</p>
               <div className="flex items-center border-2 mb-8 py-2 px-3 rounded-2xl">
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -122,11 +122,11 @@ const Login = () => {
 
 
               
-              <button id="primario" type="submit" className="block w-full font-nunito py-2 rounded-2xl hover:bg-indigo-700 hover:-translate-y-1 transition-all duration-500 text-white font-semibold mb-2">Login</button>
+              <button  type="submit" className=" bg-lila-200 block w-full font-nunito py-2 rounded-2xl hover:bg-lila-300 hover:-translate-y-1 transition-all duration-500 text-white font-semibold mb-2">Login</button>
               <div className="flex justify-between mt-4">
-                <Link to="/olvide-password" className="text-sm ml-2 hover:text-teal-700 cursor-pointer hover:-translate-y-1 duration-500 transition-all">Olvidaste tu contraseña?</Link>
+                <Link to="/olvide-password" className="text-sm ml-2 hover:text-lila-300 cursor-pointer hover:-translate-y-1 duration-500 transition-all">Olvidaste tu contraseña?</Link>
 
-                <Link to="/registrar" className="text-sm ml-2 hover:text-teal-700 cursor-pointer hover:-translate-y-1 duration-500 transition-all">No tienes una cuenta?</Link>
+                <Link to="/registrar" className="text-sm ml-2 hover:text-lila-300 cursor-pointer hover:-translate-y-1 duration-500 transition-all">No tienes una cuenta?</Link>
               </div>
               
             </form>

@@ -1,10 +1,10 @@
 
-import HeaderConsultasPro from "../../components/profesionalComponents/HeaderConsultasPro"
+import ListaConsultaRechazada from "../../components/profesionalComponents/ListaConsultaRechazada"
 
 const ConsultasRechazadas = () => {
   return (
     <>
- <HeaderConsultasPro/>
+ <ListaConsultaRechazada/>
     </>
   )
 }

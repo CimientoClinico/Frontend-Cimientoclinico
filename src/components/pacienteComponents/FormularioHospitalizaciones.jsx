@@ -180,7 +180,7 @@ useEffect(()=>{
      className=" flex font-nunito  bg-indigo-300 text-white    justify-center cursor-pointer select-none rounded-lg  px-3.5 py-2  text-center peer-checked:bg-green-500 peer-checked:font-bold peer-checked:text-white">
        No❌</label>
  </div>
- <button className="text-white w-1/2 mx-auto max-w-sm rounded-md text-center bg-indigo-400 hover:bg-indigo-600 py-2 px-4 inline-flex items-center focus:outline-none md:float-right">
+ <button className="text-white w-1/2 mx-auto max-w-sm rounded-md text-center bg-lila-200 hover:bg-lila-100 py-2 px-4 inline-flex items-center focus:outline-none md:float-right">
    Guardar💾
   </button>
  </div>
@@ -230,7 +230,7 @@ useEffect(()=>{
      
       <div className="py-3 md:w-6/6  ">
         
-      <Link to={"/paciente/eventos"} className="text-white w-2/2 mx-auto max-w-sm rounded-md text-center bg-indigo-400 hover:bg-indigo-600 py-2 px-3 inline-flex items-center focus:outline-none md:float-right">
+      <Link to={"/paciente/eventos"} className="text-white w-2/2 mx-auto max-w-sm rounded-md text-center bg-lila-200 hover:bg-lila-100 py-2 px-4 inline-flex items-center focus:outline-none md:float-right">
          Agregar💾
         </Link>
         
@@ -303,7 +303,7 @@ useEffect(()=>{
                ...perfil4,
                [e.target.name] : e.target.value
              })} />
-<button className="text-white w-2/2 mx-auto max-w-sm rounded-md text-center bg-indigo-400 hover:bg-indigo-600 py-2 px-4 inline-flex items-center focus:outline-none md:float-right">
+<button className="text-white w-2/2 mx-auto max-w-sm rounded-md text-center bg-lila-200 hover:bg-lila-100 py-2 px-3 inline-flex items-center focus:outline-none md:float-right">
     Actualizar🔄
   </button>
   </form>
@@ -356,7 +356,7 @@ useEffect(()=>{
      className=" flex font-nunito  bg-indigo-300 text-white    justify-center cursor-pointer select-none rounded-lg  px-3.5 py-2  text-center peer-checked:bg-green-500 peer-checked:font-bold peer-checked:text-white">
        No❌</label>
  </div>
- <button className="text-white w-1/2 mx-auto max-w-sm rounded-md text-center bg-indigo-400 hover:bg-indigo-600 py-2 px-4 inline-flex items-center focus:outline-none md:float-right">
+ <button className="text-white w-1/2 mx-auto max-w-sm rounded-md text-center bg-lila-200 hover:bg-lila-100 py-2 px-4 inline-flex items-center focus:outline-none md:float-right">
    Guardar💾
   </button>
  </div>
@@ -388,7 +388,7 @@ useEffect(()=>{
      
       <div className="py-3 md:w-6/6  ">
         
-      <button className="text-white w-2/2 mx-auto max-w-sm rounded-md text-center bg-indigo-400 hover:bg-indigo-600 py-2 px-3 inline-flex items-center focus:outline-none md:float-right">
+      <button className="text-white w-2/2 mx-auto max-w-sm rounded-md text-center bg-lila-200 hover:bg-lila-100 py-2 px-4 inline-flex items-center focus:outline-none md:float-right">
          Agregar💾
         </button>
         
@@ -402,8 +402,7 @@ useEffect(()=>{
     { urgencias.length ?
 
 <div className=" flex mt-2 flex-col lg:flex-row px-1">
-<h1 className=" text-gray-700  font-nunito pl-10 pr-1 "> Tus atenciones en urgencias:</h1>
-  <div className="  grid grid-cols-2 gap-1    ">{urgencias.map(urg => (
+  <div className="  px-8  grid grid-cols-3 gap-1   ">{urgencias.map(urg => (
     
     <div key={urg._id} className="flex  ">
        <h2 className="text-gray-500 font-nunito text-sm mt-1"> {urg.nombreUrg},</h2> 
@@ -436,7 +435,7 @@ useEffect(()=>{
                ...perfil3,
                [e.target.name] : e.target.value
              })} />
-<button className="text-white w-2/2 mx-auto max-w-sm rounded-md text-center bg-indigo-400 hover:bg-indigo-600 py-2 px-4 inline-flex items-center focus:outline-none md:float-right">
+<button className="text-white w-2/2 mx-auto max-w-sm rounded-md text-center bg-lila-200 hover:bg-lila-100 py-2 px-3 inline-flex items-center focus:outline-none md:float-right">
     Actualizar🔄
   </button>
   </form>

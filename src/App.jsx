@@ -37,7 +37,9 @@ import PerfilProfesional from "./paginas/profesionales/PerfilProfesional"
 import ConsultasAceptadas from "./paginas/profesionales/ConsultasAceptadas"
 import ConsultasPendientes from "./paginas/profesionales/ConsultasPendientes"
 import ConsultasRechazadas from "./paginas/profesionales/ConsultasRechazadas"
+import ConsultasFinalizadas from "./paginas/profesionales/ConsultasFinalizadas"
 import PerfilAdministrador from "./paginas/admins/PerfilAdministrador"
+import VerConsulta from "./paginas/profesionales/VerConsulta"
 import Diagnostico from "./paginas/pacientes/Diagnostico"
 import Examenes from "./paginas/pacientes/Examenes"
 import Eventos from "./paginas/pacientes/Eventos"
@@ -57,7 +59,9 @@ import Agenda from "./paginas/pacientes/Agenda"
 import ListaMotivosConsulta from "./paginas/profesionales/ListaMotivosConsulta"
 import NotificacionesConsulta from "./paginas/pacientes/NotificacionesConsulta"
 import VerMasConsulta from "./paginas/pacientes/VerMasConsulta"
-
+import RechazarConsulta from "./paginas/pacientes/RechazarConsulta"
+import MotivoConsultaDetalle from "./paginas/pacientes/VerMotivo"
+import Tarifas from "./paginas/profesionales/Tarifas"
 function App() {
   return (
     <BrowserRouter>
@@ -116,6 +120,9 @@ function App() {
         <Route path="agenda" element={ <Agenda/> } />
         <Route path="notificaciones" element={ <NotificacionesConsulta/> } />
         <Route path="vermas-consulta/:id" element={ <VerMasConsulta/> } />
+        <Route path="rechazar-consulta/:id" element={ <RechazarConsulta/> } />
+        <Route path="vermas-motivo/:id" element={ <MotivoConsultaDetalle/> } />
+       
 
 
       </Route>
@@ -135,8 +142,11 @@ function App() {
         <Route path="consultas" element={ <ConsultasAceptadas/> } />
         <Route path="consultas-pendientes" element={ <ConsultasPendientes/> } />
         <Route path="consultas-rechazadas" element={ <ConsultasRechazadas/> } />
+        <Route path="consultas-finalizadas" element={ <ConsultasFinalizadas/> } />
         <Route path="vermotivo/:id" element={ <VerMotivo/> } />
+        <Route path="consulta/:id" element={ <VerConsulta/>} />
         <Route path="lista-motivos-consulta" element={ <ListaMotivosConsulta/> } />
+        <Route path="tarifas" element={ <Tarifas/> } />
 
       </Route>
     </Routes>

@@ -34,8 +34,8 @@ const Diagnostico = () => {
 
   return (
     <>
-      <div className="bg-teal-600 margen  py-1 pb-5 shadow-md dark:bg-slate-700 ">
-    <nav className="nav font-regular font-nunito ">
+      <div className="bg-lila-300 margen  py-1 pb-5 shadow-md dark:bg-slate-700 ">
+    <nav className="nav font-regular font-nunito text-white">
         <ul className="flex items-center dark:text-white">
             <li className="p-4  cursor-pointer active hover:text-slate-300 hover:underline">
             <Link to="/paciente/perfil-paciente"> <h2 className=" text-md">Perfil de usuario </h2></Link>
@@ -50,7 +50,7 @@ const Diagnostico = () => {
 
  
 
-  <h1 className="text-left xl:px-64 font-regular mt-4 font-nunito text-4xl dark:text-white shado"><span className="font-semibold"> {auth.nombres} {auth.apellidos}  </span> </h1>
+  <h1 className="text-left text-white xl:px-64 font-regular mt-4 font-nunito text-4xl dark:text-white shado"><span className="font-semibold"> {auth.nombres} {auth.apellidos}  </span> </h1>
        </div>
       <HeaderHistoria/>
       <div className="py-10 bg-gray-100  bg-opacity-50   ">
@@ -73,7 +73,7 @@ const Diagnostico = () => {
            </p>
            <hr />
            <p className="font-bold text-md py-1  font-nunito text-slate-700">Año de diagnóstico: {' '}
-               <span className="font-normal normal-case font-nunito text-black"> {formatearFecha(enf.fechadiagnostico)} </span>
+               <span className="font-normal normal-case font-nunito text-black"> {enf.fechadiagnostico} </span>
 
            </p>
            <p className="font-bold text-md py-1 font-nunito text-slate-700">Tratamiento: {' '}

@@ -6,8 +6,8 @@ const ListaMotivosConsulta = () => {
   return (
     <>
     
-    <div className=" px-6 py-10 mx-auto bg-blue-400 ">
-    <h1 className=" mb-10 text-center font-regular font-nunito text-2xl text-white dark:text-white">Bienvenido Profesional <span className="font-semibold">{authpro.nombres} {authpro.apellidos}  </span> </h1>
+    <div className=" px-6 py-10 mx-auto bg-coral-100 ">
+    <h1 className=" mb-5 text-center font-regular font-nunito text-3xl text-white dark:text-white">Busca mótivos de consulta <span className="font-semibold">{authpro.nombres} {authpro.apellidos}  </span> </h1>
     </div>
     <FormularioinicioMotivos/>
 

@@ -30,7 +30,7 @@ const FormularioEventos = () => {
     return (
       <>
 <div className='mt-10 px-8'>
-  <h1 className='text-lg font-semibold'>Registra tus hospitalizaciones</h1>
+  <h1 className='text-4xl text-center text-lila-300 font-bold'>Registra tus hospitalizaciones</h1>
   <div className='flex justify-center'>
     <div className='text-center w-5/12'>
       {msg && <Alerta alerta={alerta} />}
@@ -62,7 +62,7 @@ const FormularioEventos = () => {
       </label>
     </div>
     <div className='w-full sm:w-auto mb-4 sm:mb-0 sm:mr-4'>
-      <button className="text-white rounded-md text-center bg-indigo-400 hover:bg-indigo-600 py-1 px-3">
+      <button className="text-white rounded-md text-center bg-lila-200 hover:bg-lila-100 py-2 px-3 mt-3">
         Subir Examen📄
       </button>
     </div>

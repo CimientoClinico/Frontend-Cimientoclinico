@@ -36,7 +36,7 @@ const Examenes = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    if (!nombre || !enfermedadId || !documento) {
+    if (!nombre  || !documento) {
       setAlerta({ msg: 'Hay campos vacíos', error: true });
       setTimeout(() => setAlerta({}), 4000);
       return;
@@ -54,8 +54,8 @@ const Examenes = () => {
   const { msg } = alerta
   return (
     <>
-      <div className="bg-teal-600 margen  py-1 pb-5 shadow-md dark:bg-slate-700 ">
-    <nav className="nav font-regular font-nunito ">
+      <div className="bg-lila-300 margen  py-1 pb-5 shadow-md dark:bg-slate-700 ">
+    <nav className="nav font-regular font-nunito text-white ">
         <ul className="flex items-center dark:text-white">
             <li className="p-4  cursor-pointer active hover:text-slate-300 hover:underline">
             <Link to="/paciente/perfil-paciente"> <h2 className=" text-md">Perfil de usuario   </h2></Link>
@@ -70,7 +70,7 @@ const Examenes = () => {
 
  
 
-  <h1 className="text-left xl:px-64 font-regular mt-4 font-nunito text-4xl dark:text-white shado"><span className="font-semibold"> {auth.nombres} {auth.apellidos}  </span> </h1>
+  <h1 className="text-left xl:px-64  text-white font-regular mt-4 font-nunito text-4xl dark:text-white shado"><span className="font-semibold"> {auth.nombres} {auth.apellidos}  </span> </h1>
        </div>
       <HeaderHistoria/>
       <div  className='mt-10' >
@@ -81,6 +81,7 @@ const Examenes = () => {
         />}
         </div>
         </div>
+        <h1 className='text-4xl text-center text-lila-300 font-bold'>Registra tus exámenes</h1>
       <form className="flex flex-wrap justify-center py-5 " onSubmit={handleSubmit}>
         <div className='w-full sm:w-auto mb-4 sm:mb-0 sm:mr-4'>
       <label className='block font-medium mb-2'>
@@ -92,13 +93,13 @@ const Examenes = () => {
       <label className='block font-medium mb-2'>
         Enfermedad asociada:
         <select className='w-full border border-gray-300 p-2 rounded-lg appearance-none' value={enfermedadId} onChange={(e) => setEnfermedadId(e.target.value)}>
-          <option value="">Selecciona una enfermedad</option>
-          {enfermedades.map((enfermedad) => (
-            <option key={enfermedad._id} value={enfermedad._id}>
-              {enfermedad.nombre}
-            </option>
-          ))}
-        </select>
+  <option className='font-bold' value="">Sin enfermedad</option>
+  {enfermedades.map((enfermedad) => (
+    <option key={enfermedad._id} value={enfermedad._id}>
+      {enfermedad.nombre}
+    </option>
+  ))}
+</select>
         <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
     <svg className="fill-current h-4 w-4" viewBox="0 0 20 20"><path d="M10 12l-6-6h12z"/></svg>
   </div>
@@ -113,7 +114,7 @@ const Examenes = () => {
       </div>
     
       <div className='w-full sm:w-auto xl:mt-6  '>
-      <button className="text-white  rounded-md text-center bg-indigo-400 hover:bg-indigo-600 py-2 px-3   ">
+      <button className="text-white  rounded-md text-center bg-lila-200 hover:bg-lila-100 py-2 px-3   ">
          Subir Examen📄
         </button>
         </div>
