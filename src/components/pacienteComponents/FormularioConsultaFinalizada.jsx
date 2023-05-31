@@ -1,11 +1,11 @@
 import { useEffect,useState } from "react";
 import { useParams, } from 'react-router-dom';
 import clientAxios from "../../config/axios";
-import proAuth from "../../hooks/proAuth"
-const VerMasConsultasRechazadas= () => {
+import useAuth from "../../hooks/useAuth"
+const FormularioConsultaFinalizada= () => {
     const [consulta, setConsulta] = useState([]);
     const { id } = useParams();
-    const {authpro} =  proAuth()
+    const {auth} = useAuth()
     const calcularEdad = (fechaNacimiento) => {
         const hoy = new Date();
         const cumpleanos = new Date(fechaNacimiento);
@@ -23,21 +23,20 @@ const VerMasConsultasRechazadas= () => {
         nuevaFecha.setMinutes(nuevaFecha.getMinutes() + nuevaFecha.getTimezoneOffset())
         return new Intl.DateTimeFormat('es-CL', {dateStyle: 'long'}).format(nuevaFecha) }
     useEffect(() => {
-        const tokenPro = localStorage.getItem('tokenPro');
-        if (!tokenPro) return;
+        const token = localStorage.getItem('token');
+        if (!token) return;
       
         const config = {
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${tokenPro}`
+            Authorization: `Bearer ${token}`
           }
         };
 
         const fetchData = async () => {
           try {
-            const { data } = await clientAxios.get(`/profesional/verconsulta/${id}`, config);
+            const { data } = await clientAxios.get(`/pacientes/vermas-consulta-aprobada/${id}`, config);
          setConsulta(data)
-         console.log(data)
           } catch (error) {
             console.log(error);
           }
@@ -50,7 +49,7 @@ const VerMasConsultasRechazadas= () => {
             return <p>Cargando...</p>;
           }
 
-          if (consulta && consulta.profesional._id !== authpro._id) {
+          if (consulta && consulta.paciente._id !== auth._id) {
             return (
                 <div className=" bg-coral-100 w-full h-screen flex flex-col items-center justify-center">
 
@@ -66,11 +65,12 @@ const VerMasConsultasRechazadas= () => {
           }
   return (
     <> 
-      {consulta.estado === "rechazada" ? (
+
+    {consulta.estado === "finalizado" ? (
  <div className="container mx-auto py-6">
     <div className="flex justify-center py-2">
-<div className="text-center px-4 py-4  bg-red-100 max-w-xl rounded-full">
-  <h1 className="text-xl font-semibold text-red-600 ">Consulta Rechazada</h1>
+<div className="text-center px-4 py-4  bg-green-100 max-w-xl rounded-full">
+  <h1 className="text-xl font-semibold text-green-600 ">Consulta Finalizada</h1>
 </div>
 </div>
   <div className="grid grid-cols-1 gap-4">
@@ -81,13 +81,64 @@ const VerMasConsultasRechazadas= () => {
         <div className="p-4 text-center">
       <h3 className="text-lg font-medium mb-2">{consulta.motivoconsulta.titulo}</h3>
       <p className="text-gray-700 mb-4">{consulta.motivoconsulta.descripcion}</p>
-      
+      <h2 className="text-center text-3xl py-2 font-semibold underline">Información relevante</h2>
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <p className="font-bold mb-1">Publicación del mótivo de consulta:</p>
+          <p>{ formatearFecha( consulta.motivoconsulta.fecha)}</p>
+        </div>
+        <div>
+          <p className="font-bold mb-1">Nombre del profesional:</p>
+          <p>{consulta.profesional.nombres}</p>
+        </div>
+        <div>
+          <p className="font-bold mb-1">Apellido del profesional:</p>
+          <p>{consulta.profesional.apellidos}</p>
+        </div>
+        <div>
+          <p className="font-bold mb-1">Edad:</p>
+          <p>{  calcularEdad(consulta.profesional.fechaNacimiento)} Años</p>
+        </div>
+        <div>
+          <p className="font-bold mb-1">Rut de profesional:</p>
+          <p>{consulta.profesional.rut}</p>
+        </div>
+        <div>
+          <p className="font-bold mb-1">Genero:</p>
+          <p>{consulta.paciente.sexo}</p>
+        </div>
+        {consulta.profesional && consulta.profesional.emailtrabajo && consulta.profesional.correovisible ===true && consulta.profesional.emailtrabajo.length ?
+  <div>
+    <p className="font-bold mb-1">Correo electrónico:</p>
+    <p>{consulta.profesional.emailtrabajo}</p>
+  </div>
+  : ''}
+  
+{consulta.profesional && consulta.profesional.celulartrabajo && consulta.profesional.celularvisible ===true && consulta.profesional.celulartrabajo.length ?
+  <div>
+    <p className="font-bold mb-1">Numero de celular:</p>
+    <p>{consulta.profesional.celulartrabajo}</p>
+  </div>
+  : ''}
+  
+{consulta.profesional && consulta.profesional.numeroregistrosalud && consulta.profesional.numeroregistrosalud.length ?
+  <div>
+    <p className="font-bold mb-1">Numero registro de salud nacional:</p>
+    <p>{consulta.profesional.numeroregistrosalud}</p>
+  </div>
+  : ''}
+        
+        
+      </div>
+      <div className=""> 
+        <button className="bg-lila-200 px-3 py-2 text-white uppercase font-semibold rounded-xl shadow-md hover:bg-lila-100 ">Ficha del paciente</button>
+      </div>
 
       </div>
     </div>
     <div className="border border-lila-400 rounded-lg shadow-md col-span-1 md:col-span-1">
         <div className="bg-lila-200 rounded-t-md text-center text-2xl text-white">
-            <h1>Tu propuesta de consulta</h1>
+            <h1>Consulta</h1>
         </div>
         <div className="p-4 text-center ">
       <p className="text-gray-700 text-center mb-4 italic">{consulta.mensaje}</p>
@@ -118,7 +169,7 @@ const VerMasConsultasRechazadas= () => {
         </div>
         <div>
           <p className="font-bold mb-1">Estado:</p>
-          <p>{consulta.estado? 'Rechazada' : ''}</p>
+          <p>{consulta.estado? 'Finalizado' : ''}</p>
         </div>
 
       </div>
@@ -129,7 +180,8 @@ const VerMasConsultasRechazadas= () => {
   </div>
 </div>
 ) : ''}
+
     </>
   )
 }
-export default VerMasConsultasRechazadas
+export default FormularioConsultaFinalizada

@@ -1,0 +1,211 @@
+import { useEffect,useState } from "react";
+import { useParams, } from 'react-router-dom';
+import clientAxios from "../../config/axios";
+import proAuth from "../../hooks/proAuth"
+const InfoPacienteConsulta = () => {
+    const [consulta, setConsulta] = useState([]);
+    const { id } = useParams();
+    const {authpro} =  proAuth()
+    const [datosPaciente, setDatosPaciente] = useState({});
+    const [loading, setLoading] = useState(true); 
+
+    useEffect(() => {
+        const tokenPro = localStorage.getItem('tokenPro');
+        if (!tokenPro) return;
+      
+        const config = {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${tokenPro}`
+          }
+        };
+
+        const fetchData = async () => {
+          try {
+            const { data } = await clientAxios.get(`/profesional/informacion-paciente-consulta/${id}`, config);
+         setConsulta(data)
+         console.log(data)
+          } catch (error) {
+            console.log(error);
+          }
+        };
+      
+        fetchData();
+
+      }, []); 
+      useEffect(() => {
+        // Establecer los valores actuales del paciente cuando se carga el componente
+        if (consulta.paciente) {
+          setDatosPaciente(consulta.paciente);
+          setLoading(false); // Indicar que los datos han cargado correctamente
+        }
+      }, [consulta.paciente]);
+      const actualizarPaciente = async () => {
+        const tokenPro = localStorage.getItem('tokenPro');
+        if (!tokenPro) return;
+      
+        const config = {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${tokenPro}`
+          }
+        };
+        try {
+          await clientAxios.put(`/profesional/editar-indentificacion-paciente/${consulta.paciente._id}`, datosPaciente,config);
+    
+          Swal.fire('¡Perfecto!', 'Sección publicada', 'success');          
+    
+        } catch (error) {
+          console.error(error.message);
+          // Mostrar un mensaje de error o realizar acciones adicionales en caso de error
+        }
+      };
+
+      const handleChange = (e) => {
+        const { name, value } = e.target;
+        setDatosPaciente((prevState) => ({
+          ...prevState,
+          [name]: value
+        }));
+      };
+      const formatearFecha = (fecha) => {
+        const nuevaFecha = new Date(fecha)
+        nuevaFecha.setMinutes(nuevaFecha.getMinutes() + nuevaFecha.getTimezoneOffset())
+        return new Intl.DateTimeFormat('es-CL', {dateStyle: 'long'}).format(nuevaFecha) }
+          if (!consulta || consulta.length === 0) {
+            return <p>Cargando...</p>;
+          }
+
+          if (consulta && consulta.profesional._id !== authpro._id) {
+            return (
+                <div className=" bg-coral-100 w-full h-screen flex flex-col items-center justify-center">
+
+                <div className="flex flex-col items-center justify-center">
+                    <h1 className="text-3xl font-bold  font-nunito md:text-6xl lg:text-9xl text-white  mt-12">403</h1>
+                    <h2 className="text-3xl font-semibold  font-nunito md:text-4xl lg:text-5xl text-white mt-12">No tienes permiso</h2>
+                    <img  className="h-96"  src="https://res.cloudinary.com/dde62spnz/image/upload/v1683307824/Imagenes%20sitio/mano_nvygfz.png" alt="" />
+                    <p className="md:text-lg font-nunito  lg:text-xl text-white mt-8">Lo sentimos no tienes el permiso para ver esta sección</p>
+
+                </div>
+            </div>
+              );
+          }
+  return (
+    <>
+     {loading ? (
+      <p>Cargando...</p>
+    ) : (
+         // Renderizar los campos de datos del paciente
+      // Verifica si consulta.paciente existe antes de acceder a sus propiedades
+      <>
+             <div className="mx-auto container max-w-5xl md:w-3/4 shadow-md bg-white rounded-md  ">
+       <div className="md:inline-flex w-full space-y-4 md:space-y-0 p-4 text-gray-700 items-center">
+            <h2 className="md:w-4/12 max-w-sm mx-auto ">RUT:</h2>
+
+            <div className="md:w-5/12 w-full md:pl-9 max-w-sm mx-auto space-y-5 md:inline-flex pl-2">
+              <div className="w-1/2 inline-flex border-b text-gray-600">
+              {consulta.paciente.rut} 
+              </div>
+            </div>
+          </div>
+          <hr />
+          <div className="md:inline-flex w-full space-y-4 md:space-y-0 p-4 text-gray-700 items-center">
+            <h2 className="md:w-4/12 max-w-sm mx-auto">Fecha de nacimiento:</h2>
+
+            <div className="md:w-5/12 w-full md:pl-9 max-w-sm mx-auto space-y-5 md:inline-flex pl-2">
+              <div className="w-1/2 inline-flex border-b text-gray-600">
+              {formatearFecha(consulta.paciente.fechaNacimiento)}
+              </div>
+            </div>
+          </div>
+          <hr />
+          <div className="md:inline-flex w-full space-y-4 md:space-y-0 p-4 text-gray-700 items-center">
+            <h2 className="md:w-4/12 max-w-sm mx-auto">Localidad:</h2>
+
+            <div className="md:w-5/12 w-full md:pl-9 max-w-sm mx-auto space-y-5  pl-2">
+            <div className="flex items-center border-2 py-2 px-3 rounded-2xl">
+
+<div className=" font-normal font-nunito w-full outline-none border-none text-gray-600">
+    {consulta.paciente.localidad}
+</div>      
+              </div>
+            </div>
+          </div>
+          <hr />
+          <div className="md:inline-flex w-full space-y-4 md:space-y-0 p-4 text-gray-700 items-center">
+            <h2 className="md:w-4/12 max-w-sm mx-auto">Ocupación:</h2>
+
+            <div className="md:w-5/12 w-full md:pl-9 max-w-sm mx-auto space-y-5 pl-2">
+          <div className="flex items-center border-2 py-2 px-3 rounded-2xl">
+            <input
+              type="text"
+              className="font-normal font-nunito w-full outline-none border-none text-gray-600"
+              name="ocupacion"
+              value={datosPaciente.ocupacion || ''}
+              onChange={handleChange}
+            />
+          </div>
+        </div>
+          </div>
+          <hr />
+          <div className="md:inline-flex w-full space-y-4 md:space-y-0 p-4 text-gray-700 items-center">
+            <h2 className="md:w-4/12 max-w-sm mx-auto">Previsión de salud:</h2>
+
+            <div className="md:w-5/12 w-full md:pl-9 max-w-sm mx-auto space-y-5  pl-2">
+            <div className="flex items-center border-2 py-2 px-3 rounded-2xl">
+
+            <div className=" font-normal font-nunito w-full outline-none border-none text-gray-600">
+    {consulta.paciente.previsionsalud}
+</div>     
+              </div>
+            </div>
+          </div>
+          <hr />
+          <div className="md:inline-flex w-full space-y-4 md:space-y-0 p-4 text-gray-700 items-center">
+            <h2 className="md:w-4/12 max-w-sm mx-auto">Escolaridad:</h2>
+
+            <div className="md:w-5/12 w-full md:pl-9 max-w-sm mx-auto space-y-5  pl-2">
+            <div className="flex items-center border-2 py-2 px-3 rounded-2xl">
+            <div className=" font-normal font-nunito w-full outline-none border-none text-gray-600">
+    {consulta.paciente.escolaridad}
+</div>
+              </div>
+            </div>
+            
+          </div>
+          <hr />
+          <div className='bg-white flex justify-center mt-2'>
+          
+          <button
+          className='px-10 py-3 rounded-md text-center mb-2 text-white bg-lila-200 hover:bg-lila-100'
+          onClick={actualizarPaciente}
+        >
+          Guardar 💾
+        </button>
+
+  </div>
+
+        </div>
+        </>
+    )}
+    </>
+  )
+}
+
+export default InfoPacienteConsulta
+
+
+
+
+  //Esta seccion hace que la seccion de enfermedades ester cerrada por defecto
+  useEffect(() => {
+    const enfermedadIds = Object.keys(datosPaciente);
+    const inicializarOcultarEnfermedad = enfermedadIds.reduce(
+      (acc, enfermedadId) => ({
+        ...acc,
+        [enfermedadId]: true
+      }),
+      {}
+    );
+    setOcultarEnfermedad(inicializarOcultarEnfermedad);
+  }, []);

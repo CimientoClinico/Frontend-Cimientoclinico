@@ -6,6 +6,7 @@ import { Link } from "react-router-dom"
 import{AiFillEdit, AiFillDelete} from "react-icons/ai"
 import{IoMdEyeOff,IoMdEye} from "react-icons/io"
 import { Paginacion } from "../Paginacion"
+
 const FormularioMotivoConsulta = () => {
     const [alerta, setAlerta ]= useState({})
     const [titulo, setTitulo] = useState('')
@@ -17,6 +18,18 @@ const FormularioMotivoConsulta = () => {
     const [pagina, setPagina] = useState (1);
    const [porPagina, setPorPagina] = useState (3);
    const [isLoading, setIsLoading] = useState(true);
+   const [especialidad, setEspecialidad] = useState('');
+   const [profesionales, setProfesionales] = useState([]);
+   const [showModal, setShowModal] = useState(false);
+
+   const handleModalOpen = () => {
+    setShowModal(true);
+    setTimeout(handleModalClose, 10000); 
+  };
+  
+  const handleModalClose = () => {
+    setShowModal(false);
+  };
 
     
     const maximo = Math.ceil(motivos.length / porPagina) 
@@ -26,41 +39,51 @@ const FormularioMotivoConsulta = () => {
         nuevaFecha.setMinutes(nuevaFecha.getMinutes() + nuevaFecha.getTimezoneOffset())
         return new Intl.DateTimeFormat('es-CL', {dateStyle: 'long'}).format(nuevaFecha) }
 
-    useEffect(() => {
-        if(motivo?.titulo){
-         setTitulo(motivo.titulo)
-         setDescripcion(motivo.descripcion)
-         setConsentimiento(motivo.consentimiento)
-         setVisible(motivo.visible)
-         setId(motivo._id)
-    
-        }
-     }, [motivo])
-
-
-
-    useEffect(()=>{
-        const obtenerMotivosConsulta = async() =>{
-          try {
-            const token = localStorage.getItem('token')
-            if(!token) return
-      
-            const config={
-              headers:{
-                "Content-Type": "application/json",
-                Authorization: `Bearer ${token}`
+        useEffect(() => {
+          if (motivo?.titulo) {
+            setTitulo(motivo.titulo);
+            setDescripcion(motivo.descripcion);
+            setConsentimiento(motivo.consentimiento);
+            setVisible(motivo.visible);
+            setId(motivo._id);
+        
+            if (motivo.especialidades !== 'General') {
+              setEspecialidad('especifico');
+              setProfesionales(motivo.especialidades.split(', '));
+            } else {
+              setEspecialidad('general');
+              setProfesionales([]);
             }
-            }
-            const { data } = await clientAxios.get('/pacientes/obtener-motivodeconsultas',config)
-            setMotivos(data)
-            setIsLoading(false);
-          } catch (error) {
-            console.log(error)
           }
-      
+        }, [motivo]);
+
+
+     useEffect(() => {
+      const obtenerMotivosConsulta = async () => {
+        try {
+          const token = localStorage.getItem('token');
+          if (!token) return;
+    
+          const config = {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${token}`,
+            },
+          };
+          const { data } = await clientAxios.get('/pacientes/obtener-motivodeconsultas', config);
+    
+          // Filtrar motivos activos
+          const motivosActivos = data.filter((motivo) => motivo.activo);
+    
+          setMotivos(motivosActivos);
+          setIsLoading(false);
+        } catch (error) {
+          console.log(error);
         }
-        obtenerMotivosConsulta()      
-      },[motivos])
+      };
+    
+      obtenerMotivosConsulta();
+    }, []);
 
       const actualizarVisible = async (id, nuevoValorVisible) => {
         try {
@@ -101,36 +124,61 @@ const FormularioMotivoConsulta = () => {
           Swal.fire('¡Ups!', 'Hubo un error al actualizar el motivo de consulta.', 'error');
         }
       };
+      const handleMotivoChange = (event) => {
+        setEspecialidad(event.target.value);
+        setProfesionales([]);
+      };
     
+      const handleProfesionalesChange = (event) => {
+        const { value, checked } = event.target;
+        if (checked) {
+          setProfesionales((prevProfesionales) => [...prevProfesionales, value]);
+        } else {
+          setProfesionales((prevProfesionales) => prevProfesionales.filter((profesional) => profesional !== value));
+        }
+      };
 
             //AGREGANDO MOTIVO DE CONSULTA
             const handleSubmit = async e =>{
             e.preventDefault();
             if([titulo, descripcion].includes('')){
                 setAlerta({msg: 'Hay campos vacíos', error: true})
-                setTimeout(()=> setAlerta({}),4000)
+                setTimeout(()=> setAlerta({}),5000)
                 return;
             }
             if (!consentimiento) {
                 setAlerta({msg: 'Acepte el consentimiento antes de publicar su caso', error: true})
-                setTimeout(()=> setAlerta({}),4000)
+                setTimeout(()=> setAlerta({}),5000)
+                return;
+              }
+              if (!especialidad ) {
+                setAlerta({msg: 'Agregue quien debe ver este motivo de consulta', error: true})
+                setTimeout(()=> setAlerta({}),5000)
                 return;
               }
             setAlerta({})
-            guardarMotivoConsulta({titulo,descripcion,visible,consentimiento,id})
+            let especialidades = '';
+            if (especialidad === 'general') {
+              especialidades = 'General';
+            } else if (especialidad === 'especifico') {
+              especialidades = profesionales.join(', ');
+            }
+
+            guardarMotivoConsulta({titulo,descripcion,visible,consentimiento,id,especialidades})
             setTitulo('')
             setDescripcion('')
             setId('')
             setConsentimiento(false)
             setVisible(false)
+            setProfesionales([]);
               
             }
             const { msg } = alerta
   return (
     <>
-        <div className="flex flex-row h-screen">
+        <div className="flex flex-col lg:flex-row h-screen">
           
-        <div className="w-1/3 bg-gray-200 p-10 shadow-lg">
+        <div className="lg:w-1/3 bg-gray-200 p-10 shadow-lg mr-20 lg:mr-0">
         {msg && <Alerta alerta={alerta} />}
         <div className=" bg-lila-300 rounded-t">
         <h1 className=" text-white py-5 text-xl text-center mt-8 ">Publica tu motivo de consulta</h1>
@@ -162,6 +210,92 @@ const FormularioMotivoConsulta = () => {
       value={descripcion}
       onChange={(e) => setDescripcion(e.target.value)}
     />
+ <div>
+ {showModal && (
+  <div className="  pt-1 items-center justify-center 0 rounded-lg  ">
+    <div className="bg-lila-300  rounded border  ">
+      <div className=" flex justify-end">
+      <button className="bg-gray-300 px-0.5 py-0.5 rounded-full text-sm " onClick={handleModalClose}>❌</button>
+      </div>
+      <div>
+      <p className="px-2 mb-2 text-white  font-regular text-sm">
+        Selecciona a qué profesionales deseas mostrar tu motivo de consulta. 
+        Si eliges <span className="font-bold">'Profesionales en general'</span>, tu motivo será visible para profesionales generales de cimiento clínico.
+         En cambio, si seleccionas <span className="font-bold">'Profesionales en específico'</span> 
+      , podrás elegir los profesionales específicos que podrán ver tu caso.
+       </p>
+       </div>
+
+    </div>
+  </div>
+)}
+<label htmlFor="especialidad" className=" text-white font-medium mb-1">
+        ¿Qué profesionales verán esto? <span className="text-red-600 text-lg">*</span>
+      </label>
+      <div className="relative">
+  <div className="flex justify-between">
+    <select
+      id="especialidad"
+      className="w-full border rounded p-2"
+      onChange={handleMotivoChange}
+      value={especialidad}
+    >
+      <option value="">Seleccione un motivo</option>
+      <option value="general">Profesionales en general</option>
+      <option value="especifico">Profesionales en específico</option>
+    </select>
+    <div>
+      <button
+        type="button"
+        className="ml-2 bg-gray-300 px-2 py-1 rounded-full"
+        onClick={handleModalOpen}
+      >
+        ❓
+      </button>
+    </div>
+  </div>
+</div>
+
+    </div>
+
+{especialidad === 'especifico' && (
+  <div className="mt-4 bg-lila-200 rounded-lg px-3 py-3 text-white ">
+    <label className="block font-medium mb-1">Elige los Profesionales:</label>
+    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+      <label className="flex items-center">
+        <input
+          type="checkbox"
+          value="anestesista"
+          checked={profesionales.includes('anestesista')}
+          onChange={handleProfesionalesChange}
+          className="mr-2"
+        />
+        Anestesista
+      </label>
+      <label className="flex items-center">
+        <input
+          type="checkbox"
+          value="cirujano"
+          checked={profesionales.includes('cirujano')}
+          onChange={handleProfesionalesChange}
+          className="mr-2"
+        />
+        Cirujano
+      </label>
+      <label className="flex items-center">
+        <input
+          type="checkbox"
+          value="odontologo"
+          checked={profesionales.includes('odontologo')}
+          onChange={handleProfesionalesChange}
+          className="mr-2"
+        />
+        Odontólogo
+      </label>
+      {/* Otras opciones de profesionales */}
+    </div>
+  </div>
+)}
 
     <div className="flex items-center pt-5">
       <input
@@ -220,9 +354,9 @@ const FormularioMotivoConsulta = () => {
   
     : 
 
-  <div className="w-3/4 p-10 shadow-lg">
-  { motivos.length?
-  <div className="flex flex-col px-10">
+  <div className="lg:w-2/3 p-10 shadow-lg ">
+  { motivos.length ?
+  <div className="flex flex-col px-10 ">
   <h1 className="font-nunito py-2 text-xl">Tus Motivo de consulta publicados</h1>
    <div className="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
     <div className="py-2 align-middle inline-block min-w-full sm:px-6 lg:px-8">
@@ -240,6 +374,13 @@ const FormularioMotivoConsulta = () => {
     <p className="mt-2 text-lg font-semibold   text-slate-800">{motivo.descripcion}</p>
     { motivo.visible===false ? <span className="inline-block bg-red-200  rounded-full px-1 py-1 text-xs font-regular text-gray-700 mt-1">Publicación: Oculta</span>
  :  <span className="inline-block bg-green-200  rounded-full px-1 py-1 text-xs font-regular text-gray-700 mt-1">Publicación: Visible</span> }
+
+{motivo.especialidades==="General" ?
+   <p className=" w-3/5 bg-gray-200  rounded-sm px-1 py-1 text-sm font-semibold text-gray-700 mt-1 lg:rounded-full"> Este motivo sera visto por profesionales en general de cimiento clínico </p>
+:
+<p className=" bg-gray-200  rounded-sm px-1 py-1 text-sm font-semibold text-gray-700 mt-1 lg:rounded-full"> Este motivo sera visto por los siguientes profesionales de cimiento clínico: <span className="font-bold uppercase">{motivo.especialidades}</span>  </p>
+}
+
 
   </div>
   <div className=" flex bg-gray-100 px-4 py-3 gap-1">

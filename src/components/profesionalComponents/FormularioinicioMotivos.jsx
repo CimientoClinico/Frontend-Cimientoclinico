@@ -7,12 +7,14 @@ import timezone from 'dayjs/plugin/timezone';
 import { ModalMotivo } from "./ModalMotivo";
 import {ModalHora} from "./ModalHora"
 import proAuth from "../../hooks/proAuth"
+import { isSameDay, parseISO } from 'date-fns';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 const FormularioinicioMotivos= ({}) => {
 
     const [motivos, setMotivos] = useState([]);
     const [consultas, setConsultas] = useState([]);
+    const [especialidades, setEspecialidades] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [motivo, setMotivo] = useState(null);
     const [hora, setHora] = useState(null);
@@ -24,9 +26,9 @@ const FormularioinicioMotivos= ({}) => {
     const [filtroGenero, setFiltroGenero] = useState("");
     const [filtroRangoEdad, setFiltroRangoEdad] = useState("");
 const [searchDias, setSearchDias] = useState([]);
+const [fechaSeleccionada, setFechaSeleccionada] = useState(null);
 const [edadMin, setEdadMin] = useState("");
 const [edadMax, setEdadMax] = useState("");
-const [activeMotivo, setActiveMotivo] = useState(null);
 const rangosEdad = [
   { id: 1, nombre: '0 meses a 1 mes', edadMin: 0, edadMax: 0, mesMin: 0, mesMax: 1 },
   { id: 2, nombre: '1 mes a 12 meses', edadMin: 0, edadMax: 1, mesMin: 1, mesMax: 12 },
@@ -174,7 +176,7 @@ const filtrarPorDias = (motivo) => {
 
 
     useEffect(()=>{
-        const obtenerMotivosConsulta = async() =>{
+        const obtenerEspecialidades = async() =>{
           try {
             const tokenPro = localStorage.getItem('tokenPro')
             if(!tokenPro) return
@@ -185,15 +187,44 @@ const filtrarPorDias = (motivo) => {
                 Authorization: `Bearer ${tokenPro}`
             }
             }
-            const { data } = await clientAxios.get('/profesional/obtener-motivos',config)
-            setMotivos(data)
+            const { data } = await clientAxios.get('/profesional/traer-especialidad',config)
+            setEspecialidades(data)
           } catch (error) {
             console.log(error)
           }
       
         }
-        obtenerMotivosConsulta()      
-      },[motivos])
+        obtenerEspecialidades()      
+      },[])
+      useEffect(() => {
+        const obtenerMotivosConsulta = async () => {
+          try {
+            const tokenPro = localStorage.getItem('tokenPro');
+            if (!tokenPro) return;
+      
+            const config = {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${tokenPro}`
+              }
+            };
+      
+            const { data } = await clientAxios.get('/profesional/obtener-motivos', config);
+      
+            // Modificar la estructura de los datos
+            const motivos = data.map((motivo) => ({
+              ...motivo,
+              paciente: motivo.paciente[0], // Obtener el primer elemento del array
+            }));
+      
+            setMotivos(motivos);
+          } catch (error) {
+            console.log(error);
+          }
+        };
+      
+        obtenerMotivosConsulta();
+      }, [motivos]);
       useEffect(()=>{
         const obtenerMotivosConsulta = async() =>{
           try {
@@ -233,6 +264,15 @@ const filtrarPorDias = (motivo) => {
   .filter(motivo => motivo.titulo.toString().toLowerCase().includes(searchValue.toLowerCase())
   ||motivo.descripcion.toString().toLowerCase().includes(searchValue.toLowerCase())
    )
+   .filter(motivo => {
+    if (motivo.especialidades === 'General') {
+      return true; // Se muestra si la especialidad es 'General'
+    } else {
+      const especialidadesProfesional = especialidades.map(e => e.nombre.toLowerCase());
+      const especialidadesMotivo = motivo.especialidades.toLowerCase().split(', ');
+      return especialidadesMotivo.some(especialidad => especialidadesProfesional.includes(especialidad));
+    }
+  })
    
   
   .sort((a, b) => {
@@ -243,6 +283,16 @@ const filtrarPorDias = (motivo) => {
     }
   })
   .filter((motivo) => filtrarPorEdad([motivo]).length > 0)
+  .filter((motivo) =>{
+  if (fechaSeleccionada === null) {
+    return true; // Si no se ha seleccionado una fecha, se muestra el motivo
+  }
+  
+  return motivo.horarios.some((horario) =>
+    isSameDay(parseISO(horario.fecha), parseISO(fechaSeleccionada))
+  );
+}
+)
   .filter(
     (motivo) => filtrarPorDias(motivo) 
   );
@@ -267,7 +317,6 @@ const filtrarPorDias = (motivo) => {
     <input type="text" value={searchValue} onChange={(e) => setSearchValue(e.target.value)} placeholder="Buscar motivos de consulta" className="p-1 border rounded-md w-80 placeholder:text-sm" />
 
 </div>
-
 
 </div>
 <div className="flex flex-col md:flex-row md:items-center justify-center my-2 gap-2 w-full">
@@ -311,7 +360,14 @@ const filtrarPorDias = (motivo) => {
       <option value="Hombre">Masculino</option>
       <option value="Mujer">Femenino</option>
     </select>
-    <button onClick={() => { setFiltroGenero(""); setOrden("descendente"); setFiltroRangoEdad(""); 
+  <label>Filtrar por fecha:</label>
+  <input
+  className="border rounded-md"
+  type="date"
+  value={fechaSeleccionada || ''}
+  onChange={(e) => setFechaSeleccionada(e.target.value !== '' ? e.target.value : null)}
+/>
+    <button onClick={() => { setFiltroGenero(""); setOrden("descendente"); setFiltroRangoEdad("");  setFechaSeleccionada(null);
     }} className="bg-lila-200 hover:bg-lila-100 text-white px-2 py-1 rounded-lg md:w-auto">Borrar filtros</button>
   </div>
 </div>
@@ -319,21 +375,9 @@ const filtrarPorDias = (motivo) => {
 <div className="grid grid-cols-1 md:grid-cols-1 xl:px-60  gap-4 mt-2 mr-20">
   {motivosfiltrados.map((motivo) => (
     
-    <div key={motivo._id} className="bg-white rounded-lg shadow-md w-full mb-10 ">
-      <div className="flex justify-end">
-        <button
-      className="bg-lila-200 hover:bg-lila-100 px-2 py-1 rounded-md text-sm text-white"
-      onMouseOver={() => handleHover(motivo._id)}
-      onMouseLeave={() => handleCloseModal()}>
-     🕒Horarios
-    </button>
-    {activeMotivo === motivo._id && (
-            <div >
-              <p>Información adicional:</p>
-              <p>{motivo.horariopaciente }</p>
-            </div>
-          )}
-          </div>
+    <div key={motivo._id} className="bg-white rounded-lg shadow-md overflow-hidden w-full mb-10 border-t mt-2">
+
+
       <div className="p-4">
         <h2 className="text-lg font-medium text-gray-800 text-center">
           {motivo.titulo}
@@ -354,6 +398,37 @@ const filtrarPorDias = (motivo) => {
           </div>
         </div>
         <p className="mt-2 text-lg font-regular text-slate-800">{motivo.descripcion}</p>
+        <div className="bg-gray-100 rounded-lg px-1  py-1 mt-2">
+        <h1 className="text-md "> ⌚ Horarios disponibles Paciente</h1>
+ {Array.isArray(motivo.horarios) && motivo.horarios.length > 0 ? (
+  <div className="grid grid-cols-2 md:grid-cols-8 gap-4 px-1 py-2 mt-1">
+    {motivo.horarios
+      .filter((horario) => horario.fecha)
+      .map((horario, index) => (
+        <div
+          key={index}
+          className="bg-lila-100 py-2 px-1 text-xl font-regular text-white rounded-md"
+        >
+          <h4 className="text-xs font-regular mb-2">
+            {dayjs(horario.fecha).utc().format('DD/MM/YYYY')}
+          </h4>
+          <h4 className="text-xs font-regular mb-2">
+            {horario.horarioinicio} - {horario.horariofin}
+          </h4>
+        </div>
+      ))}
+  </div>
+) : (
+  <div>
+    <p className="mt-4 text-lila-400 text-lg italic">
+      El paciente no ha registrado sus horarios
+    </p>
+  </div>
+)}
+</div>
+
+
+        
      
 
       </div>

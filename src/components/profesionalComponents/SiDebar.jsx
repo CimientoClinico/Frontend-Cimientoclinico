@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { HiMenuAlt3 } from "react-icons/hi";
 import { MdHome,  MdVoiceChat, MdAccountCircle,MdFollowTheSigns,MdPaid, MdDarkMode,MdContentPaste } from "react-icons/md";
-import{BsFillDoorOpenFill} from "react-icons/bs";
+import{BsFillDoorOpenFill,BsCalendar3} from "react-icons/bs";
 import { Link } from "react-router-dom";
 import proAuth from "../../hooks/proAuth"
 import clientAxios from "../../config/axios";
@@ -46,6 +46,7 @@ const Sidebar = () => {
     { name: "Motivos de consulta", link: "/profesional/lista-motivos-consulta", icon: MdContentPaste },
     { name: "Perfil", link: "/profesional/perfil-profesional", icon: MdAccountCircle },
     { name: "Tarifas", link: "/profesional/tarifas", icon: MdPaid },
+    { name: "Mis Horarios", link: "/profesional/agenda-profesional", icon: BsCalendar3 },
     { name: "Portal Paciente", link: "/paciente", icon: MdFollowTheSigns, margin:10 },
   ];
 

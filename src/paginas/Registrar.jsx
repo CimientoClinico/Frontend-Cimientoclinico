@@ -5,10 +5,12 @@ import Alerta from '../components/Alerta';
 import clientAxios from "../config/axios";
 const Registrar = () => {
      const [email, setEmail] = useState('')
-     const [rut, setRut] = useState('')
+     const [rut, setRut] = useState('');
+     const [rutValid, setRutValid] = useState(true);
      const [nombres, setNombres] = useState('')
      const [apellidos, setApellidos] = useState('')
      const [sexo, setSexo] = useState('')
+     const [fechaNacimiento, setFecha] = useState('')
      const [password, setPassword] = useState('')
      const [repetirPassword, setRepetirPassword] = useState('')
      const [alerta, setAlerta ]= useState({})
@@ -18,31 +20,41 @@ const Registrar = () => {
       
       e.preventDefault();
       
-      if([email,rut,nombres,apellidos,password,repetirPassword].includes('')){
-        setAlerta({msg: 'Hay campos vacíos', error: true})
-        return;
-      }
+     
+  if ([email, rut, nombres, apellidos, password, repetirPassword, fechaNacimiento].includes('')) {
+    setAlerta({ msg: 'Hay campos vacíos', error: true });
+    return;
+  }
 
-      if(password !== repetirPassword){
-        setAlerta({msg: 'Las contraseñas deben ser iguales', error: true})
-        return;
-      }
-      if(rut.length < 9 || rut.length > 10 ){
-        setAlerta({msg: 'RUT no válido. Ejemplo:11111111-1', error: true})
-        return;
-      }
+  if (password !== repetirPassword) {
+    setAlerta({ msg: 'Las contraseñas deben ser iguales', error: true });
+    return;
+  }
 
-      if(password.length < 6 ){
-        setAlerta({msg: 'La contraseña debe tener al menos 6 caracteres', error: true})
-        return;
-      }
+  if (rut.length < 9 || rut.length > 10 || !/^(\d{7,8}-[k|K|\d])$/.test(rut)) {
+    setAlerta({ msg: 'RUT no válido. Ejemplo: 11111111-1', error: true });
+    setRutValid(false);
+    return;
+  }
+
+  if (password.length < 6) {
+    setAlerta({ msg: 'La contraseña debe tener al menos 6 caracteres', error: true });
+    return;
+  }
+
+  if (!/(?=.*[A-Z])(?=.*\d)/.test(password)) {
+    setAlerta({ msg: 'La contraseña debe contener al menos una letra mayúscula y un número', error: true });
+    return;
+  }
+
+      
 
 
       setAlerta({})
 
       //Peticion al backend para crear usuario
       try{
-         await clientAxios.post('/pacientes',{email,rut,nombres,apellidos,sexo,password})
+         await clientAxios.post('/pacientes',{email,rut,nombres,apellidos,sexo,password,fechaNacimiento})
          setAlerta({
           msg: 'Registrado con éxito. Revisa tu Correo electrónico',
           error: false
@@ -59,6 +71,7 @@ const Registrar = () => {
 
 
      }
+
      const { msg } = alerta
     return(
         <>
@@ -92,7 +105,7 @@ const Registrar = () => {
             >
               <h1 className=" text-lila-200 font-extrabold font-nunito text-2xl mb-1 text-center">Cimiento Clínico</h1>
               <p className="text-md font-nunito text-gray-400 font-normal mb-8 text-center">Registro en el sistema</p>
-              <div className="flex items-center border-2 mb-8 py-2 px-3 rounded-2xl">
+              <div className="flex items-center border-2 mb-4 py-2 px-3 rounded-2xl">
                 <input id="email" className=" font-normal font-nunito  pl-2 w-full outline-none border-none" 
                 type="email" 
                 name="email"
@@ -101,17 +114,19 @@ const Registrar = () => {
                  onChange={e => setEmail(e.target.value) }
                   />
               </div>
-              <div className="flex items-center border-2 mb-8 py-2 px-3 rounded-2xl">
+              <div className="flex items-center border-2 mb-6 py-2 px-3 rounded-2xl">
+  <input
+    id="rut"
+    className={`font-normal font-nunito pl-2 w-full outline-none border-none ${rutValid ? '' : 'input-error'}`}
+    type="text"
+    name="Rut"
+    placeholder="RUT con guion identificador. Ejemplo: 11111111-1"
+    value={rut}
+    onChange={e => setRut(e.target.value)}
+  />
+</div>
 
-                <input id="rut" className=" font-normal font-nunito  pl-2 w-full outline-none border-none" 
-                type="text" 
-                name="Rut" 
-                placeholder="RUT con guion identificador.Ejemplo:11111111-1 " 
-                value={rut}
-                onChange={e => setRut(e.target.value) }
-                />
-              </div>
-              <div className="flex items-center border-2 mb-8 py-2 px-3 rounded-2xl">
+              <div className="flex items-center border-2 mb-6 py-2 px-3 rounded-2xl">
 
                 <input id="nombres" className=" font-normal font-nunito  pl-2 w-full outline-none border-none" 
                 type="text" 
@@ -121,7 +136,7 @@ const Registrar = () => {
                  onChange={e => setNombres(e.target.value) }
                  />
               </div>
-              <div className="flex items-center border-2 mb-8 py-2 px-3 rounded-2xl">
+              <div className="flex items-center border-2 mb-6 py-2 px-3 rounded-2xl">
 
                 <input id="apellidos" className=" font-normal font-nunito  pl-2 w-full outline-none border-none" 
                 type="text" 
@@ -131,7 +146,21 @@ const Registrar = () => {
                  onChange={e => setApellidos(e.target.value) }
                 />
               </div>
-               <div className="flex items-center border-2 mb-8 py-2 px-3 rounded-2xl">
+              <div className="items-center border-2 mb-6  px-3 rounded-2xl">
+                <div>  <label htmlFor="fechaNacimiento" className=" text-gray-400 text-sm ml-2">
+    Fecha de nacimiento
+  </label></div>
+  <input
+    id="fechaNacimiento"
+    className="font-normal font-nunito pl-2 w-full outline-none border-none"
+    type="date"
+    name="fechaNacimiento"
+    value={fechaNacimiento}
+    onChange={e => setFecha(e.target.value)}
+  />
+</div>
+
+               <div className="flex items-center border-2 mb-6 py-2 px-3 rounded-2xl">
 
                 <select id="Genero" className=" font-normal font-nunito  pl-2 w-full outline-none border-none" 
                 type="text" 
@@ -141,11 +170,19 @@ const Registrar = () => {
                  onChange={e => setSexo(e.target.value) }> 
                 <option value="Sin datos">Género</option>
                 <option value="No específica" >No específica</option>
-                 <option value="Masculino">Masculino</option>
-                 <option value="Femenino" >Femenino</option>
+                 <option value="Hombre">Masculino</option>
+                 <option value="Mujer" >Femenino</option>
                  </select>
               </div>
-              <div className="flex items-center border-2 mb-12 py-2 px-3 rounded-2xl ">
+              <div className='bg-lila-300 text-gray-300 rounded-lg px-2 py-2 mb-2 text-sm'>
+                <h1>Contraseñas válidas</h1>
+                <ul className="list-disc ml-6 text-sm">
+                  <li>Debe tener al menos 6 caracteres</li>
+                  <li>Debe contener al menos una letra mayúscula</li>
+                  <li>Debe contener al menos un número</li>
+                </ul>
+              </div>
+              <div className="flex items-center border-2 mb-8 py-2 px-3 rounded-2xl ">
                 <input type={showPwd ? "text" : "password"} className="pl-2 w-full outline-none border-none"
                  placeholder="Ingresa tu contraseña" 
                  value={password}

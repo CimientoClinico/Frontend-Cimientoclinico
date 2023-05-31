@@ -62,6 +62,15 @@ import VerMasConsulta from "./paginas/pacientes/VerMasConsulta"
 import RechazarConsulta from "./paginas/pacientes/RechazarConsulta"
 import MotivoConsultaDetalle from "./paginas/pacientes/VerMotivo"
 import Tarifas from "./paginas/profesionales/Tarifas"
+import MiPresentacion from "./paginas/profesionales/MiPresentacion"
+import SeguimientoMotivo from "./paginas/pacientes/SeguimientoMotivo"
+import TusConsultas from "./paginas/pacientes/TusConsultas"
+import ConsultasPendientesPaciente from "./paginas/pacientes/ConsultasPendientesPaciente"
+import ConsultasRechazadasPaciente from "./paginas/pacientes/ConsultasRechazadasPaciente"
+import ConsultasFinalizadasPaciente from "./paginas/pacientes/ConsultasFinalizadasPaciente"
+import VerConsultaAprobada from "./paginas/pacientes/VerConsultaAprobada"
+import AgendaProfesional from "./paginas/profesionales/AgendaProfesional"
+import InfoPacienteConsulta from "./paginas/profesionales/InfoPacienteConsulta"
 function App() {
   return (
     <BrowserRouter>
@@ -122,7 +131,14 @@ function App() {
         <Route path="vermas-consulta/:id" element={ <VerMasConsulta/> } />
         <Route path="rechazar-consulta/:id" element={ <RechazarConsulta/> } />
         <Route path="vermas-motivo/:id" element={ <MotivoConsultaDetalle/> } />
-       
+        <Route path="seguimiento-motivo/:id" element={ <SeguimientoMotivo/> } />
+        <Route path="tus-consultas" element={ <TusConsultas/> } />
+        <Route path="consultas-pendientes" element={ <ConsultasPendientesPaciente/> } />
+        <Route path="consultas-rechazadas" element={ < ConsultasRechazadasPaciente/> } />
+        <Route path="consultas-finalizadas" element={ < ConsultasFinalizadasPaciente/> } />
+        <Route path="vermas-consulta-aprobada/:id" element={ <VerConsultaAprobada/> } />
+
+        
 
 
       </Route>
@@ -147,6 +163,11 @@ function App() {
         <Route path="consulta/:id" element={ <VerConsulta/>} />
         <Route path="lista-motivos-consulta" element={ <ListaMotivosConsulta/> } />
         <Route path="tarifas" element={ <Tarifas/> } />
+        <Route path="mi-presentacion" element={ <MiPresentacion/> } />
+        <Route path="agenda-profesional" element={ <AgendaProfesional/> } />
+        <Route path="info-paciente-consulta/:id" element={ <InfoPacienteConsulta/> } />
+
+        
 
       </Route>
     </Routes>

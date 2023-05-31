@@ -77,7 +77,7 @@ const HeaderConsultasPro = () => {
   
   return (
     <>
-      <header className="pt-10 bg-coral-100 ">
+      <header className="pt-12 bg-lila-200 ">
      <div className="container mx-auto flex flex-col md:flex-row justify-center items-center font-nunito   ">
 <nav className="flex flex-col items-start md:flex-row justify-content: flex-start xl:gap-1 sm:gap-1 xl:mt-2 lg:mt-0">
 
@@ -104,7 +104,7 @@ const HeaderConsultasPro = () => {
 }
 { numNotificacionesRechazada > 0 ?
  <Link to="/profesional/consultas-rechazadas"  className={`text-white text-sm hover:text-gray-300 bg-red-500 px-3 py-1 xl:rounded-t-lg xs:rounded-md font-regular flex ${location.pathname === '/profesional/consultas-rechazadas' && 'text-gray-300  '}`}>Consultas rechazadas
- <div className="bg-red-500 text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center ml-2">
+ <div className="bg-red-300 text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center ml-2">
             {numNotificacionesRechazada}
             </div>
  </Link>
@@ -113,7 +113,7 @@ const HeaderConsultasPro = () => {
 }
 { numNotificacionesFinalizadas > 0 ?
  <Link to="/profesional/consultas-finalizadas"  className={`text-white text-sm hover:text-gray-300 bg-green-800 px-3 py-1 xl:rounded-t-lg xs:rounded-md font-regular flex ${location.pathname === '/profesional/consultas-finalizadas' && 'text-gray-300  '}`}>Consultas finalizadas
- <div className="bg-green-800 text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center ml-2">
+ <div className="bg-red-800 text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center ml-2">
             {numNotificacionesFinalizadas}
             </div>
  </Link>

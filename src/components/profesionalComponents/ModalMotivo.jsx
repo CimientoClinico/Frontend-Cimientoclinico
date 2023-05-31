@@ -4,10 +4,8 @@ import { Link } from "react-router-dom";
 import clientAxios from "../../config/axios";
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
-import utc from 'dayjs/plugin/utc';
-import timezone from 'dayjs/plugin/timezone';
-export const ModalMotivo = ({ motivo, onClose}) => {
 
+export const ModalMotivo = ({ motivo, onClose}) => {
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [mensaje, setMensaje] = useState('Hola, estoy interesado en tomar tu caso a través de Cimiento Clínico');
   const [fecha, setFecha] = useState('');
@@ -18,7 +16,18 @@ export const ModalMotivo = ({ motivo, onClose}) => {
   const [esTarifaGlobal, setEsTarifaGlobal] = useState(true);
   const[ tarifas, setTarifas]= useState([])
   const[ tarifasglobales, setTarifasglobales]= useState([])
-  const fechaActualChile = dayjs().tz('America/Santiago');
+  const [nombre, setNombre] = useState("");
+    const [valor, setValor] = useState('');
+    const [tiempo, setTiempo] = useState('');
+    const [isOpen, setIsOpen] = useState(false);
+    const [actualizarTarifas, setActualizarTarifas] = useState(false);
+
+    useEffect(() => {
+      obtenerTarifas();
+    }, [actualizarTarifas]);
+    const handleToggleSection = () => {
+      setIsOpen(!isOpen);
+    };
   const abrirFormulario = () => {
     setMostrarFormulario(true);
   };
@@ -26,27 +35,23 @@ export const ModalMotivo = ({ motivo, onClose}) => {
   const cerrarFormulario = () => {
     setMostrarFormulario(false);
   };
-  useEffect(() => {
-    const obtenertarifas = async() =>{
-      try {
-        const tokenPro = localStorage.getItem('tokenPro')
-        if(!tokenPro) return
-  
-        const config={
-          headers:{
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${tokenPro}`
-        }
-        }
-        const { data } = await clientAxios.get('/profesional/obtener-tarifas',config)
-        setTarifas(data)
-      } catch (error) {
-        console.log(error)
-      }
-  
+  const obtenerTarifas = async () => {
+    try {
+      const tokenPro = localStorage.getItem('tokenPro');
+      if (!tokenPro) return;
+
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${tokenPro}`,
+        },
+      };
+      const { data } = await clientAxios.get('/profesional/obtener-tarifas', config);
+      setTarifas(data);
+    } catch (error) {
+      console.log(error);
     }
-    obtenertarifas()
-  }, []);
+  };
   useEffect(() => {
     const obtenertarifasglobales = async() =>{
       try {
@@ -86,6 +91,34 @@ export const ModalMotivo = ({ motivo, onClose}) => {
     try{
       const tokenPro = localStorage.getItem("tokenPro");
       if (!tokenPro) return;
+
+      if (motivo.horariopaciente && motivo.horariopaciente.length > 0) {
+      const horarioInicioSeleccionado = new Date(`2000-01-01T${horarioinicio}`);
+      const horarioFinSeleccionado = new Date(`2000-01-01T${horariofin}`);
+      
+      const horarioDisponible = motivo.horariopaciente.some(
+        (horario) => {
+          const fechaHorario = new Date(horario.fecha);
+          const horarioInicio = new Date(`2000-01-01T${horario.horarioinicio}`);
+          const horarioFin = new Date(`2000-01-01T${horario.horariofin}`);
+      
+          return (
+            dayjs(fechaHorario) &&
+            dayjs(fechaHorario) &&
+            (
+              (horarioInicio <= horarioInicioSeleccionado && horarioFin >= horarioFinSeleccionado) ||
+              (horarioInicioSeleccionado <= horarioInicio && horarioFinSeleccionado >= horarioInicio) &&
+              (horarioInicioSeleccionado >= horarioInicio && horarioFinSeleccionado <= horarioFin)
+            )
+          );
+        }
+      );
+      if (!horarioDisponible) {
+        Swal.fire('¡Error!', 'El horario seleccionado no está disponible.', 'error');
+        return;
+      }
+    }
+
       if (!fecha) {
         Swal.fire('¡Error!', 'Por favor, seleccione una fecha.', 'error');
         return;
@@ -159,20 +192,58 @@ export const ModalMotivo = ({ motivo, onClose}) => {
     const nuevaFecha = new Date(fecha)
     nuevaFecha.setMinutes(nuevaFecha.getMinutes() + nuevaFecha.getTimezoneOffset())
     return new Intl.DateTimeFormat('es-CL', {dateStyle: 'long'}).format(nuevaFecha) }
+
+    const handleSubmit = async (event) => {
+      event.preventDefault();
   
+      const tarifa = { nombre, valor, tiempo };
+  
+      try {
+        if (!nombre) {
+          Swal.fire('¡Error!', 'Por favor, Agregue un nombre a su tarifa.', 'error');
+          return;
+        }
+        if (!valor) {
+          Swal.fire('¡Error!', 'Por favor, Agregue un valor a su tarifa', 'error');
+          return;
+        }
+        if (!tiempo) {
+          Swal.fire('¡Error!', 'Por favor, Agregue el tiempo a su tarifa', 'error');
+          return;
+        }
+        const tokenPro = localStorage.getItem('tokenPro');
+        if (!tokenPro) return;
+  
+        const config = {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${tokenPro}`,
+          },
+        };
+        const response = await clientAxios.post('/profesional/crear-tarifa', tarifa, config);
+        Swal.fire('¡Perfecto!', 'Tu tarifa fue publicada', 'success');
+        setActualizarTarifas(true);
+      } catch (error) {
+        console.log(error);
+      }
+      setNombre('');
+      setValor('');
+      setTiempo('');
+      setIsOpen(false);
+    };
 
   return (
     
     <div className={`fixed z-10 inset-0 overflow-y-auto ${motivo ? "" : "hidden"}`}>
-    <div className="flex items-end justify-center min-h-screen px-4 pb-20 text-center sm:block sm:p-0">
-      <div className="fixed inset-0 transition-opacity" aria-hidden="true">
-        <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
-      </div>
-      <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true"></span>
-      <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle max-w-screen-lg sm:max-w-4xl">
+  <div className="flex items-end justify-center min-h-screen px-4 pb-20 text-center sm:block sm:p-0">
+    <div className="fixed inset-0 transition-opacity" aria-hidden="true">
+      <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+    </div>
+    <span className="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true"></span>
+    <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle w-screen px-6 py-4 sm:py-6 max-w-screen-lg sm:max-w-2xl">
         <div className="bg-white px-6 pt-5 pb-4 sm:p-6 sm:pb-4">
           <div className="sm:flex sm:items-start">
-            <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
+            <div className="mx-auto flex-shrink-0 flex items-center justify-center h-12 w-12 rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-16">
             📄
             </div>
             
@@ -345,13 +416,13 @@ export const ModalMotivo = ({ motivo, onClose}) => {
 </div>
               </div>
             </div>
-            <div class="flex justify-end">
-        <button class="text-gray-400 hover:text-gray-500 focus:outline-none"onClick={onClose}>
-          <svg class="h-6 w-6 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <div className="flex justify-end">
+        <button className="text-gray-400 hover:text-gray-500 focus:outline-none"onClick={onClose}>
+          <svg className="h-6 w-6 fill-current" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
             <path
               d="M6.707 6.293a1 1 0 011.414 0L12 10.586l3.879-3.88a1 1 0 111.414 1.414L13.414 12l3.88 3.879a1 1 0 01-1.414 1.414L12 13.414l-3.879 3.88a1 1 0 01-1.414-1.414L10.586 12 6.707 8.121a1 1 0 010-1.414z"
-              fill-rule="evenodd"
-              clip-rule="evenodd"
+              fillRule="evenodd"
+              clipRule="evenodd"
             />
           </svg>
         </button>
@@ -359,25 +430,25 @@ export const ModalMotivo = ({ motivo, onClose}) => {
           </div>
         </div>
         {mostrarFormulario ? (
-        <div class="fixed  z-10 inset-0 overflow-y-auto">
-        <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-          <div class="fixed inset-0 transition-opacity">
-            <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+        <div className="fixed  z-10 inset-0 overflow-y-auto">
+        <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+          <div className="fixed inset-0 transition-opacity">
+            <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
           </div>
-          <span class="hidden sm:inline-block sm:align-middle sm:h-screen"></span>&#8203;
-          <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
-            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-              <div class="sm:flex sm:items-start ">
-                <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+          <span className="hidden sm:inline-block sm:align-middle sm:h-screen"></span>&#8203;
+          <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl ">
+            <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+              <div className="sm:flex sm:items-start ">
+                <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
                   
-                  <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Formulario consulta</h3>
+                  <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">Formulario consulta</h3>
                   <h1 className="text-md "> ⌚ Horarios disponibles Paciente:</h1>
                   <div className='bg-lila-100 rounded-lg'>
                   {motivo.horariopaciente ? 
-  <div className="grid grid-cols-3 grid-flow-row gap-4 px-1 py-2 mt-4">
-    {motivo.horariopaciente.filter((horario) => dayjs(horario.fecha).isSameOrAfter(fechaActualChile, 'day')).map((horario) => (
+ <div className="grid grid-cols-3 md:grid-cols-6 gap-4 px-1 py-2 mt-1">   
+  {motivo.horariopaciente.filter((horario) => (horario.fecha)).map((horario) => (
         <div key={horario._id} className="bg-gray-100 py-2 px-1 text-xs text-gray-800 rounded-md">
-            <h4 className="text-xs font-regular mb-2">{dayjs(horario.fecha).format('DD-MM-YYYY')}</h4>
+            <h4 className="text-xs font-regular mb-2">{dayjs(horario.fecha).utc().format('DD/MM/YYYY')}</h4>
             <h4 className="text-xs font-regular mb-2">{horario.horarioinicio} - {horario.horariofin}</h4>
         </div>
     ))}
@@ -387,14 +458,14 @@ export const ModalMotivo = ({ motivo, onClose}) => {
 </div>
                
                 
-  <div class="mb-4">
-  <label for="mensaje" class="block text-gray-700 font-bold mb-2">Mensaje</label>
+  <div className="mb-4">
+  <label htmlFor="mensaje" className="block text-gray-700 font-bold mb-2">Mensaje</label>
   <textarea
     id="mensaje"
     name="mensaje"
     value={mensaje}
     onChange={(e) => setMensaje(e.target.value)}
-   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-24 resize-none"
+   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-24 resize-none"
    ></textarea>
     </div>
     <div>
@@ -404,7 +475,7 @@ export const ModalMotivo = ({ motivo, onClose}) => {
  </div>
  <div className="flex px-2 justify-center gap-2 flex-wrap">
   <div className="mb-4 flex flex-col items-center justify-center">
-    <label for="valor" className=" text-gray-700 font-bold mb-2">
+    <label htmlFor="valor" className=" text-gray-700 font-bold mb-2">
       Tarifas globales:
     </label>
     <select
@@ -427,11 +498,11 @@ export const ModalMotivo = ({ motivo, onClose}) => {
   </div>
 
   <div className="mb-4 flex flex-col items-center justify-center ">
-    <label for="valor" className="block text-gray-700 font-bold mb-2">
+    <label htmlFor="valor" className="block text-gray-700 font-bold mb-2">
       Tarifas personalizadas:
     </label>
     <select
-      className="w-64 max-w-5xl border border-gray-300 p-2 rounded-lg"
+      className="w-50 max-w-5xl border border-gray-300 p-2 rounded-lg"
       value={tarifaId}
       onChange={(e) => {
         setTarifaId(e.target.value);
@@ -451,22 +522,93 @@ export const ModalMotivo = ({ motivo, onClose}) => {
       ))}
     </select>
   </div>
-  <div>
-      {tarifas.length > 0 ? (
-        ''
-      ) : (
-        <Link to={'/profesional/tarifas'} className="text-blue-500 hover:text-blue-700 ">
-          Crea tus propias tarifas
-        </Link>
-      )}
-    </div>
-</div>
-   
 
+
+
+
+</div>
+<div>
+<button onClick={handleToggleSection} className="text-blue-500 hover:text-blue-700 mb-2">
+        {isOpen ? 'Cerrar sección' : 'Crea una nueva tarifa'}
+      </button>
+      {isOpen && (
+        <div className="border-2 border-gray-700 rounded-md px-1">
+        <h1 className="text-center font-semibold text-xl text-lila-300">Crea una nueva tarifa</h1>
+        <form onSubmit={handleSubmit}>
+          <div className="flex flex-col md:flex-row md:space-x-4">
+            <div className="relative flex-1">
+              <input
+                type="text"
+                className="h-10 w-full border border-1.5 text-xs rounded-md border-gray-300 text-gray-900 p-3"
+                placeholder="Nombre de la tarifa"
+                id="nombre"
+                value={nombre || ''}
+                onChange={(event) => setNombre(event.target.value)}
+              />
+              <div className="absolute right-0 top-0 mt-2 mr-2 text-xl">
+                📄
+              </div>
+            </div>
+            <div className="relative flex-1">
+              <input
+                name="etd"
+                type="number"
+                className="h-10 w-full border border-1.5 text-xs rounded-md border-gray-300 text-gray-900 p-3"
+                placeholder="Valor"
+                id="valor"
+                value={valor}
+                onChange={(event) => {
+                  const newValue = event.target.value.trim();
+                  if (newValue === "") {
+                    setValor('');
+                  } else {
+                    setValor(Number(newValue));
+                  }
+                }}
+              />
+
+              <div className="absolute right-0 top-0 mt-2 mr-2 text-xl">
+                💲
+              </div>
+            </div>
+            <div className="relative flex-1">
+              <input
+                name="etd"
+                type="number"
+                className="h-10 w-full border border-1.5  text-xs rounded-md border-gray-300 text-gray-900 p-3"
+                placeholder="Tiempo en minutos"
+                id="tiempo"
+                value={tiempo}
+                onChange={(event) => {
+                  const newValue = event.target.value.trim();
+                  if (newValue === "") {
+                    setTiempo('');
+                  } else {
+                    setTiempo(Number(newValue));
+                  }
+                }}
+              />
+
+              <div className="absolute right-0 top-0 mt-2 mr-2 text-xl">
+                🕐
+              </div>
+            </div>
+          </div>
+          <div className="flex justify-center py-2">
+            <button type="submit" className="bg-lila-200 hover:bg-lila-100 text-white rounded-lg px-1 py-1">
+              Agregar tarifa
+            </button>
+          </div>
+        </form>
+
+    </div>
+          )}
+    </div>
+    
   </div>
 
-  <div class="mb-4">
-  <label for="horaInicio" class="block text-gray-700 font-bold mb-2">Fecha:</label>
+  <div className="mb-4">
+  <label htmlFor="horaInicio" className="block text-gray-700 font-bold mb-2">Fecha:</label>
   <input
   type="date"
   id="fecha"
@@ -474,11 +616,12 @@ export const ModalMotivo = ({ motivo, onClose}) => {
   value={fecha}
   onChange={(e) => setFecha(e.target.value)}
   min={new Date().toISOString().split('T')[0]}
-  class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
 />
   </div>
-  <div class="mb-4">
-  <label for="horaInicio" class="block text-gray-700 font-bold mb-2">Hora de inicio</label>
+  
+  <div className="mb-4">
+  <label htmlFor="horaInicio" className="block text-gray-700 font-bold mb-2">Hora de inicio</label>
   <input
     type="time"
     id="horarioinicio"
@@ -488,27 +631,27 @@ export const ModalMotivo = ({ motivo, onClose}) => {
       setHoraInicio(e.target.value);
       setHoraFin(calcularHoraFin(e.target.value));
     }}
-    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
   />
 </div>
-<div class="mb-4">
-  <label for="horariofin" class="block text-gray-700 font-bold mb-2">Hora de fin</label>
+<div className="mb-4">
+  <label htmlFor="horariofin" className="block text-gray-700 font-bold mb-2">Hora de fin</label>
   <input
     type="time"
     id="horariofin"
     name="horariofin"
     value={horariofin}
     onChange={(e) => setHoraFin(e.target.value)}
-    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
   />
 </div>
 
                 </div>
               </div>
             </div>
-            <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-              <span class="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
-                <button class="bg-lila-200 px-2 py-2 rounded-md text-white hover:bg-lila-100" onClick={() =>enviarNotificacion()}>Tomar este caso</button>
+            <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+              <span className="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
+                <button className="bg-lila-200 px-2 py-2 rounded-md text-white hover:bg-lila-100" onClick={() =>enviarNotificacion()}>Tomar este caso</button>
               </span>
                         <span className="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
                         <button type="button" onClick={cerrarFormulario} className="inline-flex justify-center w-full rounded-md  px-4 py-2 bg-coral-200 hover:bg-coral-100 text-white text-base leading-6 font-medium  shadow-sm  focus:outline-none  focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5">

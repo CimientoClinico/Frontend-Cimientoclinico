@@ -3,8 +3,12 @@ import { useParams, useNavigate } from 'react-router-dom';
 import clientAxios from "../../config/axios";
 import { Image} from "cloudinary-react";
 import useAuth from "../../hooks/useAuth"
+
 const FormularioVerMasConsulta = () => {
     const [consulta, setConsulta] = useState([]);
+    const [educacion, setEducacion] = useState([]);
+    const [especialidad, setEspecialidad] = useState([]);
+    const [experiencia, setExperiencia] = useState([]);
     const { id } = useParams();
     const navigate = useNavigate()
     const {auth} =  useAuth()
@@ -18,7 +22,7 @@ const FormularioVerMasConsulta = () => {
             Authorization: `Bearer ${token}`
           }
         };
-
+      
         const fetchData = async () => {
           try {
             const response = await clientAxios.get(`/pacientes/ver-consulta/${id}`, config);
@@ -27,14 +31,34 @@ const FormularioVerMasConsulta = () => {
             } else {
               setConsulta([response.data]);
             }
+      
+            // Agregar condición para asegurarse de que la propiedad `profesional._id` esté definida
+            if (response.data && response.data.profesional && response.data.profesional._id) {
+              const {data} = await clientAxios.get(`/pacientes/obtener-educacion-pro/${response.data.profesional._id}`, config);
+              setEducacion(data)
+
+            }
+            if (response.data && response.data.profesional && response.data.profesional._id) {
+                const {data} = await clientAxios.get(`/pacientes/obtener-experiencia-pro/${response.data.profesional._id}`, config);
+                setExperiencia(data)
+  
+              }
+              if (response.data && response.data.profesional && response.data.profesional._id) {
+                const {data} = await clientAxios.get(`/pacientes/obtener-especialidad-pro/${response.data.profesional._id}`, config);
+                setEspecialidad(data)
+  
+              }
+      
           } catch (error) {
             console.log(error);
           }
         };
       
         fetchData();
-
+      
       }, []);
+
+
       const calcularEdad = (fechaNacimiento) => {
         const hoy = new Date();
         const cumpleanos = new Date(fechaNacimiento);
@@ -162,18 +186,21 @@ const FormularioVerMasConsulta = () => {
               
                     </div>
                     <h1 className="text-gray-900 font-bold text-xl leading-8 my-1">{con.profesional.nombres} {con.profesional.apellidos}</h1>
-                    <h3 className="text-gray-600 font-lg text-semibold leading-6">{con.profesional.email} </h3>
-                    <h3 className="text-gray-600 font-lg text-semibold leading-6">{con.profesional.telefono} </h3>
-                    <p className="text-sm text-gray-500 hover:text-gray-600 leading-6">Lorem ipsum dolor sit amet
-                        consectetur adipisicing elit.
-                        Reprehenderit, eligendi dolorum sequi illum qui unde aspernatur non deserunt</p>
+                    <h3 className="text-gray-600 font-lg text-semibold leading-6">{consulta.profesional && consulta.profesional.emailtrabajo && consulta.profesional.correovisible === true && consulta.profesional.emailtrabajo.length ? <span> Email: { con.profesional.emailtrabajo}</span>  : ""}</h3>
+                    <h3 className="text-gray-600 font-lg text-semibold leading-6">{consulta.profesional && consulta.profesional.celulartrabajo && consulta.profesional.celularvisible ===true && consulta.profesional.celulartrabajo.length ? <span> Celular: {con.profesional.celulartrabajo}</span>  : ""}</h3>
+                    <h3 className="text-gray-600 font-lg text-semibold leading-6">{con.profesional.numeroregistrosalud ? <span> Nº registro de salud: { con.profesional.numeroregistrosalud}</span>  : ""}</h3>
+                    <p className="text-sm text-gray-500 hover:text-gray-600 leading-6">{con.profesional.presentacion} </p>
                     <ul
-                        className="bg-gray-100 text-gray-600 hover:text-gray-700 hover:shadow py-2 px-3 mt-3 divide-y rounded shadow-sm">
-                        <li className="flex justify-start gap-2  py-3">
-                            <span>Especialidad:</span>
-                            <span className="">{con.profesional.especialidad} </span>
-                        </li>
-                        <li className="flex justify-start gap-2  py-3">
+                        className="bg-gray-100 text-gray-600 hover:text-gray-700 hover:shadow  py-2 px-3 mt-3  rounded shadow-sm">
+                        <div className="flex justify-start gap-2   py-3">
+                            <span className="font-semibold">Especialidad</span>
+                         
+                        </div>
+                            {especialidad.length > 0 && especialidad.map((espe) => (
+                             <span key={espe._id} className=" ">{espe.nombre} </span>
+                            ))}
+                            <div className="divide-y">
+                        <li className="flex  justify-start gap-2  py-3">
                             <span>Edad:</span>
                             <span className="">{calcularEdad(con.profesional.fechaNacimiento)}{' años'} </span>
                         </li>
@@ -181,6 +208,7 @@ const FormularioVerMasConsulta = () => {
                             <span>Genero:</span>
                             <span className="">{con.profesional.sexo} </span>
                         </li>
+                        </div>
                     </ul>
                 </div>
 
@@ -199,16 +227,14 @@ const FormularioVerMasConsulta = () => {
                                 </span>
                                 <span className="tracking-wide">Experiencia</span>
                             </div>
-                            <ul className="list-inside space-y-2">
-                                <li>
-                                    <div className="text-teal-600">Owner at Her Company Inc.</div>
-                                    <div className="text-gray-500 text-xs">March 2020 - Now</div>
-                                </li>
-                                <li>
-                                    <div className="text-teal-600">Owner at Her Company Inc.</div>
-                                    <div className="text-gray-500 text-xs">March 2020 - Now</div>
-                                </li>
-                            </ul>
+                            {experiencia.length > 0 && experiencia.map((exp) => (
+    <ul key={exp._id} className="list-inside space-y-2">
+        <li >
+            <div className="text-teal-600">{exp.nombre}</div>
+            <div className="text-gray-500 text-xs">{exp.fechainicio} - {exp.fechafin}</div>
+        </li>
+    </ul>
+))}
                         </div>
                         <div>
                             <div className="flex items-center space-x-2 font-semibold text-gray-900 leading-8 mb-3">
@@ -224,16 +250,14 @@ const FormularioVerMasConsulta = () => {
                                 </span>
                                 <span className="tracking-wide">Educación</span>
                             </div>
-                            <ul className="list-inside space-y-2">
-                                <li>
-                                    <div className="text-teal-600">Masters Degree in Oxford</div>
-                                    <div className="text-gray-500 text-xs">March 2020 - Now</div>
-                                </li>
-                                <li>
-                                    <div className="text-teal-600">Bachelors Degreen in LPU</div>
-                                    <div className="text-gray-500 text-xs">March 2020 - Now</div>
-                                </li>
-                            </ul>
+                            {educacion.length > 0 && educacion.map((tar) => (
+    <ul key={tar._id} className="list-inside space-y-2">
+        <li >
+            <div className="text-teal-600">{tar.nombre}</div>
+            <div className="text-gray-500 text-xs">{tar.fechainicio} - {tar.fechafin}</div>
+        </li>
+    </ul>
+))}
                         </div>
                     
                     </div>

@@ -37,7 +37,6 @@ const VerMasConsultasPagadas= () => {
           try {
             const { data } = await clientAxios.get(`/profesional/verconsulta/${id}`, config);
          setConsulta(data)
-         console.log(data)
           } catch (error) {
             console.log(error);
           }
@@ -97,7 +96,7 @@ const VerMasConsultasPagadas= () => {
           <p>{consulta.paciente.apellidos}</p>
         </div>
         <div>
-          <p className="font-bold mb-1">Fecha de nacimiento:</p>
+          <p className="font-bold mb-1">Edad:</p>
           <p>{  calcularEdad(consulta.paciente.fechaNacimiento)} Años</p>
         </div>
         <div>

@@ -375,3 +375,76 @@ body{
   gap: 8px;
   margin-top: auto;
 }
+
+
+
+.connector::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  width: 20px;
+  height: 3%;
+  background-color: gray;
+}
+
+.relative:not(:last-child) .connector::before {
+  height: 5%;
+}
+
+@media (max-width: 640px) {
+  .connector::before {
+    top: 100%;
+    left: 50%;
+    transform: translate(-50%, -2%);
+    width: 2%;
+    height: 16px;
+  }
+  
+  .relative:not(:last-child) .connector::before {
+    width: 2%;
+    height: 20px;
+  }
+}
+.react-calendar__tile--hover {
+  background-color: transparent !important;
+}
+.input-error {
+  border-color: #ff0000 ;
+}
+
+.custom-icon {
+  font-size: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  text-align: center;
+  border: 1px solid #d1d5db;
+  color: #ccc;
+}
+
+.custom-icon-visible {
+  color: #666;
+}
+
+.custom-icon-hidden {
+  filter: blur(2px);
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.animate-pulso {
+  animation: pulse 2s infinite;
+}

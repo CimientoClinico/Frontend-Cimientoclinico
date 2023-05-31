@@ -3,6 +3,7 @@ import { useParams, } from 'react-router-dom';
 import clientAxios from "../../config/axios";
 import proAuth from "../../hooks/proAuth"
 import moment from "moment";
+import { Link } from "react-router-dom";
 const VerMasConsultasPagadas= () => {
     const [consulta, setConsulta] = useState([]);
     const [timeLeft, setTimeLeft] = useState({});
@@ -39,7 +40,6 @@ const VerMasConsultasPagadas= () => {
             try {
               const { data } = await clientAxios.get(`/profesional/verconsulta/${id}`, config);
               setConsulta(data);
-              console.log(data);
             } catch (error) {
               console.log(error);
             }
@@ -96,21 +96,21 @@ const VerMasConsultasPagadas= () => {
     <> 
     {consulta.estado === "pagado" ? (
  <div className="container mx-auto py-6">
-<div class="bg-gray-200 p-4 rounded-lg shadow-lg">
+<div className="bg-gray-200 p-4 rounded-lg shadow-lg">
   {timeLeft.days === 0 && timeLeft.hours === 0 && timeLeft.minutes === 0 && timeLeft.seconds === 0 ? (
-    <p class="text-lg font-bold">Ya llegó la hora de tu consulta</p>
+    <p className="text-lg font-bold">Ya llegó la hora de tu consulta</p>
   ) : (
     <>
-      <p class="text-lg font-bold mb-2">Tiempo restante para la próxima consulta:</p>
-      <div class="flex items-center">
-        <div class="text-4xl font-bold mr-2">{timeLeft.days}</div>
-        <div class="text-gray-600 mr-4">días</div>
-        <div class="text-4xl font-bold mr-2">{timeLeft.hours}</div>
-        <div class="text-gray-600 mr-4">horas</div>
-        <div class="text-4xl font-bold mr-2">{timeLeft.minutes}</div>
-        <div class="text-gray-600 mr-4">minutos</div>
-        <div class="text-4xl font-bold mr-2">{timeLeft.seconds}</div>
-        <div class="text-gray-600">segundos</div>
+      <p className="text-lg font-bold mb-2">Tiempo restante para la próxima consulta:</p>
+      <div className="flex items-center">
+        <div className="text-4xl font-bold mr-2">{timeLeft.days}</div>
+        <div className="text-gray-600 mr-4">días</div>
+        <div className="text-4xl font-bold mr-2">{timeLeft.hours}</div>
+        <div className="text-gray-600 mr-4">horas</div>
+        <div className="text-4xl font-bold mr-2">{timeLeft.minutes}</div>
+        <div className="text-gray-600 mr-4">minutos</div>
+        <div className="text-4xl font-bold mr-2">{timeLeft.seconds}</div>
+        <div className="text-gray-600">segundos</div>
       </div>
     </>
   )}
@@ -144,7 +144,7 @@ const VerMasConsultasPagadas= () => {
           <p>{consulta.paciente.apellidos}</p>
         </div>
         <div>
-          <p className="font-bold mb-1">Fecha de nacimiento:</p>
+          <p className="font-bold mb-1">Edad:</p>
           <p>{  calcularEdad(consulta.paciente.fechaNacimiento)} Años</p>
         </div>
         <div>
@@ -167,11 +167,11 @@ const VerMasConsultasPagadas= () => {
         {consulta.paciente.contacto === "Correo" ?
          <div>
           <p className="font-bold mb-1">Quiere ser contactado por <span className="underline">Correo</span>:</p>
-          <p>
           <div>
+          <p>
              {consulta.paciente.email}
-          </div>
           </p>
+          </div>
           </div>
           :'' }
             {consulta.paciente.contacto === "Celular" ?
@@ -185,18 +185,18 @@ const VerMasConsultasPagadas= () => {
           {consulta.paciente.contacto === "Whatsapp" ?
          <div>
           <p className="font-bold mb-1">Quiere ser contactado por <span className="underline">Whatsapp</span>:</p>
-          <p>
           <div>
+          <p>
              {consulta.paciente.telefono}
-          </div>
           </p>
+          </div>
           </div>
           :'' }
         </div>
         
       </div>
       <div className=""> 
-        <button className="bg-lila-200 px-3 py-2 text-white uppercase font-semibold rounded-xl shadow-md hover:bg-lila-100 ">Ficha del paciente</button>
+        <Link to={`/profesional/info-paciente-consulta/${consulta._id}`} className="bg-lila-200 px-3 py-2 text-white uppercase font-semibold rounded-xl shadow-md hover:bg-lila-100 ">Ficha del paciente</Link>
       </div>
 
       </div>

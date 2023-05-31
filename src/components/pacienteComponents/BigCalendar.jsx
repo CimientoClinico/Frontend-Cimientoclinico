@@ -3,10 +3,27 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import moment from 'moment'
 import clientAxios from '../../config/axios';
 import useAuth from "../../hooks/useAuth"
-import { Calendar, dayjsLocalizer } from 'react-big-calendar'
 import dayjs from 'dayjs'
+import { Calendar, dateFnsLocalizer } from 'react-big-calendar'
+import format from 'date-fns/format'
+import parse from 'date-fns/parse'
+import startOfWeek from 'date-fns/startOfWeek'
+import getDay from 'date-fns/getDay'
+import es from 'date-fns/locale/es'
+import { Link } from 'react-router-dom';
 
-const localizer = dayjsLocalizer(dayjs)
+
+const locales = {
+  'es': es,
+}
+
+const localizer = dateFnsLocalizer({
+  format,
+  parse,
+  startOfWeek,
+  getDay,
+  locales,
+})
 
 const BigCalendar = () => {
   const [eventos, setEventos] = useState([]);
@@ -16,6 +33,7 @@ const BigCalendar = () => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const { auth} =  useAuth()
   const [showModal, setShowModal] = useState(false); 
+  const [showModalConsulta, setShowModalConsulta] = useState(false); 
   const [consultas, setConsultas] = useState([]);
   const obtenerEventos = async () => {
     try {
@@ -87,7 +105,7 @@ const BigCalendar = () => {
           Authorization: `Bearer ${token}`
       }
       }
-      await clientAxios.delete(`/pacientes/borrar-horario/${id}`,config);
+      await clientAxios.delete(`/pacientes/borrar-horario/${selectedEvent.id}`,config);
       setEventos(eventos.filter((evento) => evento.id !== id)); 
 
     } catch (error) {
@@ -120,95 +138,121 @@ const BigCalendar = () => {
         const start = fecha.set('hour', consulta.horarioinicio.split(':')[0]).set('minute', consulta.horarioinicio.split(':')[1]).toDate();
         const end = fecha.set('hour', consulta.horariofin.split(':')[0]).set('minute', consulta.horariofin.split(':')[1]).toDate();
       return {
-        title: ` Consulta con el Profesional: ${consulta.profesional.nombres} ${consulta.profesional.apellidos} (${consulta.profesional.especialidad})`,
+        title: ` Consulta con el Profesional: ${consulta.profesional.nombres} ${consulta.profesional.apellidos} (${consulta.profesional.especialidad}) Motivo:(${consulta.motivoconsulta.titulo})`,
         start,
         end,
+        id:` ${consulta._id} `,
         isHorario: false
       };
     });
 };
 
-  const formatEventos = (eventos) => {
-    return eventos.map((evento) => {
-      const fecha = dayjs(evento.fecha);
-      const start = fecha.set('hour', evento.horarioinicio.split(':')[0]).set('minute', evento.horarioinicio.split(':')[1]).toDate();
-      const end = fecha.set('hour', evento.horariofin.split(':')[0]).set('minute', evento.horariofin.split(':')[1]).toDate();
-  
-      return {
-        title: `Horario disponible ${evento.horarioinicio}-${evento.horariofin}`,
-        start,
-        end,
-        id: evento._id,
-        isHorario: true 
-      };
-    });
-  };
-  const handleSelectEvent = (event) => {
+const formatEventos = (eventos) => {
+  return eventos.map((evento) => {
+    const start = dayjs.utc(evento.fecha).utcOffset(0).toDate(); // Asegúrate de aplicar el desplazamiento horario adecuado
+    const end = dayjs.utc(evento.fecha).utcOffset(0).toDate(); // Asegúrate de aplicar el desplazamiento horario adecuado
+
+    const [hours, minutes] = evento.horarioinicio.split(":");
+    start.setUTCHours(hours);
+    start.setUTCMinutes(minutes);
+
+    const [hours2, minutes2] = evento.horariofin.split(":");
+    end.setUTCHours(hours2);
+    end.setUTCMinutes(minutes2);
+
+    return {
+      title: `Horario disponible ${evento.horarioinicio}-${evento.horariofin}`,
+      start,
+      end,
+      id: evento._id,
+      isHorario: true 
+    };
+  });
+};
+
+const handleSelectEvent = (event) => {
+  if (event.title.includes('Horario')) {
     setSelectedEvent(event);
-    
     // Obtener la fecha, hora de inicio y hora de fin del evento
     const fecha = event.start.toISOString().substring(0, 10);
-    const horarioInicio = new Date(event.start).toLocaleTimeString('es-CL', {timeZone: 'America/Santiago', hour12: false});
-const horarioFin = new Date(event.end).toLocaleTimeString('es-CL', {timeZone: 'America/Santiago', hour12: false});
-    
+
+    const horaInicio = event.start.getHours() + 4; // Sumar 4 horas a la hora de inicio
+    const minutosInicio = event.start.getMinutes();
+    const horaFin = event.end.getHours() + 4; // Sumar 4 horas a la hora de fin
+    const minutosFin = event.end.getMinutes();
+
     setFecha(fecha);
-    setHorarioInicio(horarioInicio);
-    setHorarioFin(horarioFin);
-    
+    setHorarioInicio(`${horaInicio}:${minutosInicio}`);
+    setHorarioFin(`${horaFin}:${minutosFin}`);
     setShowModal(true);
-  };
+  }
+  if (event.title.includes('Consulta')) {
+    const selectedConsulta = consultasPendientes.find(consulta => event.id.includes(consulta._id));
+    setSelectedEvent(selectedConsulta);
+    setShowModalConsulta(true);
+  }
+};
   const closeModal = () => {
     setSelectedEvent(null); // Desmarca el evento seleccionado al cerrar el modal
     setShowModal(false); // Oculta el modal al cerrarlo
   };
+  const closeModalConsulta = () => {
+    setSelectedEvent(null); 
+    setShowModalConsulta(false);
+  };
   const handleSubmit = (e) => {
     e.preventDefault();
-  // Convertir la fecha y hora a hora de Chile
-  const fechaSantiago = moment.tz(fecha, 'YYYY-MM-DD', 'America/Santiago');
-  const horaInicioSantiago = moment.tz(horarioinicio, 'HH:mm', 'America/Santiago');
-  const horaFinSantiago = moment.tz(horariofin, 'HH:mm', 'America/Santiago');
-
-  // Obtener solo la hora y los minutos
-  const horaInicioChile = horaInicioSantiago.format('HH:mm');
-  const horaFinChile = horaFinSantiago.format('HH:mm');
-
-  const data = {
-    fecha: fechaSantiago.format(), // Formatear la fecha para enviarla al servidor
-    horarioinicio: horaInicioChile, // Usar la hora en formato de Chile
-    horariofin: horaFinChile // Usar la hora en formato de Chile
-  };
-    const token = localStorage.getItem('token')
-    if(!token) return
-
-    const config={
-      headers:{
+    if (!fecha || !horarioinicio || !horariofin) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: 'Todos los campos deben ser completados',
+      });
+      return;
+    }
+    // Convertir la fecha y hora a hora de Chile sin desplazamiento de zona horaria
+    const fechaSantiago = moment.tz(fecha, 'YYYY-MM-DD', 'America/Santiago').toISOString();
+    const data = {
+      fecha: fechaSantiago,
+      horarioinicio: horarioinicio,
+      horariofin: horariofin
+    };
+  
+    const token = localStorage.getItem('token');
+    if (!token) return;
+  
+    const config = {
+      headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`
-    }
-    }
-    clientAxios.put(`/pacientes/actualizar-horario-paciente/${selectedEvent.id}`, data, config)
-    .then((response) => {
-      // Actualizar la lista de eventos para reflejar los cambios
-      const updatedEvents = eventos.map(event => {
-        if (event.id === selectedEvent.id) {
-          return {
-            ...event,
-            fecha: fecha,
-            horarioinicio: horarioinicio,
-            horariofin: horariofin
-          };
-        } else {
-          return event;
-        }
+      }
+    };
+  
+    clientAxios
+      .put(`/pacientes/actualizar-horario-paciente/${selectedEvent.id}`, data, config)
+      .then((response) => {
+        // Actualizar la lista de eventos para reflejar los cambios
+        const updatedEvents = eventos.map((event) => {
+          if (event.id === selectedEvent.id) {
+            return {
+              ...event,
+              fecha: fecha,
+              horarioinicio: horarioinicio,
+              horariofin: horariofin
+            };
+          } else {
+            return event;
+          }
+        });
+        setEventos(updatedEvents);
+        obtenerEventos();
+        closeModal();
+      })
+      .catch((error) => {
+        console.log(error);
       });
-      setEventos(updatedEvents);
-      obtenerEventos();
-      closeModal();
-    })
-    .catch((error) => {
-      console.log(error);
-    });
   };
+  
   const handleEliminarHorario = async (id) => {
     
    await eliminarHorario(id);
@@ -217,28 +261,6 @@ const horarioFin = new Date(event.end).toLocaleTimeString('es-CL', {timeZone: 'A
   const eventosFormateados = formatEventos(eventos);
 const consultasFormateadas = formatconsultas(consultasPendientes);
 const eventosCombinados = eventosFormateados.concat(consultasFormateadas);
-const CustomEvent = ({ event }) => {
-  return (
-    <div className="custom-event">
-      <div className="event-title">{event.title}</div>
-      {event.isHorario && (
-        <div>
-          <button
-            title='borrar'
-            onClick={() => handleEliminarHorario(event.id)}
-          >🗑️</button>
-          <button
-            title='editar'
-            onClick={(e) => {
-              handleSelectEvent(event);
-            }}
-          >✏️</button>
-        </div>
-      )}
-
-    </div>
-  );
-};
   const eventStyleGetter = (event) => {
     let backgroundColor = '';
     if (event.title.includes('Horario disponible')) {
@@ -259,84 +281,115 @@ const CustomEvent = ({ event }) => {
      
           
       <div>
-            <Calendar
-  culture='es'
+       <h1 className='text-center font-bold text-4xl text-lila-300 py-2 '>Tu calendario de consultas y horarios disponibles</h1>
+<Calendar
+  culture="es"
   localizer={localizer}
   events={eventosCombinados}
   startAccessor="start"
   endAccessor="end"
   style={{ height: 600 }}
   eventPropGetter={eventStyleGetter}
-  components={{
-    event: CustomEvent
-  }}
-  
-
+  onSelectEvent={handleSelectEvent}
+  views={['month','week', 'day', 'agenda']}
 />
 {showModal && (
   <div className="fixed z-10 inset-0 overflow-y-auto">
-  <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-    <div className="fixed inset-0 transition-opacity">
-      <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
-    </div>
-
-    <span className="hidden sm:inline-block sm:align-middle sm:h-screen"></span>&#8203;
-    <div
-      className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full"
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby="modal-headline"
-    >
-     <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-<form onSubmit={handleSubmit}>
-<label htmlFor="horaFin" className="block text-gray-700 font-bold mb-2">
-  Fecha:
-</label>
-<input type="date" name='fecha' value={fecha}  onChange={(e) => setFecha(e.target.value)}/>
-<label className="block text-gray-700 font-bold mb-2" htmlFor="horaInicio">
-  Hora de inicio:
-</label>
-<input
-  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-  id="horaInicio"
-  type="time"
-  value={horarioinicio}
-  onChange={(e) => setHorarioInicio(e.target.value)}
-/>
-<br />
-<label htmlFor="horaFin" className="block text-gray-700 font-bold mb-2">
-  Hora de fin:
-</label>
-<input
-  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-  id="horaFin"
-  type="time"
-  value={horariofin}
-  onChange={(e) => setHorarioFin(e.target.value)}
-/>
-<div className="flex justify-end mt-4">
-  <button
-    type="button"
-    className="px-4 py-2 mr-2 text-white bg-red-500 rounded-md shadow-xl hover:bg-red-600 focus:outline-none focus:bg-red-600"
-    onClick={closeModal}
-  >
-    Cerrar
-  </button>
-  <input
-    type="submit"
-    value="Editar"
-    className="px-2 py-3 text-white font-medium  rounded-md shadow-xl hover:bg-blue-600 bg-blue-500"
-  />
-</div>
-</form>
-</div>
-
+    <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+      <div className="fixed inset-0 transition-opacity">
+        <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+      </div>
+      <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full" role="dialog" aria-modal="true" aria-labelledby="modal-headline">
+        <button
+          type="button"
+          className="absolute top-0 right-0 m-4 bg-gray-300  rounded-full py-1 px-1 focus:outline-none"
+          onClick={closeModal}
+        >
+         ❌
+        </button>
+        <div className="bg-white px-4 py-5 sm:p-6">
+          <form onSubmit={handleSubmit}>
+            <label htmlFor="fecha" className="block text-gray-700 font-bold mb-2">
+              Fecha:
+            </label>
+            <input className=' rounded-md border' type="date" id="fecha" name="fecha" value={fecha} onChange={(e) => setFecha(e.target.value)} />
+            <label htmlFor="horaInicio" className="block text-gray-700 font-bold mb-2">
+              Hora de inicio:
+            </label>
+            <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="horaInicio"
+              type="time"
+              value={horarioinicio}
+              onChange={(e) => setHorarioInicio(e.target.value)}
+            />
+            <br />
+            <label htmlFor="horaFin" className="block text-gray-700 font-bold mb-2">
+              Hora de fin:
+            </label>
+            <input
+              className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              id="horaFin"
+              type="time"
+              value={horariofin}
+              onChange={(e) => setHorarioFin(e.target.value)}
+            />
+            <div className="flex justify-center mt-4">
+              <input
+                type="submit"
+                value="Editar horario"
+                className="px-4 py-2 text-white font-medium rounded-md shadow-xl hover:bg-lila-100 bg-lila-200"
+              />
+            </div>
+          </form>
+          <hr className="my-6" />
+          <div className="flex justify-end">
+            <button
+              className="ml-4 bg-coral-300 hover:bg-coral-200 text-white px-4 py-2 rounded-lg"
+              title="borrar"
+              onClick={() => handleEliminarHorario()}
+            >
+              Eliminar este horario
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
-</div>
+)}
 
-
-      )}
+{showModalConsulta && (
+  <div className="fixed z-10 inset-0 overflow-y-auto">
+    <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+      <div className="fixed inset-0 transition-opacity">
+        <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+      </div>
+      <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full" role="dialog" aria-modal="true" aria-labelledby="modal-headline">
+        <button
+          type="button"
+          className="absolute top-0 right-0 m-4 bg-gray-300  rounded-full py-1 px-1 focus:outline-none"
+          onClick={closeModalConsulta}
+        >
+         ❌
+        </button>
+        <div className="bg-white px-4 py-5 sm:p-6">
+          <h3 className="text-lg font-medium leading-6 text-gray-900">Detalles de la consulta</h3>
+          <p className="mt-2 text-sm text-gray-500">Rut: {selectedEvent.profesional.rut}</p>
+          <p className="mt-2 text-sm text-gray-500">Nombre profesional: {selectedEvent.profesional.nombres} {selectedEvent.profesional.apellidos}</p>
+          <p className="mt-2 text-sm text-gray-500">Fecha de la consulta: {dayjs(selectedEvent.fecha).utc().format('DD/MM/YYYY')}</p>
+          <p className="mt-2 text-sm text-gray-500">Hora de inicio: {selectedEvent.horarioinicio} - Hora de fin: {selectedEvent.horariofin}</p>
+          <p className="mt-2 text-sm text-gray-500">Motivo: {selectedEvent.motivoconsulta.titulo}</p>
+          <p className="mt-2 text-sm text-gray-500">Descripción del Motivo: {selectedEvent.motivoconsulta.titulo}</p>
+          <p className="mt-2 text-sm text-gray-500">Estado de la consulta: {selectedEvent.estado}</p>
+          <div className='flex justify-center mt-2'> 
+          <Link  to={`/paciente/vermas-consulta-aprobada/${selectedEvent._id}`}  className='rounded-lg bg-lila-200 hover:bg-lila-100 text-white px-2 py-2'>Ingresar</Link>
+          </div>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+)}
     </div>
 
     );

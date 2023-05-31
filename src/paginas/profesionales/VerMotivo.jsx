@@ -7,6 +7,8 @@ import 'dayjs/locale/es';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import moment from 'moment-timezone';
+import { Link } from 'react-router-dom';
+
 // habilita los plugins utc y timezone
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -18,7 +20,7 @@ const VerMotivo = () => {
   const { id } = useParams();
   const [motivo, setMotivo] = useState(null);
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
-  const [mensaje, setMensaje] = useState('');
+  const [mensaje, setMensaje] = useState('Hola, estoy interesado en tomar tu caso a través de Cimiento Clínico');
   const [valor, setValor] = useState('');
   const [fecha, setFecha] = useState('');
   const [horarioinicio, setHoraInicio] = useState('');
@@ -93,6 +95,34 @@ const VerMotivo = () => {
     try{
       const tokenPro = localStorage.getItem("tokenPro");
       if (!tokenPro) return;
+
+      if (motivo.horariopaciente && motivo.horariopaciente.length > 0) {
+      const horarioInicioSeleccionado = new Date(`2000-01-01T${horarioinicio}`);
+      const horarioFinSeleccionado = new Date(`2000-01-01T${horariofin}`);
+      
+      const horarioDisponible = motivo.horariopaciente.some(
+        (horario) => {
+          const fechaHorario = new Date(horario.fecha);
+          const horarioInicio = new Date(`2000-01-01T${horario.horarioinicio}`);
+          const horarioFin = new Date(`2000-01-01T${horario.horariofin}`);
+      
+          return (
+            dayjs(fechaHorario).isSame(dayjs(fecha), 'day') &&
+            dayjs(fechaHorario).isSameOrAfter(fechaActualChile, 'day') &&
+            (
+              (horarioInicio <= horarioInicioSeleccionado && horarioFin >= horarioFinSeleccionado) ||
+              (horarioInicioSeleccionado <= horarioInicio && horarioFinSeleccionado >= horarioInicio) &&
+              (horarioInicioSeleccionado >= horarioInicio && horarioFinSeleccionado <= horarioFin)
+            )
+          );
+        }
+      );
+      if (!horarioDisponible) {
+        Swal.fire('¡Error!', 'El horario seleccionado no está disponible.', 'error');
+        return;
+      }
+    }
+
       if (!fecha) {
         Swal.fire('¡Error!', 'Por favor, seleccione una fecha.', 'error');
         return;
@@ -108,6 +138,10 @@ const VerMotivo = () => {
       }
       if (tarifaGlobalId && tarifaId) {
         Swal.fire('¡Error!', 'No puede agregar una tarifa global y una tarifa personalizada al mismo tiempo.', 'error');
+        return;
+      }
+      if (!tarifaGlobalId && !tarifaId) {
+        Swal.fire('¡Error!', 'Agrege una tarifa para la consulta', 'error');
         return;
       }
   
@@ -152,7 +186,7 @@ const VerMotivo = () => {
     setHoraFin('')
     setHoraInicio('')
     setFecha('')
-
+    onClose()
    
   } catch (error) {
       console.log(error)
@@ -378,25 +412,25 @@ const VerMotivo = () => {
 
 
 {mostrarFormulario ? (
-        <div class="fixed  z-10 inset-0 overflow-y-auto">
-        <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-          <div class="fixed inset-0 transition-opacity">
-            <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+        <div className="fixed  z-10 inset-0 overflow-y-auto">
+        <div className="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+          <div className="fixed inset-0 transition-opacity">
+            <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
           </div>
-          <span class="hidden sm:inline-block sm:align-middle sm:h-screen"></span>&#8203;
-          <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
-            <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-              <div class="sm:flex sm:items-start ">
-                <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+          <span className="hidden sm:inline-block sm:align-middle sm:h-screen"></span>&#8203;
+          <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-2xl sm:w-full">
+            <div className="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+              <div className="sm:flex sm:items-start ">
+                <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
                   
-                  <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4">Formulario consulta</h3>
+                  <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">Formulario consulta</h3>
                   <h1 className="text-md "> ⌚ Horarios disponibles Paciente:</h1>
                   <div className='bg-lila-100 rounded-lg'>
                   {motivo.horariopaciente ? 
   <div className="grid grid-cols-3 grid-flow-row gap-4 px-1 py-2 mt-4">
-    {motivo.horariopaciente.filter((horario) => dayjs(horario.fecha).isSameOrAfter(fechaActualChile, 'day')).map((horario) => (
+    {motivo.horariopaciente.filter((horario) => horario.fecha).map((horario) => (
         <div key={horario._id} className="bg-gray-100 py-2 px-1 text-xs text-gray-800 rounded-md">
-            <h4 className="text-xs font-regular mb-2">{dayjs(horario.fecha).format('DD-MM-YYYY')}</h4>
+            <h4 className="text-xs font-regular mb-2">{dayjs(horario.fecha).utc().format('DD/MM/YYYY')}</h4>
             <h4 className="text-xs font-regular mb-2">{horario.horarioinicio} - {horario.horariofin}</h4>
         </div>
     ))}
@@ -406,14 +440,14 @@ const VerMotivo = () => {
 </div>
 
                 
-  <div class="mb-4">
-  <label for="mensaje" class="block text-gray-700 font-bold mb-2">Mensaje</label>
+  <div className="mb-4">
+  <label htmlFor="mensaje" className="block text-gray-700 font-bold mb-2">Mensaje</label>
   <textarea
     id="mensaje"
     name="mensaje"
     value={mensaje}
     onChange={(e) => setMensaje(e.target.value)}
-   class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-24 resize-none"
+   className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline h-24 resize-none"
    ></textarea>
     </div>
     <div>
@@ -421,68 +455,82 @@ const VerMotivo = () => {
   
   <h1 className="text-white text-xs"> <span className="font-bold">Nota:</span> Solo puedes agregar un tipo de tarifa para cada consulta. </h1>
  </div>
-<div className="flex px-2 justify-between w-full pt-2">
-      <div class="mb-4">
-        <label for="valor" class="block text-gray-700 font-bold mb-2">
-          Tarifas globales:
-        </label>
-        <select
-          className="w-full border border-gray-300 p-2 rounded-lg appearance-none"
-          value={tarifaGlobalId}
-          onChange={(e) => {setTarifaGlobal(e.target.value);
-            setEsTarifaGlobal(true);}} 
-        >
-          <option value="">Selecciona una tarifa global</option>
-          {tarifasglobales.map((tari) => (
-            <option key={tari._id} value={tari._id}>
-              {tari.nombre} ({'$'}{tari.valor.toLocaleString('es-CL')}, {tari.tiempo} {'Min'})
-            </option>
-          ))}
-        </select>
-        {tarifas.length > 0 ? (
-         ''
-        ) : (
-          <button className="text-blue-500 hover:text-blue700">Crea tus propias tarifas</button>
-        )}
-      </div>
-
-      <div class="mb-4">
-        <label for="valor" class="block text-gray-700 font-bold mb-2">
-          Tarifas personalizadas:
-        </label>
-        <select
-          className="w-full border border-gray-300 p-2 rounded-lg appearance-none"
-          value={tarifaId}
-          onChange={(e) => {
-            setTarifaId(e.target.value);
-            setEsTarifaGlobal(false);
-          }}
-        >
-          <option value="">Selecciona una tarifa</option>
-          {tarifas.map((tari) => (
-            <option key={tari._id} value={tari._id}>
-               {tari.nombre} ({'$'}{tari.valor.toLocaleString('es-CL')}, {tari.tiempo} {'Min'})
-            </option>
-          ))}
-        </select>
-
-      </div>
-</div>      
+ <div className="flex px-2 justify-center gap-2 flex-wrap">
+  <div className="mb-4 flex flex-col items-center justify-center">
+    <label htmlFor="valor" className=" text-gray-700 font-bold mb-2">
+      Tarifas globales:
+    </label>
+    <select
+      className="w-64 border max-w-2xl border-gray-300 p-2 rounded-lg "
+      value={tarifaGlobalId}
+      onChange={(e) => {
+        setTarifaGlobal(e.target.value);
+        setEsTarifaGlobal(e.target.value !== '');
+      }}
+    >
+      <option value="">Selecciona una tarifa global</option>
+      {tarifasglobales.map((tari) => (
+        <option key={tari._id} value={tari._id}>
+          {tari.nombre} ({'$'}
+          {tari.valor.toLocaleString('es-CL')}, {tari.tiempo} {'Min'})
+        </option>
+      ))}
+    </select>
 
   </div>
 
-  <div class="mb-4">
-  <label for="horaInicio" class="block text-gray-700 font-bold mb-2">Fecha:</label>
+  <div className="mb-4 flex flex-col items-center justify-center ">
+    <label htmlFor="valor" className="block text-gray-700 font-bold mb-2">
+      Tarifas personalizadas:
+    </label>
+    <select
+      className="w-64 max-w-5xl border border-gray-300 p-2 rounded-lg"
+      value={tarifaId}
+      onChange={(e) => {
+        setTarifaId(e.target.value);
+        if (e.target.value === '') {
+          setEsTarifaGlobal(true);
+        } else {
+          setEsTarifaGlobal(false);
+        }
+      }}
+    >
+      <option value="">Selecciona una tarifa</option>
+      {tarifas.map((tari) => (
+        <option key={tari._id} value={tari._id}>
+          {tari.nombre} ({'$'}
+          {tari.valor.toLocaleString('es-CL')}, {tari.tiempo} {'Min'})
+        </option>
+      ))}
+    </select>
+  </div>
+  <div>
+      {tarifas.length > 0 ? (
+        ''
+      ) : (
+        <Link to={'/profesional/tarifas'} className="text-blue-500 hover:text-blue-700 ">
+          Crea tus propias tarifas
+        </Link>
+      )}
+    </div>
+</div>     
+
+  </div>
+
+  <div className="mb-4">
+  <label htmlFor="horaInicio" className="block text-gray-700 font-bold mb-2">Fecha:</label>
   <input
   type="date"
   id="fecha"
   name="fecha"
   value={fecha}
   onChange={(e) => setFecha(e.target.value)}
-  class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"/>
+  min={new Date().toISOString().split('T')[0]}
+  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+/>
   </div>
-  <div class="mb-4">
-  <label for="horaInicio" class="block text-gray-700 font-bold mb-2">Hora de inicio</label>
+  <div className="mb-4">
+  <label htmlFor="horaInicio" className="block text-gray-700 font-bold mb-2">Hora de inicio</label>
   <input
     type="time"
     id="horarioinicio"
@@ -492,27 +540,27 @@ const VerMotivo = () => {
       setHoraInicio(e.target.value);
       setHoraFin(calcularHoraFin(e.target.value));
     }}
-    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
   />
 </div>
-<div class="mb-4">
-  <label for="horariofin" class="block text-gray-700 font-bold mb-2">Hora de fin</label>
+<div className="mb-4">
+  <label htmlFor="horariofin" className="block text-gray-700 font-bold mb-2">Hora de fin</label>
   <input
     type="time"
     id="horariofin"
     name="horariofin"
     value={horariofin}
     onChange={(e) => setHoraFin(e.target.value)}
-    class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
   />
 </div>
 
                 </div>
               </div>
             </div>
-            <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-              <span class="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
-                <button class="bg-lila-200 px-2 py-2 rounded-md text-white hover:bg-lila-100" onClick={() =>enviarNotificacion()}>Tomar este caso</button>
+            <div className="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+              <span className="flex w-full rounded-md shadow-sm sm:ml-3 sm:w-auto">
+                <button className="bg-lila-200 px-2 py-2 rounded-md text-white hover:bg-lila-100" onClick={() =>enviarNotificacion()}>Tomar este caso</button>
               </span>
                         <span className="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto">
                         <button type="button" onClick={cerrarFormulario} className="inline-flex justify-center w-full rounded-md  px-4 py-2 bg-coral-200 hover:bg-coral-100 text-base leading-6 font-medium text-white shadow-smfocus:outline-none focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5">

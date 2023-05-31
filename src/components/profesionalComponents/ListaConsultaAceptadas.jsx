@@ -70,7 +70,8 @@ const ListaConsultaAceptadas = () => {
                 <th scope="col" className="px-3 py-3.5 font-nunito text-center text-sm font-semibold text-white hidden md:table-cell">Hora de inicio</th>
                 <th scope="col" className="px-3 py-3.5 font-nunito text-center text-sm font-semibold text-white hidden md:table-cell">Hora de fin</th>
                 <th scope="col" className="px-3 py-3.5 font-nunito text-center text-sm font-semibold text-white">Tarifa</th>
-                <th scope="col" className="px-3 py-3.5 font-nunito text-center text-sm font-semibold text-white hidden md:table-cell">Fecha de creación</th>                <th scope="col" className="font-bold font-nunito text-center text-sm  text-white">Acciones </th>
+                <th scope="col" className="px-3 py-3.5 font-nunito text-center text-sm font-semibold text-white hidden md:table-cell">Fecha de creación</th>                
+                <th scope="col" className="font-bold font-nunito text-center text-sm  text-white">Acciones </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 bg-white">

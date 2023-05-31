@@ -88,7 +88,7 @@ const handleThemeSwitch=() =>{
             const {data} = await clientAxios.put(url,datos,config)
             toastMixin.fire({
                 animation: true,
-                title: 'Número de teléfono actualizado'
+                title: 'Información actualizada'
               });
             
         } catch (error) {
@@ -165,6 +165,8 @@ const handleThemeSwitch=() =>{
       setLoading(false)
       
       }
+
+      
 
 return(
     <AuthProContext.Provider

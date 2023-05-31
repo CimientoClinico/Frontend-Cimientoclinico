@@ -5,7 +5,7 @@ import proAuth from "../../hooks/proAuth"
 import Alerta from '../../components/Alerta';
 import AlertaP from '../../components/AlertaPaciente'
 import sinfoto from '../../assets/img/sinfoto.png'
-
+import HeaderPerfil from "../../components/profesionalComponents/HeaderPerfil";
 const PerfilProfesional = () => {
   const [showPwd, setShowPwd] = useState(false)
   const [showPwd2, setShowPwd2] = useState(false)
@@ -98,7 +98,7 @@ const cambiarContraseña = async e =>{
 
   return (
     <>
-
+<HeaderPerfil/>
 <div className="container px-6 h-min py-10 mx-auto ">
 <div className="relative w-full group max-w-md min-w-0 mx-auto mt-5  break-words bg-white border shadow-2xl dark:bg-gray-800 dark:border-gray-700 md:max-w-sm rounded-xl">
     <div className="pb-6">

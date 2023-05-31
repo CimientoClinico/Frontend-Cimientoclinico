@@ -1,9 +1,8 @@
 import React, { useState,useEffect} from "react";
 import { HiMenuAlt3 } from "react-icons/hi";
-import { MdHome, MdListAlt, MdVoiceChat, MdAccountCircle,MdDarkMode,MdPermDeviceInformation } from "react-icons/md";
-import { FaUserMd } from "react-icons/fa";
-import{BsFillDoorOpenFill, BsPatchQuestion,BsFillBellFill} from "react-icons/bs";
-import {BiNotepad} from "react-icons/bi";
+import { MdHome, MdListAlt, MdAccountCircle,MdDarkMode } from "react-icons/md";
+import{BsFillDoorOpenFill, BsFillBellFill,BsCalendar3} from "react-icons/bs";
+import {GiNotebook} from "react-icons/Gi";
 import { Link } from "react-router-dom";
 import useAuth from "../../hooks/useAuth"
 import clientAxios from "../../config/axios";
@@ -100,11 +99,10 @@ const numNotificaciones = consultasPendientes.length + consultasProximasFiltrada
     { name: "Inicio", link: "/paciente", icon: MdHome },
     { name: "Perfil", link: "/paciente/perfil-paciente", icon: MdAccountCircle },
     { name: "Mi historia clínica", link: "/paciente/historia-clinica", icon: MdListAlt },
-    { name: "Motivos de consulta", link: "/paciente/consultas", icon: MdVoiceChat },
-    { name: "Mis Horarios", link: "/paciente/agenda", icon: BiNotepad },
-    { name: "Cargar preguntas", link: "/paciente/consultas", icon: BsPatchQuestion },
-    { name: "Buscar temas de interés", link: "/paciente/historia-clinica", icon: MdPermDeviceInformation },
-    { name: "Buscar Profesionales", link: "/paciente/lista-profesionales", icon: FaUserMd },
+    { name: "Motivos de consulta", link: "/paciente/consultas", icon: GiNotebook },
+    { name: "Mis Horarios", link: "/paciente/agenda", icon: BsCalendar3 },
+
+
     
   ];
   const menus3 = [
@@ -112,7 +110,7 @@ const numNotificaciones = consultasPendientes.length + consultasProximasFiltrada
 
   ];
   const menus2 = [
-    { name: "Cerrar Sesión", boton: "Cerrar sesión", icon: BsFillDoorOpenFill },
+    { name: "Cerrar Sesión", boton: "Cerrar sesión", icon: BsFillDoorOpenFill, margin:"2px" },
 
   ];
   const menus4 = [

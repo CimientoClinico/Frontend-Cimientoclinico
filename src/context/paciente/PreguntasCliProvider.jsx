@@ -169,6 +169,151 @@ const PreguntasCliProvider = ({children})=>{
       }
       setLoading(false)
       }
+      const actualizarDolor = async datos =>{
+        try {
+      const token = localStorage.getItem('token')
+      if(!token){
+        setCargando(false)
+        return
+      } 
+      const config ={
+        headers:{
+            "Content-Type":"application/json",
+            Authorization:`Bearer ${token}`
+        }
+      }
+        const url = `/pacientes/actualizar-dolor/${datos._id}`
+        const {data} = await clientAxios.put(url,datos,config)
+      
+      } catch (error) {
+        console.log(error)
+      }
+      }
+
+      const actualizarPreguntasSaludgeneral = async datos =>{
+        setLoading(true)
+          try {
+        const token = localStorage.getItem('token')
+        if(!token){
+          setCargando(false)
+          return
+        } 
+        const config ={
+          headers:{
+              "Content-Type":"application/json",
+              Authorization:`Bearer ${token}`
+          }
+        }
+       
+          const url = `/pacientes/actualizar-preguntas-motivo/${datos._id}`
+          const {data} = await clientAxios.put(url,datos,config)
+        
+          
+        } catch (error) {
+          console.log(error)
+          setLoading(false)
+     
+        }
+        setLoading(false)
+  
+      }
+
+      const actualizarPreguntasSueño = async datos =>{
+        setLoading(true)
+          try {
+        const token = localStorage.getItem('token')
+        if(!token){
+          setCargando(false)
+          return
+        } 
+        const config ={
+          headers:{
+              "Content-Type":"application/json",
+              Authorization:`Bearer ${token}`
+          }
+        }
+          const url = `/pacientes/actualizar-preguntas-sueno/${datos._id}`
+          const {data} = await clientAxios.put(url,datos,config)
+        } catch (error) {
+          console.log(error)
+          setLoading(false)
+     
+        }
+        setLoading(false)
+  
+      }
+      const actualizarPreguntasSaludmental= async datos =>{
+        setLoading(true)
+          try {
+        const token = localStorage.getItem('token')
+        if(!token){
+          setCargando(false)
+          return
+        } 
+        const config ={
+          headers:{
+              "Content-Type":"application/json",
+              Authorization:`Bearer ${token}`
+          }
+        }
+          const url = `/pacientes/actualizar-preguntas-saludmental/${datos._id}`
+          const {data} = await clientAxios.put(url,datos,config)
+        } catch (error) {
+          console.log(error)
+          setLoading(false)
+     
+        }
+        setLoading(false)
+  
+      }
+      const actualizarPreguntasDolor= async datos =>{
+        setLoading(true)
+          try {
+        const token = localStorage.getItem('token')
+        if(!token){
+          setCargando(false)
+          return
+        } 
+        const config ={
+          headers:{
+              "Content-Type":"application/json",
+              Authorization:`Bearer ${token}`
+          }
+        }
+          const url = `/pacientes/actualizar-preguntas-dolor/${datos._id}`
+          const {data} = await clientAxios.put(url,datos,config)
+        } catch (error) {
+          console.log(error)
+          setLoading(false)
+     
+        }
+        setLoading(false)
+  
+      }
+      const actualizarProcesopreguntas= async datos =>{
+        setLoading(true)
+          try {
+        const token = localStorage.getItem('token')
+        if(!token){
+          setCargando(false)
+          return
+        } 
+        const config ={
+          headers:{
+              "Content-Type":"application/json",
+              Authorization:`Bearer ${token}`
+          }
+        }
+          const url = `/pacientes/actualizar-proceso-preguntas/${datos._id}`
+          const {data} = await clientAxios.put(url,datos,config)
+        } catch (error) {
+          console.log(error)
+          setLoading(false)
+     
+        }
+        setLoading(false)
+  
+      }
 
 
     return(
@@ -182,6 +327,12 @@ const PreguntasCliProvider = ({children})=>{
             actualizarAlcohol,
             actualizarDrogas,
             actualizarActividad,
+            actualizarDolor,
+            actualizarPreguntasSaludgeneral,
+            actualizarPreguntasSueño,
+            actualizarPreguntasSaludmental,
+            actualizarPreguntasDolor,
+            actualizarProcesopreguntas,
             loading, 
             setLoading
             

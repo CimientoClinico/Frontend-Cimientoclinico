@@ -37,7 +37,6 @@ const VerMasConsultasPendientes= () => {
           try {
             const { data } = await clientAxios.get(`/profesional/verconsulta/${id}`, config);
          setConsulta(data)
-         console.log(data)
           } catch (error) {
             console.log(error);
           }
@@ -92,7 +91,7 @@ const VerMasConsultasPendientes= () => {
           <p>{consulta.paciente.nombres}</p>
         </div>
         <div>
-          <p className="font-bold mb-1">Fecha de nacimiento:</p>
+          <p className="font-bold mb-1">Edad:</p>
           <p>{  calcularEdad(consulta.paciente.fechaNacimiento)} Años</p>
         </div>
         <div>
@@ -104,31 +103,31 @@ const VerMasConsultasPendientes= () => {
         {consulta.paciente.contacto === "Correo" ?
          <div>
           <p className="font-bold mb-1">Quiere ser contactado por <span className="underline">Correo</span>:</p>
-          <p>
           <div>
+          <p>
              {consulta.paciente.email}
-          </div>
           </p>
+          </div>
           </div>
           :'' }
             {consulta.paciente.contacto === "Celular" ?
          <div>
           <p className="font-bold mb-1">Quiere ser contactado por <span className="underline">Celular</span>:</p>
-          <p>
           <div>
+          <p>
              {consulta.paciente.telefono}
-          </div>
           </p>
+          </div>
           </div>
           :'' }
           {consulta.paciente.contacto === "Whatsapp" ?
          <div>
           <p className="font-bold mb-1">Quiere ser contactado por <span className="underline">Whatsapp</span>:</p>
-          <p>
           <div>
+          <p>
              {consulta.paciente.telefono}
-          </div>
           </p>
+          </div>
           </div>
           :'' }
         </div>

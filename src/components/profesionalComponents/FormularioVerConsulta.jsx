@@ -4,28 +4,11 @@ import clientAxios from "../../config/axios";
 import proAuth from "../../hooks/proAuth"
 import VerMasConsultasPagadas from "./VerMasConsultasPagadas";
 import VerMasConsultasPendientes from "./VerMasConsultasPendientes";
-import VerMasConsultasRechazadas from "./VerMasConsultasRechazadas";
 import VerMasConsultasFinalizadas from "./VerMasConsultasFinalizadas";
 const FormularioVerConsulta= () => {
     const [consulta, setConsulta] = useState([]);
     const { id } = useParams();
     const {authpro} =  proAuth()
-    const calcularEdad = (fechaNacimiento) => {
-        const hoy = new Date();
-        const cumpleanos = new Date(fechaNacimiento);
-        let edad = hoy.getFullYear() - cumpleanos.getFullYear();
-        const mes = hoy.getMonth() - cumpleanos.getMonth();
-      
-        if (mes < 0 || (mes === 0 && hoy.getDate() < cumpleanos.getDate())) {
-          edad--;
-        }
-
-        return edad;
-      }
-      const formatearFecha = (fecha) => {
-        const nuevaFecha = new Date(fecha)
-        nuevaFecha.setMinutes(nuevaFecha.getMinutes() + nuevaFecha.getTimezoneOffset())
-        return new Intl.DateTimeFormat('es-CL', {dateStyle: 'long'}).format(nuevaFecha) }
     useEffect(() => {
         const tokenPro = localStorage.getItem('tokenPro');
         if (!tokenPro) return;
@@ -41,7 +24,6 @@ const FormularioVerConsulta= () => {
           try {
             const { data } = await clientAxios.get(`/profesional/verconsulta/${id}`, config);
          setConsulta(data)
-         console.log(data)
           } catch (error) {
             console.log(error);
           }
@@ -81,9 +63,6 @@ const FormularioVerConsulta= () => {
 ) : ''}
 {consulta.estado === "finalizado" ? (
 <VerMasConsultasFinalizadas/>
-) : ''}
-{consulta.estado === "rechazada" ? (
-<VerMasConsultasRechazadas />
 ) : ''}
 
 

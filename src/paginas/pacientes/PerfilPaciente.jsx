@@ -100,7 +100,7 @@ const fotoPerfil = async (e)  =>{
   return (
     <>
     
-    <div className="bg-lila-200 margen  py-3 pb-8 shadow-md  dark:bg-slate-700  ">
+    <div className="bg-lila-300 margen  py-3 pb-8 shadow-md  dark:bg-slate-700  ">
       <Link to="/paciente/perfil-paciente"> <h2 className="xl:px-10 text-md text-nunito  hover:underline text-white hover:text-white dark:text-white ">Perfil de usuario</h2></Link>
   <h1 className="text-left xl:px-64 mt-4 font-regular font-nunito text-white text-4xl dark:text-white shado"><span className="font-semibold"> {auth.nombres} {auth.apellidos}  </span> </h1>
        </div>

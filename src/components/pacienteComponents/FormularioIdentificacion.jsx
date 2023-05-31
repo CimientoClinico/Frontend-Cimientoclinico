@@ -138,6 +138,27 @@ const handleSubmit = async e =>{
             
           </div>
           <hr />
+          <div className="md:inline-flex w-full space-y-4 md:space-y-0 p-4 text-gray-700 items-center">
+            <h2 className="md:w-4/12 max-w-sm mx-auto">Lugar donde te atiendes:</h2>
+
+            <div className="md:w-5/12 w-full md:pl-9 max-w-sm mx-auto space-y-5  pl-2">
+            <div className="flex items-center border-2 py-2 px-3 rounded-2xl">
+                <input  
+                name="lugardeatencion"
+                type="text"
+                className=" font-normal  w-full outline-none border-none text-gray-600"
+                  placeholder="(Ej: CESFAM Talcahuano)"
+                  value={perfil.lugardeatencion || ''}
+                  onChange={ e => setPerfil({
+                    ...perfil,
+                    [e.target.name] : e.target.value
+                  })}
+                  />
+              </div>
+            </div>
+            
+          </div>
+          <hr />
           <div className='bg-white flex justify-center mt-2'>
           
             <button className='px-10 py-3 rounded-md text-center mb-2 text-white  bg-lila-200 hover:bg-lila-100  '>Guardar 💾</button>

@@ -76,6 +76,7 @@ const [motivo, setMotivo] = useState({})
  const cerrarSesion = ()=>{
     localStorage.removeItem('token')
     localStorage.removeItem('alertShown')
+    localStorage.removeItem('notificacionInicio')
     setAuth({})
   }
   const actualizarPerfil = async datos =>{
@@ -328,7 +329,7 @@ const actualizarEstilodevida = async datos =>{
                   Authorization: `Bearer ${token}`
               }
             }
-            const {data} = await clientAxios.delete(`/pacientes/eliminar-motivodeconsulta/${id}`, config);
+            const {data} = await clientAxios.patch(`/pacientes/eliminar-motivodeconsulta/${id}`,{ activo: false }, config);
             const motivoActualizado = motivos.filter(motivosState => motivosState._id !== id);
             setMotivos(motivoActualizado);
             toastMixin.fire({

@@ -71,7 +71,6 @@ const ListaConsultaRechazada = () => {
                 <th scope="col" className="px-3 py-3.5 font-nunito text-center text-sm font-semibold text-white hidden md:table-cell">Hora de fin</th>
                 <th scope="col" className="px-3 py-3.5 font-nunito text-center text-sm font-semibold text-white">Tarifa</th>
                 <th scope="col" className="px-3 py-3.5 font-nunito text-center text-sm font-semibold text-white hidden md:table-cell">Fecha de creación</th>                
-                <th scope="col" className="font-bold font-nunito text-center text-sm  text-white">Acciones </th>
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-200 bg-white">
@@ -87,26 +86,6 @@ const ListaConsultaRechazada = () => {
                 <td className="text-center px-3 py-4 text-sm"> {'$'}{consulta.tarifa.valor.toLocaleString('es-CL')}</td>
                             }
                           <td className="text-center px-3 py-4 text-sm hidden md:table-cell">{ formatearFecha(consulta.fechaCreacion)}</td>
- 
-                             <td className="py-3 pr-3 text-center block sm:hidden">
-  <Link  to={`/profesional/consulta/${consulta._id}`} className="bg-red-500 hover:bg-red-400 text-white text-sm font-nunito font-semibold mr-1 py-1 px-2 rounded">
-    Ver más
-  </Link >
-</td>
-
-<td className="hidden sm:table-cell md:border md:border-grey-500 text-center">
-  <Link to={`/profesional/consulta/${consulta._id}`} className="bg-red-500 hover:bg-red-400 text-white text-sm font-nunito font-semibold mr-1 py-1 px-2 rounded">
-    Ver más
-  </Link >
-</td>
-
-<td className="hidden sm:hidden">
-  <div className="flex justify-center">
-    <Link  to={`/profesional/consulta/${consulta._id}`} className="bg-red-500 hover:bg-red-400 text-white text-sm font-nunito font-semibold mr-1 py-1 px-2 rounded">
-      Ver más
-    </Link >
-  </div>
-</td>
 </tr>
                          ))}
                      </tbody>

@@ -175,7 +175,7 @@ return (
           {consultasProximasFiltradas.slice(0, 10).map((con) => (
           <div key={con._id}  className="bg-lila-300 rounded-md">
           < h1 className="text-white text-md px-0.5 font-regular font-semibold"> RECORDATORIO DE CONSULTA</h1>
-          <p className="text-white text-sm px-0.5 font-regular">{con.paciente.nombres} recuerda que tienes una consulta para {new Date(con.fecha).toLocaleDateString()} a las{con.horarioinicio}  <span className="text-lg">📅</span> </p>
+          <p className="text-white text-sm px-0.5 font-regular">{con.paciente.nombres} recuerda que tienes una consulta para {new Date(con.fecha).toLocaleDateString()} a las {con.horarioinicio}  <span className="text-lg">📅</span> </p>
           </div>))}
           </div>
           }

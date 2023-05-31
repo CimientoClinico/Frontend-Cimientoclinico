@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import clientAxios from '../../config/axios';
 import useAuth from "../../hooks/useAuth"
 import SubirImagenMotivo from '../../components/pacienteComponents/SubirImagenMotivo';
+import { Link } from 'react-router-dom';
 const MotivoConsultaDetalle = () => {
     const { id } = useParams();
   const [motivoConsulta, setMotivoConsulta] = useState(null);
@@ -96,8 +97,20 @@ const MotivoConsultaDetalle = () => {
 
   return (
     <>
-      <div className='  flex justify-center mt-4'>
+    <header className="pt-12 bg-lila-200 ">
+     <div className="container mx-auto flex flex-col md:flex-row justify-center items-center font-nunito   ">
+<nav className="flex flex-col items-start md:flex-row justify-content: flex-start xl:gap-1 sm:gap-1 xl:mt-2 lg:mt-0">
+ <Link to= {`/paciente/vermas-motivo/${id}`} className={`text-white text-sm hover:text-gray-300 bg-green-600 px-3 py-1 xl:rounded-t-lg xs:rounded-md font-regular flex ${location.pathname === `/paciente/vermas-motivo/${id}` && 'text-gray-300'}`}>Motivo de consulta
+ </Link>
 
+ <Link to= {`/paciente/seguimiento-motivo/${id}`} className={`text-white text-sm hover:text-gray-300 bg-yellow-600 px-3 py-1 xl:rounded-t-lg xs:rounded-md font-regular flex ${location.pathname === `/paciente/seguimiento-motivo/${id}` && 'text-gray-300'}`}>Seguimiento del Motivo
+ </Link>
+    </nav>
+     </div>
+   </header>
+
+
+      <div className='  flex justify-center mt-4'>
       <div
   className=" flex items-start justify-between rounded-xl border border-gray-100 p-4 shadow-xl sm:p-6 lg:p-8"
   href="#"
@@ -164,6 +177,7 @@ const MotivoConsultaDetalle = () => {
   <h2 className="text-xl font-bold mb-4">Ingresa más información de tu motivo</h2>
   <div className="flex flex-col space-y-4">
     <textarea 
+     placeholder='Agrega información relevante a tu motivo de consulta para que sea analizada por el profesional'
       className="border-gray-300 border rounded-md p-2 h-48" 
       value={informacion} 
       onChange={handleInformacionChange}

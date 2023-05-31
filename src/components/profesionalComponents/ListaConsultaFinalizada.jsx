@@ -83,9 +83,9 @@ const ListaConsultaFinalizada = () => {
                 <td className="text-center px-3 py-4 text-sm hidden md:table-cell">{consulta.horariofin} </td>
                 {consulta.tarifaGlobal 
                 ?
-                <td className="text-center px-3 py-4 text-sm "> {'$'}{consulta.tarifaGlobal.valor.toLocaleString('es-CL')}</td>
+                <td className="text-center px-3 py-4 text-sm "> {'$'}{consulta.tarifaGlobal?.valor.toLocaleString('es-CL')}</td>
                 :
-                <td className="text-center px-3 py-4 text-sm"> {'$'}{consulta.tarifa.valor.toLocaleString('es-CL')}</td>
+                <td className="text-center px-3 py-4 text-sm"> {'$'}{consulta.tarifa?.valor.toLocaleString('es-CL')}</td>
                             }
                           <td className="text-center px-3 py-4 text-sm hidden md:table-cell">{ formatearFecha(consulta.fechaCreacion) } </td>
  
