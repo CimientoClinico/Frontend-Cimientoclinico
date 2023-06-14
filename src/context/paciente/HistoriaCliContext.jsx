@@ -8,7 +8,9 @@ const HistoriaCliProvider = ({children})=>{
     const [quirurgicos, setQuirurgicos] = useState([])
     const [quirurgico, setQuirurgico] = useState({})
     const [farmacos, setFarmacos] = useState([])
-    const [farmaco, setFarmaco] = useState({})
+    const [farmaco, setFarmaco] = useState({}) 
+    const [farmacosprevios, setFarmacosprevios] = useState([])
+    const [farmacoprevio, setFarmacoprevio] = useState({})
     const [vacunas, setVacunas] = useState([])
     const [vacuna, setVacuna] = useState({})
     const [enfermedades, setEnfermedades] = useState([])
@@ -23,6 +25,7 @@ const HistoriaCliProvider = ({children})=>{
     const [urgencia, setUrgencia] = useState({})
     const [nombre, setNombre] = useState('');
     const [enfermedadId, setEnfermedadId] = useState('');
+    const [quirurgicoId, setQuirurgicoId] = useState('');
     const [documento, setDocumento] = useState(null);
     const [examenes, setExamenes] = useState([])
     const [documentoh, setDocumentoh] = useState(null);
@@ -664,8 +667,8 @@ const config ={
         const formData = new FormData();
         formData.append('nombre', nombre);
         formData.append('enfermedadId', enfermedadId);
+        formData.append('quirurgicoId', quirurgicoId);
         formData.append('documento', documento);
-    
           const response = await clientAxios.post('/pacientes/agregar-examen', formData, config)
           toastMixin.fire({
             animation: true,
@@ -687,7 +690,7 @@ const config ={
           text: "!No podrás revertir esto!",
           icon: 'warning',
           showCancelButton: true,
-          confirmButtonColor: '#18bca4',
+          confirmButtonColor: '#5d5ddb',
           cancelButtonColor: '#d33',
           confirmButtonText: 'Si, eliminarlo!'
           }).then((result) => {
@@ -745,6 +748,66 @@ const config ={
         console.log(error)
       }
       }
+
+      const cuentaConFarmacoPrevio= async datos =>{
+        try {
+    const token = localStorage.getItem('token')
+    if(!token){
+        setCargando(false)
+        return
+    } 
+    const config ={
+        headers:{
+            "Content-Type":"application/json",
+            Authorization:`Bearer ${token}`
+        }
+    }
+        const url = `/pacientes/tiene-farmaco-previo/${datos._id}`
+        const {data} = await clientAxios.put(url,datos,config)
+    
+        
+    } catch (error) {
+        console.log(error)
+    }
+    }
+    const guardarFarmacoPrevio =  async(farmacoprevio) =>{
+      const token = localStorage.getItem('token')
+      const config = {
+        headers:{
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+        }
+      }
+      if(farmacoprevio.id){
+       try {
+          const{data}= await clientAxios.put(`/pacientes/actualizar-farmaco-previo/${farmacoprevio.id}`,farmacoprevio,config)
+        
+        const farmacosActualizados= farmacosprevios.map( farmacoState => farmacoState._id===
+          data._id ? data : farmacoState)
+          setFarmacosprevios(farmacosActualizados)
+       } catch (error) {
+        console.log(error)
+       }
+  
+      }else{
+        try {
+       
+          const{ data }= await clientAxios.post('/pacientes/agregar-farmaco-previo',farmacoprevio,config)
+          const{ createdAt, updatedAt, __v, ...farmacoAlmacenado} = data
+          setFarmacosprevios ([farmacoAlmacenado, ...farmacosprevios])
+          toastMixin.fire({
+              animation: true,
+              title: 'Tratamiento suspendido agregado',
+              icon:'success'
+            });
+      
+      } catch (error) {
+        console.log(error.response.data.msg)
+      }
+      }
+   
+  }
+    
 
     return(
         <HistoriaCliContext.Provider
@@ -820,7 +883,15 @@ const config ={
             setFechasalida,
             documentoh,
             setDocumentoh,
-            eliminarExamenes
+            eliminarExamenes,
+            cuentaConFarmacoPrevio,
+            guardarFarmacoPrevio,
+            farmacosprevios,
+            setFarmacosprevios,
+            farmacoprevio,
+            setFarmacoprevio,
+            quirurgicoId, 
+            setQuirurgicoId
 
         }}
         >

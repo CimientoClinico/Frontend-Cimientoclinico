@@ -61,7 +61,7 @@ const Diagnostico = () => {
             <h1 className="text-white font-nunito px-3 py-3 mt-2">Tus diagnósticos</h1>
          </div>
        <div className="bg-white space-y-1 flex justify-center  ">
-       <div className=" max-w-5xl">
+       <div className=" w-full">
  <div className="">{enfermedades.map(enf => (
    
    <div key={enf._id} className="py-0.5">

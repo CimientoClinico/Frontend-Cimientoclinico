@@ -207,7 +207,7 @@ const numNotificaciones = consultasPendientes.length + consultasProximasFiltrada
       <div className="">
       {consultasCombinadas.slice(0, 3).map((con) => (
   <div key={con._id} className="mb-4">
-    {con.estado === 'pendiente' ? (
+    {con.estado === 'pendiente'  ? (
       <>
         <h1 className="text-white text-sm px-0.5 font-regular font-semibold"> Nueva propuesta de Consulta</h1>
         <p className="text-white text-xs px-0.5 font-regular">Con el profesional {con.profesional.nombres} {con.profesional.apellidos} {`(${con.profesional.especialidad})`}  </p>

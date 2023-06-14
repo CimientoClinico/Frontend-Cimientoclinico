@@ -71,6 +71,7 @@ import ConsultasFinalizadasPaciente from "./paginas/pacientes/ConsultasFinalizad
 import VerConsultaAprobada from "./paginas/pacientes/VerConsultaAprobada"
 import AgendaProfesional from "./paginas/profesionales/AgendaProfesional"
 import InfoPacienteConsulta from "./paginas/profesionales/InfoPacienteConsulta"
+import ExamenesPendientes from "./paginas/pacientes/ExamenesPendientes"
 function App() {
   return (
     <BrowserRouter>
@@ -120,6 +121,7 @@ function App() {
         <Route path="historia-clinica" element={ <HistoriaClinica/> } />
         <Route path="diagnosticos" element={ <Diagnostico/> } />
         <Route path="examenes" element={ <Examenes/> } />
+        <Route path="examenesPendientes" element={ <ExamenesPendientes/> } />
         <Route path="eventos" element={ <Eventos/> } />
         <Route path="seguimiento-consulta" element={ <SeguimientoConsultas/> } />
         <Route path="lista-profesionales" element={ <ProfesionalesList/> } />

@@ -24,7 +24,17 @@ const localizer = dateFnsLocalizer({
   getDay,
   locales,
 })
-
+const messages = {
+  today: 'Hoy',
+  previous: 'Anterior',
+  next: 'Siguiente',
+  day: 'Día',
+  month: 'Mes',
+  week: 'Semana',
+  date:'Fecha',
+  time:'Hora',
+  event:'Evento'
+}
 const BigCalendar = () => {
   const [eventos, setEventos] = useState([]);
   const [fecha, setFecha] = useState("")
@@ -292,6 +302,8 @@ const eventosCombinados = eventosFormateados.concat(consultasFormateadas);
   eventPropGetter={eventStyleGetter}
   onSelectEvent={handleSelectEvent}
   views={['month','week', 'day', 'agenda']}
+  messages={messages} 
+
 />
 {showModal && (
   <div className="fixed z-10 inset-0 overflow-y-auto">

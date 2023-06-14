@@ -13,6 +13,7 @@ import FormularioTabaquismo from "../../components/pacienteComponents/Formulario
 import FormularioAlcoholismo from "../../components/pacienteComponents/FormularioAlcoholismo"
 import FormularioDrogas from "../../components/pacienteComponents/FormularioDrogas"
 import FormularioGinecoobstetrico from "../../components/pacienteComponents/FormularioGinecoobstetrico"
+import FormularioFarmacoPrevio from "../../components/pacienteComponents/FormularioFarmacoPrevio"
 const HistoriaClinica = () => {
 const {auth} =  useAuth()
 const [ocultarseccion, SetOcultarSeccion] = useState(true)
@@ -71,6 +72,8 @@ const [ocultarseccion, SetOcultarSeccion] = useState(true)
         <FormularioEnfermedad/>
           <hr />
           <FormularioFarmaco/>
+          <hr />
+          <FormularioFarmacoPrevio/>
           <hr />
           <FormularioQuirurgico/>
           <hr />

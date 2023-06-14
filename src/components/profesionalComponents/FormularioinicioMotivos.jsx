@@ -7,7 +7,8 @@ import timezone from 'dayjs/plugin/timezone';
 import { ModalMotivo } from "./ModalMotivo";
 import {ModalHora} from "./ModalHora"
 import proAuth from "../../hooks/proAuth"
-import { isSameDay, parseISO } from 'date-fns';
+import moment from 'moment-timezone';
+import { parseISO, isSameDay, startOfDay,parse, isAfter, isBefore} from 'date-fns';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 const FormularioinicioMotivos= ({}) => {
@@ -27,6 +28,8 @@ const FormularioinicioMotivos= ({}) => {
     const [filtroRangoEdad, setFiltroRangoEdad] = useState("");
 const [searchDias, setSearchDias] = useState([]);
 const [fechaSeleccionada, setFechaSeleccionada] = useState(null);
+const [horaInicioSeleccionada, setHoraInicioSeleccionada] = useState('');
+const [horaFinSeleccionada, setHoraFinSeleccionada] = useState('');
 const [edadMin, setEdadMin] = useState("");
 const [edadMax, setEdadMax] = useState("");
 const rangosEdad = [
@@ -216,8 +219,8 @@ const filtrarPorDias = (motivo) => {
               ...motivo,
               paciente: motivo.paciente[0], // Obtener el primer elemento del array
             }));
-      
             setMotivos(motivos);
+
           } catch (error) {
             console.log(error);
           }
@@ -283,16 +286,62 @@ const filtrarPorDias = (motivo) => {
     }
   })
   .filter((motivo) => filtrarPorEdad([motivo]).length > 0)
-  .filter((motivo) =>{
-  if (fechaSeleccionada === null) {
-    return true; // Si no se ha seleccionado una fecha, se muestra el motivo
-  }
+  .filter((motivo) => {
+    if (fechaSeleccionada === null ) {
+      return true; // Si no se ha seleccionado una fecha ni una hora de inicio, se muestra el motivo
+    }
   
-  return motivo.horarios.some((horario) =>
-    isSameDay(parseISO(horario.fecha), parseISO(fechaSeleccionada))
-  );
-}
-)
+    const fechaSeleccionadaParsed = fechaSeleccionada !== null ? startOfDay(parseISO(fechaSeleccionada)) : null;
+  
+    return motivo.horarios.some((horario) => {
+      const fechaHorario = startOfDay(parseISO(horario.fecha));
+
+      // Verificar si la fecha concuerda
+      if (fechaSeleccionada !== null && !isSameDay(fechaHorario, fechaSeleccionadaParsed)) {
+        return false;
+     }
+  
+      return true;
+    });
+  })
+  .filter((motivo) => {
+    if (!motivo.horarios || motivo.horarios.length === 0) {
+      return true; // Si no hay valor de horarios, se muestra el motivo
+    }
+  
+    if (horaInicioSeleccionada === '') {
+      return true; // Si no se ha seleccionado una hora de inicio, se muestra el motivo
+    }
+  
+    const [horaSeleccionada, minutoSeleccionado] = horaInicioSeleccionada.split(':');
+  
+    const horaInicioSeleccionadaParsed = new Date();
+    horaInicioSeleccionadaParsed.setHours(Number(horaSeleccionada), Number(minutoSeleccionado), 0);
+  
+    // Verificar si al menos uno de los horarios cumple con el filtro de hora de inicio y fin
+    return motivo.horarios.some((horario) => {
+      if (!horario.horarioinicio || !horario.horariofin) {
+        return true; // Si no hay valor de horarioinicio o horariofin en el horario actual, se muestra el motivo
+      }
+  
+      const [horaInicioMotivo, minutoInicioMotivo] = horario.horarioinicio.split(':');
+      const [horaFinMotivo, minutoFinMotivo] = horario.horariofin.split(':');
+  
+      const horaInicioMotivoParsed = new Date();
+      horaInicioMotivoParsed.setHours(Number(horaInicioMotivo), Number(minutoInicioMotivo), 0);
+  
+      const horaFinMotivoParsed = new Date();
+      horaFinMotivoParsed.setHours(Number(horaFinMotivo), Number(minutoFinMotivo), 0);
+  
+      return (
+        horaInicioSeleccionadaParsed >= horaInicioMotivoParsed &&
+        horaInicioSeleccionadaParsed <= horaFinMotivoParsed
+      );
+    });
+  })
+  
+  
+
   .filter(
     (motivo) => filtrarPorDias(motivo) 
   );
@@ -367,7 +416,15 @@ const filtrarPorDias = (motivo) => {
   value={fechaSeleccionada || ''}
   onChange={(e) => setFechaSeleccionada(e.target.value !== '' ? e.target.value : null)}
 />
-    <button onClick={() => { setFiltroGenero(""); setOrden("descendente"); setFiltroRangoEdad("");  setFechaSeleccionada(null);
+<label>Filtrar por hora:</label>
+<input
+  className="border rounded-md"
+  type="time"
+  id="horaInicio"
+  value={horaInicioSeleccionada || ''}
+  onChange={(e) => setHoraInicioSeleccionada(e.target.value)}
+/>
+    <button onClick={() => { setFiltroGenero(""); setOrden("descendente"); setFiltroRangoEdad("");  setFechaSeleccionada(null); setHoraInicioSeleccionada("");
     }} className="bg-lila-200 hover:bg-lila-100 text-white px-2 py-1 rounded-lg md:w-auto">Borrar filtros</button>
   </div>
 </div>
@@ -400,17 +457,18 @@ const filtrarPorDias = (motivo) => {
         <p className="mt-2 text-lg font-regular text-slate-800">{motivo.descripcion}</p>
         <div className="bg-gray-100 rounded-lg px-1  py-1 mt-2">
         <h1 className="text-md "> ⌚ Horarios disponibles Paciente</h1>
- {Array.isArray(motivo.horarios) && motivo.horarios.length > 0 ? (
+        {Array.isArray(motivo.horarios) && motivo.horarios.length > 0 ? (
   <div className="grid grid-cols-2 md:grid-cols-8 gap-4 px-1 py-2 mt-1">
     {motivo.horarios
-      .filter((horario) => horario.fecha)
+      .filter((horario) => moment(horario.fecha).isSameOrAfter(moment(), 'day'))
+      .sort((a, b) => new Date(a.fecha) - new Date(b.fecha))
       .map((horario, index) => (
         <div
           key={index}
           className="bg-lila-100 py-2 px-1 text-xl font-regular text-white rounded-md"
         >
           <h4 className="text-xs font-regular mb-2">
-            {dayjs(horario.fecha).utc().format('DD/MM/YYYY')}
+            {moment(horario.fecha).format('DD/MM/YYYY')}
           </h4>
           <h4 className="text-xs font-regular mb-2">
             {horario.horarioinicio} - {horario.horariofin}

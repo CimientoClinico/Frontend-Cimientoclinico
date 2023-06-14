@@ -39,14 +39,14 @@ const FormularioEventos = () => {
   <form className="flex items-center py-5" onSubmit={handleSubmit}>
     <div className='w-full sm:w-auto mb-4 sm:mb-0 sm:mr-4'>
       <label className='block font-medium mb-2'>
-        Motivo de consulta:
-        <input className='w-full border border-gray-300 p-2 rounded-lg' type="text" value={nombre} onChange={(e) => setNombre(e.target.value)} />
+        Motivo hospitalización:
+        <input className='w-full border border-gray-300 p-2 rounded-lg' type="text" placeholder='Nombre o tipo de hospitalización' value={nombre} onChange={(e) => setNombre(e.target.value)} />
       </label>
     </div>
     <div className='w-full sm:w-auto mb-4 sm:mb-0 sm:mr-4'>
       <label className='block font-medium mb-2'>
         Fecha de ingreso:
-        <input className='w-full border border-gray-300 p-2 rounded-lg' type="Date" value={fechaingreso} onChange={(e) => setFechaingreso(e.target.value)} />
+        <input className='w-full border border-gray-300 p-2 rounded-lg' type="date" value={fechaingreso} onChange={(e) => setFechaingreso(e.target.value)} />
       </label>
     </div>
     <div className='w-full sm:w-auto mb-4 sm:mb-0 sm:mr-4'>
@@ -62,7 +62,7 @@ const FormularioEventos = () => {
       </label>
     </div>
     <div className='w-full sm:w-auto mb-4 sm:mb-0 sm:mr-4'>
-      <button className="text-white rounded-md text-center bg-lila-200 hover:bg-lila-100 py-2 px-3 mt-3">
+      <button className="text-white rounded-md text-center bg-lila-200 hover:bg-lila-100 py-1 px-2 mt-3">
         Subir Examen📄
       </button>
     </div>

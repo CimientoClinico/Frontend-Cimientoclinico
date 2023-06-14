@@ -448,3 +448,10 @@ body{
 .animate-pulso {
   animation: pulse 2s infinite;
 }
+
+.disponible {
+  background-color: #dddddd; /* Reemplaza con el color deseado */
+}
+.sobrediv{
+  margin-bottom: -10px;
+}

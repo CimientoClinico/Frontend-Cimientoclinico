@@ -108,7 +108,7 @@ useEffect(() => {
                ...perfild2,
                [e.target.name] : e.target.value
              })} />
-<button className="text-white text-sm w-2/2 mx-auto max-w-sm rounded-md text-center bg-lilda-200 hover:bg-lila-100 py-2 px-3 inline-flex items-center focus:outline-none md:float-right mr-1 ">
+<button className="text-white text-sm w-2/2 mx-auto max-w-sm rounded-md text-center bg-lila-200 hover:bg-lila-100 py-2 px-3 inline-flex items-center focus:outline-none md:float-right mr-1 ">
     Actualizar🔄
   </button>
   </form>

@@ -62,7 +62,7 @@ const FormularioCalendario = () => {
       const horarioFecha = horarios[fecha.getTime()];
       if (horarioFecha && horarioFecha.horarioInicio && horarioFecha.horarioFin) {
         const horario = {
-          fecha: fecha.toISOString().split('T')[0], // Convertir la fecha a formato 'yyyy-MM-dd'
+          fecha: fecha.toISOString(), // Convertir la fecha a formato 'yyyy-MM-dd'
           horarioinicio: horarioFecha.horarioInicio,
           horariofin: horarioFecha.horarioFin,
         };

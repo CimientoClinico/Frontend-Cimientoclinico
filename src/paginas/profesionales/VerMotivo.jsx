@@ -1,14 +1,17 @@
 import { useParams } from 'react-router-dom';
 import { useNavigate} from 'react-router-dom';
 import clientAxios from '../../config/axios';
-import { useState, useEffect } from 'react';
+import { useState, useEffect,useRef } from 'react';
 import dayjs from 'dayjs';
 import 'dayjs/locale/es';
 import utc from 'dayjs/plugin/utc';
 import timezone from 'dayjs/plugin/timezone';
 import moment from 'moment-timezone';
 import { Link } from 'react-router-dom';
-
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import es from 'date-fns/locale/es'; 
+import { AiFillCalendar } from "react-icons/ai";
 // habilita los plugins utc y timezone
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -31,6 +34,7 @@ const VerMotivo = () => {
   const [esTarifaGlobal, setEsTarifaGlobal] = useState(true);
   const[ tarifas, setTarifas]= useState([])
   const[ tarifasglobales, setTarifasglobales]= useState([])
+  const datePickerRef = useRef(null);
   const abrirFormulario = () => {
     setMostrarFormulario(true);
   };
@@ -99,22 +103,22 @@ const VerMotivo = () => {
       if (motivo.horariopaciente && motivo.horariopaciente.length > 0) {
       const horarioInicioSeleccionado = new Date(`2000-01-01T${horarioinicio}`);
       const horarioFinSeleccionado = new Date(`2000-01-01T${horariofin}`);
-      
+      const fechaSeleccionada = new Date(fecha);
+    const fechaSeleccionadaString = fechaSeleccionada.toISOString().split('T')[0];
+
       const horarioDisponible = motivo.horariopaciente.some(
         (horario) => {
-          const fechaHorario = new Date(horario.fecha);
+          const fechaHorario = new Date(horario.fecha.split('T')[0]);
           const horarioInicio = new Date(`2000-01-01T${horario.horarioinicio}`);
           const horarioFin = new Date(`2000-01-01T${horario.horariofin}`);
       
           return (
-            dayjs(fechaHorario).isSame(dayjs(fecha), 'day') &&
-            dayjs(fechaHorario).isSameOrAfter(fechaActualChile, 'day') &&
-            (
-              (horarioInicio <= horarioInicioSeleccionado && horarioFin >= horarioFinSeleccionado) ||
-              (horarioInicioSeleccionado <= horarioInicio && horarioFinSeleccionado >= horarioInicio) &&
-              (horarioInicioSeleccionado >= horarioInicio && horarioFinSeleccionado <= horarioFin)
-            )
+            fechaHorario.getTime() === new Date(fechaSeleccionadaString).getTime() &&
+            (horarioInicio <= horarioInicioSeleccionado && horarioFin >= horarioFinSeleccionado) ||
+            (horarioInicioSeleccionado <= horarioInicio && horarioFinSeleccionado >= horarioInicio) &&
+            (horarioInicioSeleccionado >= horarioInicio && horarioFinSeleccionado <= horarioFin)
           );
+          
         }
       );
       if (!horarioDisponible) {
@@ -179,14 +183,15 @@ const VerMotivo = () => {
       await clientAxios.post('/profesional/generar-consulta', data, config);
 
       Swal.fire('¡Listo!', 'La propuesta de consulta fue enviada correctamente.', 'success');
+      setMostrarFormulario(false)
+      setMensaje('')
+      setHoraFin('')
+      setHoraInicio('')
+      setFecha('')
+      onClose()
 
     }
-    setMostrarFormulario(false)
-    setMensaje('')
-    setHoraFin('')
-    setHoraInicio('')
-    setFecha('')
-    onClose()
+
    
   } catch (error) {
       console.log(error)
@@ -224,7 +229,33 @@ const VerMotivo = () => {
 
     fetchData();
   }, [id]);
-
+  const isDayAvailable = (date) => {
+    // Reemplaza "motivo.horariopaciente" con el campo que contiene los horarios disponibles del paciente en tu componente
+    return motivo.horariopaciente.some(horario => {
+      const fechaHorario = new Date(horario.fecha.split('T')[0]);
+      return fechaHorario.toISOString().split('T')[0] === date.toISOString().split('T')[0];
+    });
+  };
+//Mostrar solo dias disponibles
+  const datePickerFilter = (date) => {
+    return isDayAvailable(date);
+  };
+  //abrir calendario
+  const handleCalendarButtonClick = () => {
+    if (datePickerRef.current) {
+      if (datePickerRef.current.isCalendarOpen()) {
+        datePickerRef.current.setOpen(false);
+      } else {
+        datePickerRef.current.setOpen(true);
+      }
+    }
+  };
+//Cerrar calendario
+  const handleCalendarBlur = () => {
+    if (datePickerRef.current && datePickerRef.current.isCalendarOpen()) {
+      datePickerRef.current.setOpen(false);
+    }
+  };
   if (!motivo) {
     return <div className='flex justify-center mt-10' role="status">
     <svg aria-hidden="true" className="w-8 h-8 mr-2 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600" viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -426,17 +457,22 @@ const VerMotivo = () => {
                   <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">Formulario consulta</h3>
                   <h1 className="text-md "> ⌚ Horarios disponibles Paciente:</h1>
                   <div className='bg-lila-100 rounded-lg'>
-                  {motivo.horariopaciente ? 
-  <div className="grid grid-cols-3 grid-flow-row gap-4 px-1 py-2 mt-4">
-    {motivo.horariopaciente.filter((horario) => horario.fecha).map((horario) => (
-        <div key={horario._id} className="bg-gray-100 py-2 px-1 text-xs text-gray-800 rounded-md">
-            <h4 className="text-xs font-regular mb-2">{dayjs(horario.fecha).utc().format('DD/MM/YYYY')}</h4>
+  {motivo.horariopaciente ? (
+    <div className="grid grid-cols-3 md:grid-cols-6 gap-4 px-1 py-2 mt-1">
+      {motivo.horariopaciente
+        .filter((horario) => moment(horario.fecha).isSameOrAfter(moment(), 'day'))
+        .sort((a, b) => new Date(a.fecha) - new Date(b.fecha))
+        .map((horario) => (
+          <div key={horario._id} className="bg-gray-100 py-2 px-1 text-xs text-gray-800 rounded-md">
+            <h4 className="text-xs font-regular mb-2">{moment(horario.fecha).format('DD/MM/YYYY')}</h4>
             <h4 className="text-xs font-regular mb-2">{horario.horarioinicio} - {horario.horariofin}</h4>
-        </div>
-    ))}
-  </div>
-  : <p className="mt-4">Sin horarios</p>
-}
+          </div>
+        ))
+      }
+    </div>
+  ) : (
+    <p className="mt-4">Sin horarios</p>
+  )}
 </div>
 
                 
@@ -518,16 +554,32 @@ const VerMotivo = () => {
   </div>
 
   <div className="mb-4">
-  <label htmlFor="horaInicio" className="block text-gray-700 font-bold mb-2">Fecha:</label>
-  <input
-  type="date"
-  id="fecha"
-  name="fecha"
-  value={fecha}
-  onChange={(e) => setFecha(e.target.value)}
-  min={new Date().toISOString().split('T')[0]}
-  className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-/>
+    <label htmlFor="fecha" className="block text-gray-700 font-bold mb-2">
+      Fecha:
+    </label>
+    <div className="flex">
+      <DatePicker
+        id="fecha"
+        name="fecha"
+        selected={fecha}
+        onChange={(date) => setFecha(date)}
+        minDate={new Date()}
+        filterDate={datePickerFilter}
+        locale={es}
+        placeholderText="Fechas disponibles"
+        dateFormat="dd/MM/yyyy"
+        className="border-t border-l border-b w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+        ref={datePickerRef}
+        onBlur={handleCalendarBlur}
+      />
+      <button
+        type="button"
+        className=" border-t border-r border-b py-2 px-3  focus:outline-none"
+        onClick={handleCalendarButtonClick}
+      >
+       <AiFillCalendar/>
+      </button>
+    </div>
   </div>
   <div className="mb-4">
   <label htmlFor="horaInicio" className="block text-gray-700 font-bold mb-2">Hora de inicio</label>
