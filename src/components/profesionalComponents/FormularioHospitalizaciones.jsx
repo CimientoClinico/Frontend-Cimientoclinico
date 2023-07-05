@@ -29,32 +29,32 @@ const FormularioHospitalizaciones = () => {
       const cerrarModal = () => {
         setMostrarFormulario(false);
       };
-    useEffect(() => {
-        const tokenPro = localStorage.getItem("tokenPro");
-        if (!tokenPro) return;
-    
-        const config = {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${tokenPro}`,
-          },
-        };
-    
-        const fetchData = async () => {
-          try {
-            const { data } = await clientAxios.get(
-              `/profesional/informacion-paciente-consulta/${id}`,
-              config
-            );
-            setConsulta(data);
-            setLoading(false);
-          } catch (error) {
-            console.log(error);
-          }
-        };
-    
+
+
+      const fetchData = async () => {
+      const tokenPro = localStorage.getItem("tokenPro");
+      if (!tokenPro) return;
+  
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${tokenPro}`,
+        },
+      };
+        try {
+          const { data } = await clientAxios.get(
+            `/profesional/informacion-paciente-consulta/${id}`,
+            config
+          );
+          setConsulta(data);
+          setLoading(false);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+        useEffect(() => { 
         fetchData();
-      }, [id]);
+        }, [id]);
       const formatearFecha = (fecha) => {
         const nuevaFecha = new Date(fecha);
         nuevaFecha.setMinutes(nuevaFecha.getMinutes() + nuevaFecha.getTimezoneOffset());
@@ -111,7 +111,7 @@ const FormularioHospitalizaciones = () => {
           const hospitalizaciones = datosPaciente[HospitalizacionActualId];
       
           await clientAxios.put(`/profesional/editar-hospitalizaciones-paciente/${hospitalizaciones._id}`, hospitalizaciones, config);
-      
+         fetchData();
           Swal.fire('¡Perfecto!', 'Hospitalización actualizada con éxito', 'success');
         } catch (error) {
           console.error(error.message);
@@ -168,6 +168,7 @@ const FormularioHospitalizaciones = () => {
 
           setConsulta(data);
           setDatosPaciente(data.hospitalizaciones);
+          fetchData();
           setNombre('');
           setFecha('');
           setMostrarFormulario(false)

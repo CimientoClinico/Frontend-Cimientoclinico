@@ -79,7 +79,7 @@ No 🚫 </label>
 </div>
 </div>
 <div className='p-1'> 
-   <button className="   bg-lila-200 px-1 py-1 text-white rounded-md text-center  font-nunito  hover:bg-indigo-400 ">Guardar💾</button>
+   <button className="   bg-lila-200 px-2 py-2 text-xs text-white rounded-md text-center  font-nunito  hover:bg-indigo-400 ">Guardar</button>
 </div></form>
 
 

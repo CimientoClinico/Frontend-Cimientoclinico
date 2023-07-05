@@ -5,7 +5,7 @@ import { MdKeyboardArrowDown, MdKeyboardArrowRight } from "react-icons/md";
 import { FaExclamation } from "react-icons/fa";
 
 import moment from "moment";
-const FormularioAlcohol = () => {
+const FormularioSaludmental = () => {
     const { id } = useParams();
     const [consulta, setConsulta] = useState([]);
     const [datosPaciente, setDatosPaciente] = useState({});
@@ -16,7 +16,6 @@ const FormularioAlcohol = () => {
     const toggleActividad = () => {
       setOcultarActividad(!ocultarActividad);
     };
-
     const fetchData = async () => {
     const tokenPro = localStorage.getItem('tokenPro');
     if (!tokenPro) return;
@@ -33,8 +32,9 @@ const FormularioAlcohol = () => {
       } catch (error) {
         console.log(error);
       }
-    };
-      useEffect(() => {   
+    };   
+
+      useEffect(() => {
         fetchData();
       }, [id]); 
       useEffect(() => {
@@ -55,8 +55,8 @@ const FormularioAlcohol = () => {
         };
         try {
           await clientAxios.put(`/profesional/editar-indentificacion-paciente/${consulta.paciente._id}`, datosPaciente,config);
-           fetchData();
-          Swal.fire('¡Perfecto!', 'Sección de consumo de alcohol actualizada', 'success');          
+          fetchData();
+          Swal.fire('¡Perfecto!', 'Sección de salud mental', 'success');          
     
         } catch (error) {
           console.error(error.message);
@@ -66,9 +66,7 @@ const FormularioAlcohol = () => {
 
       const handleChange = (e) => {
         const { name, value } = e.target;
-      
-        // Si el campo es 'alcohol', actualiza solo esa propiedad dentro de historiaclinica
-        if (name === 'alcohol') {
+              if (name === 'saludmental') {
           setDatosPaciente((prevState) => ({
             ...prevState,
             historiaclinica: {
@@ -88,11 +86,8 @@ const FormularioAlcohol = () => {
       const now = moment();
       const showButton = consulta && now.isSameOrAfter(moment(consulta.fecha).add(consulta.horarioinicio));
       const CamposVacios =
-      !datosPaciente.obsalcohol ||
-      datosPaciente?.historiaclinica?.alcohol==='Sin datos';
-     const nombreVacio = !datosPaciente.obsalcohol;
-     const actividadVacia = datosPaciente?.historiaclinica?.alcohol ==='Sin datos' || '';
-
+      !datosPaciente.obssaludmental
+     const nombreVacio = !datosPaciente.obssaludmental;
   return (
     <>
           {loading ? (
@@ -101,11 +96,45 @@ const FormularioAlcohol = () => {
         <>
         <div className="mx-auto max-w-7xl rounded-md  mb-1">
         <div className="flex justify-start gap-2 py-1 px-4 rounded-t-lg bg-lila-300">
-              <div>
-                <h1 className="text-white font-semibold text-sm">
-                Alcohol: {datosPaciente?.historiaclinica?.alcohol} 
-                </h1>
-              </div>
+        <div className="">
+  <div className="text-white font-semibold text-sm flex gap-1">
+    Salud mental:
+    {datosPaciente?.historiaclinica?.saludmental === '1' 
+      ?   <h1>"Extremadamente negativa"</h1>
+      : ''}
+      {datosPaciente?.historiaclinica?.saludmental === '2' 
+      ?   <h1>"Muy negativa"</h1>
+      : ''}
+      {datosPaciente?.historiaclinica?.saludmental === '3' 
+      ?   <h1>"Negativa"</h1>
+      : ''}
+      {datosPaciente?.historiaclinica?.saludmental === '4' 
+      ?   <h1>"Moderadamente negativa"</h1>
+      : ''}
+      {datosPaciente?.historiaclinica?.saludmental === '5' 
+      ?   <h1>"Regular"</h1>
+      : ''}
+      {datosPaciente?.historiaclinica?.saludmental === '6' 
+      ?   <h1>"Levemente positiva"</h1>
+      : ''}
+      {datosPaciente?.historiaclinica?.saludmental === '7' 
+      ?   <h1>"Moderadamente positiva"</h1>
+      : ''}
+      {datosPaciente?.historiaclinica?.saludmental === '8' 
+      ?   <h1>"Positiva"</h1>
+      : ''}
+      {datosPaciente?.historiaclinica?.saludmental === '9' 
+      ?   <h1>"Muy positiva"</h1>
+      : ''}
+      {datosPaciente?.historiaclinica?.saludmental === '10' 
+      ?   <h1>"Excelente"</h1>
+      : ''}
+     {datosPaciente?.historiaclinica?.saludmental === 'Sin datos' 
+      ?   <h1>Sin datos</h1>
+      : ''}
+  </div>
+</div>
+
               <div>
                 <button
                   className="rounded-md inline-flex space-x-1 items-center text-white hover:text-white hover:bg-indigo-500"
@@ -130,6 +159,7 @@ const FormularioAlcohol = () => {
     <p className="text-red-500 text-md"><FaExclamation className="animate-pulso text-xl" /></p>
     </div>
   )}
+
               </div>          
         </div>
         <div className=  {`${ocultarseccion?'block':'hidden'} xs:block `}>
@@ -137,39 +167,13 @@ const FormularioAlcohol = () => {
         <div className="border-l-2 border-l-indigo-200 border-r-2 border-r-indigo-200 border-b-2 bg-gray-50 border-b-indigo-200 ">
 <div className="border-b border-b-indigo-200" >
 <div className="container mx-auto p-1">
-<div className="grid grid-cols-2 items-center ">
-<div className="flex justify-start gap-2">
-  <div>
-  <h2 className="text-lg font-regular">
-  {datosPaciente?.historiaclinica?.alcohol} 
-  </h2>
-    </div>
 
-  {CamposVacios && (
-       <div className="flex mt-1">
-    <p className="text-red-500 text-md"><FaExclamation className="animate-pulso text-xl" /></p>
-    </div>
-  )}
-        <button
-          className="text-blue-500 focus:outline-none"
-          onClick={toggleActividad}
-        >
-          {ocultarActividad ? (
-            <p className="text-3xl"><MdKeyboardArrowRight /></p>
-          ) : (
-            <p className="text-3xl"><MdKeyboardArrowDown /></p>
-          )}
-        </button>
-</div>
-</div>
-{ocultarActividad ? null : (
      <div>
       {showButton ? (
   <div className="grid grid-cols-1 sm:grid-cols-1 ">
-
     <div className="flex flex-col text-sm">
       <div className="flex">
-      <label htmlFor="obsalcohol" className="text-md  ">Observaciones de alcoholismo:</label>
+      <label htmlFor="obssaludmental" className="text-md">Observaciones de salud mental:</label>
       {nombreVacio && (
               <span className="text-red-500 text-md"><FaExclamation className="animate-pulso text-lg" /></span>
                 )}
@@ -178,44 +182,18 @@ const FormularioAlcohol = () => {
     <textarea
         type="text"
         className="border px-4 py-2 rounded-lg w-full "
-        name="obsalcohol"
-        value={datosPaciente.obsalcohol || ''}
+        name="obssaludmental"
+        value={datosPaciente.obssaludmental || ''}
         onChange={handleChange}
     />
     </div>
-    <div className="flex flex-col text-sm">
-      <div className="flex">
-      <label htmlFor="alcohol" className="text-md  ">¿Consume alcohol?</label>
-      {actividadVacia && (
-              <span className="text-red-500 text-md"><FaExclamation className="animate-pulso text-lg" /></span>
-                )}
-    </div>
-    <select
-  className="border px-4 py-2 rounded-lg w-full"
-  name="alcohol"
-  value={datosPaciente.historiaclinica.alcohol || ""}
-  onChange={handleChange}
->
-  <option value="">Seleccione una opción</option>
-  <option value="Si">Si</option>
-  <option value="No">No</option>
-</select>
-    </div>
+
+
   </div>
-       ) : (
-        <div className="flex flex-col text-sm gap-1">
-        <div className="flex items-center  gap-1">
-          <label htmlFor="nombre" className="font-bold">Observaciones de alcoholismo:</label>
-          <label>{datosPaciente.obsalcohol || ''} </label>
-        </div>
-        <div className="flex items-center  gap-1">
-          <label htmlFor="ultimocontrol" className="font-bold">
-          ¿Consume alcohol?:
-          </label>
-          <label>{datosPaciente.historiaclinica.alcohol ||''}</label>
-        </div>
-      </div>
-    )}
+  
+        ) : (
+''
+      )}
 
   <div className="flex justify-center py-1">
     {showButton && (
@@ -227,7 +205,7 @@ const FormularioAlcohol = () => {
   </div>
 
   </div>
-    )}
+
 </div>
 
 
@@ -246,4 +224,4 @@ const FormularioAlcohol = () => {
   )
 }
 
-export default FormularioAlcohol
+export default FormularioSaludmental

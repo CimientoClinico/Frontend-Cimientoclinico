@@ -30,30 +30,29 @@ const FormularioAntecedentesQuirurgicos = () => {
       const cerrarModal = () => {
         setMostrarFormulario(false);
       };
+      const fetchData = async () => {
+      const tokenPro = localStorage.getItem("tokenPro");
+      if (!tokenPro) return;
+  
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${tokenPro}`,
+        },
+      };
+        try {
+          const { data } = await clientAxios.get(
+            `/profesional/informacion-paciente-consulta/${id}`,
+            config
+          );
+          setConsulta(data);
+          setLoading(false);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+      
     useEffect(() => {
-        const tokenPro = localStorage.getItem("tokenPro");
-        if (!tokenPro) return;
-    
-        const config = {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${tokenPro}`,
-          },
-        };
-    
-        const fetchData = async () => {
-          try {
-            const { data } = await clientAxios.get(
-              `/profesional/informacion-paciente-consulta/${id}`,
-              config
-            );
-            setConsulta(data);
-            setLoading(false);
-          } catch (error) {
-            console.log(error);
-          }
-        };
-    
         fetchData();
       }, [id]);
 
@@ -101,7 +100,7 @@ const FormularioAntecedentesQuirurgicos = () => {
           const quirurgico = datosPaciente[quirurgicoActualId];
       
           await clientAxios.put(`/profesional/editar-quirurgicos-paciente/${quirurgico._id}`, quirurgico, config);
-      
+          fetchData();
           Swal.fire('¡Perfecto!', 'Antecedente quirúrgico actualizado con éxito', 'success');
         } catch (error) {
           console.error(error.message);
@@ -183,6 +182,7 @@ const FormularioAntecedentesQuirurgicos = () => {
           );
           setConsulta(data);
           setDatosPaciente(data.quirurgico);
+          fetchData();
           setNombre('');
           setAnio('');
           setEnfermedadId({});

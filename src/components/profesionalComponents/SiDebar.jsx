@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { HiMenuAlt3 } from "react-icons/hi";
 import { MdHome,  MdVoiceChat, MdAccountCircle,MdFollowTheSigns,MdPaid, MdDarkMode,MdContentPaste } from "react-icons/md";
+import{HiUserGroup} from "react-icons/hi";
 import{BsFillDoorOpenFill,BsCalendar3} from "react-icons/bs";
 import { Link } from "react-router-dom";
 import proAuth from "../../hooks/proAuth"
@@ -47,6 +48,7 @@ const Sidebar = () => {
     { name: "Perfil", link: "/profesional/perfil-profesional", icon: MdAccountCircle },
     { name: "Tarifas", link: "/profesional/tarifas", icon: MdPaid },
     { name: "Mis Horarios", link: "/profesional/agenda-profesional", icon: BsCalendar3 },
+    { name: "Comunidad", link: "/profesional/comunidad", icon: HiUserGroup },
     { name: "Portal Paciente", link: "/paciente", icon: MdFollowTheSigns, margin:10 },
   ];
 

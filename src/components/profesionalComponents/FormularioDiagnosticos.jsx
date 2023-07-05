@@ -32,34 +32,34 @@ const FormularioDiagnosticos = () => {
   const cerrarModal = () => {
     setMostrarFormulario(false);
   };
-  useEffect(() => {
-    const tokenPro = localStorage.getItem("tokenPro");
-    if (!tokenPro) return;
 
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${tokenPro}`,
-      },
-    };
+const fetchData = async () => {
+  const tokenPro = localStorage.getItem("tokenPro");
+  if (!tokenPro) return;
 
-    const fetchData = async () => {
-      try {
-        const { data } = await clientAxios.get(
-          `/profesional/informacion-paciente-consulta/${id}`,
-          config
-        );
-        setConsulta(data);
-        setLoading(false);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+  const config = {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${tokenPro}`,
+    },
+  };
 
-    fetchData();
-  }, [id]);
+  try {
+    const { data } = await clientAxios.get(
+      `/profesional/informacion-paciente-consulta/${id}`,
+      config
+    );
+    setConsulta(data);
+    setLoading(false);
+  } catch (error) {
+    console.log(error);
+  }
+};
 
-
+useEffect(() => {
+  fetchData(); // Llama a fetchData para obtener los datos iniciales
+}, [id]);
+  
   const actualizarPaciente = async () => {
     const confirmar = await Swal.fire({
       title: '¿Estas seguro de actualizar este diagnóstico?',
@@ -68,35 +68,40 @@ const FormularioDiagnosticos = () => {
       confirmButtonColor: '#5d5ddb',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Si, Guardar'
-      }).then((result) => {
+    }).then((result) => {
       if (result.isConfirmed) {
-          return true;
+        return true;
       } else {
-          return false;
+        return false;
       }
-  })
-  if(confirmar) { 
-    const tokenPro = localStorage.getItem('tokenPro');
-    if (!tokenPro || !enfermedadActualId) return;
+    });
   
-    const config = {
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${tokenPro}`
+    if (confirmar) {
+      const tokenPro = localStorage.getItem('tokenPro');
+      if (!tokenPro || !enfermedadActualId) return;
+  
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${tokenPro}`
+        }
+      };
+  
+      try {
+        const enfermedad = datosPaciente[enfermedadActualId];
+  
+        await clientAxios.put(`/profesional/editar-enfermedades-paciente/${enfermedad._id}`, enfermedad, config);
+  
+        // Obtener los datos actualizados después de la actualización
+        fetchData();
+        
+        Swal.fire('¡Perfecto!', 'Diagnóstico actualizado con éxito', 'success');
+      } catch (error) {
+        console.error(error.message);
       }
-    };
-  
-    try {
-      const enfermedad = datosPaciente[enfermedadActualId];
-  
-      await clientAxios.put(`/profesional/editar-enfermedades-paciente/${enfermedad._id}`, enfermedad, config);
-  
-      Swal.fire('¡Perfecto!', 'Diangóstico actualizado con éxito', 'success');
-    } catch (error) {
-      console.error(error.message);
     }
-  }
   };
+  
   
   useEffect(() => {
     if (consulta && Array.isArray(consulta.enfermedades)) {
@@ -110,7 +115,6 @@ const FormularioDiagnosticos = () => {
       !enfermedad.fechadiagnostico ||
       !enfermedad.tratamiento ||
       enfermedad.guardadoporpaciente ===true|| 
-      enfermedad.tratamiento.length < 6|| 
       enfermedad.pacientefechadiagnostico===true
   );
 function isValidDate(dateString) {
@@ -173,6 +177,7 @@ function isValidDate(dateString) {
  
       setConsulta(data);
       setDatosPaciente(data.enfermedades);
+      fetchData();
       // Limpiar los campos del formulario
       setNombre('');
       setFechadiagnostico('');
@@ -275,7 +280,6 @@ const numeroEnumeracion = index + 1;
   const CamposVacios =
   !enfermedad.nombre ||
   !enfermedad.fechadiagnostico ||
-  !enfermedad.tratamiento || enfermedad.tratamiento.length < 6 ||
   enfermedad.guardadoporpaciente ===true ||
   enfermedad.pacientefechadiagnostico===true;
   const nombreVacio = !enfermedad.nombre  || enfermedad.guardadoporpaciente ===true;

@@ -25,30 +25,28 @@ const FormularioAntecedenteFam = () => {
       const cerrarModal = () => {
         setMostrarFormulario(false);
       };
-    useEffect(() => {
-        const tokenPro = localStorage.getItem("tokenPro");
-        if (!tokenPro) return;
-    
-        const config = {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${tokenPro}`,
-          },
-        };
-    
-        const fetchData = async () => {
-          try {
-            const { data } = await clientAxios.get(
-              `/profesional/informacion-paciente-consulta/${id}`,
-              config
-            );
-            setConsulta(data);
-            setLoading(false);
-          } catch (error) {
-            console.log(error);
-          }
-        };
-    
+      const fetchData = async () => {
+      const tokenPro = localStorage.getItem("tokenPro");
+      if (!tokenPro) return;
+  
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${tokenPro}`,
+        },
+      };
+        try {
+          const { data } = await clientAxios.get(
+            `/profesional/informacion-paciente-consulta/${id}`,
+            config
+          );
+          setConsulta(data);
+          setLoading(false);
+        } catch (error) {
+          console.log(error);
+        }
+      };
+    useEffect(() => { 
         fetchData();
       }, [id]);
 
@@ -97,7 +95,7 @@ const FormularioAntecedenteFam = () => {
           const antecedentesfam = datosPaciente[AntecedenteActualId];
       
           await clientAxios.put(`/profesional/editar-antecedentefam-paciente/${antecedentesfam._id}`, antecedentesfam, config);
-      
+          fetchData();      
           Swal.fire('¡Perfecto!', 'Antecedente familiar actualizado con éxito', 'success');
         } catch (error) {
           console.error(error.message);
@@ -147,6 +145,7 @@ const FormularioAntecedenteFam = () => {
 
           setConsulta(data);
           setDatosPaciente(data.antecedentesfam);
+          fetchData();  
           setNombrediagnostico('');
           setFamiliar('');
           setMostrarFormulario(false)

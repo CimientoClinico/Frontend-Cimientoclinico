@@ -64,14 +64,17 @@ const HeaderConsultas = () => {
     
    }
 
-  const consultasproAceptadas =  consultas.filter(con => con.paciente._id === auth._id && con.leidopacienteheader===false && con.estado ==='pagado') 
-  const numNotificacionesAceptadas= consultasproAceptadas.length
-  const consultasproPendientes =  consultas.filter(con => con.paciente._id === auth._id && con.leidopacienteheader===false && con.estado ==='pendiente') 
-  const numNotificacionesPendientes= consultasproPendientes.length
-  const consultasproRechazada =  consultas.filter(con => con.paciente._id === auth._id && con.leidopacienteheader===false && con.estado ==='rechazada') 
-  const numNotificacionesRechazada= consultasproRechazada.length
-  const consultasproFinalizadas =  consultas.filter(con => con.paciente._id === auth._id && con.leidopacienteheader===false && con.estado ==='finalizado') 
-  const numNotificacionesFinalizadas= consultasproFinalizadas.length
+   const consultasproAceptadas = consultas.filter(con => con.paciente?._id === auth?._id && con.leidopacienteheader === false && con.estado === 'pagado');
+   const numNotificacionesAceptadas = consultasproAceptadas.length;
+   
+   const consultasproPendientes = consultas.filter(con => con.paciente?._id === auth?._id && con.leidopacienteheader === false && con.estado === 'pendiente');
+   const numNotificacionesPendientes = consultasproPendientes.length;
+   
+   const consultasproRechazada = consultas.filter(con => con.paciente?._id === auth?._id && con.leidopacienteheader === false && con.estado === 'rechazada');
+   const numNotificacionesRechazada = consultasproRechazada.length;
+   
+   const consultasproFinalizadas = consultas.filter(con => con.paciente?._id === auth?._id && con.leidopacienteheader === false && con.estado === 'finalizado');
+   const numNotificacionesFinalizadas = consultasproFinalizadas.length;
   return (
     <>
       <header className=" bg-lila-300 ">

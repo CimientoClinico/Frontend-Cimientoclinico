@@ -16,30 +16,27 @@ const FormularioTabaquismo = () => {
     const toggleActividad = () => {
       setOcultarActividad(!ocultarActividad);
     };
+    const fetchData = async () => {
+    const tokenPro = localStorage.getItem('tokenPro');
+    if (!tokenPro) return;
+  
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${tokenPro}`
+      }
+    };
+      try {
+        const { data } = await clientAxios.get(`/profesional/informacion-paciente-consulta/${id}`, config);
+     setConsulta(data)
+      } catch (error) {
+        console.log(error);
+      }
+    };   
 
       useEffect(() => {
-        const tokenPro = localStorage.getItem('tokenPro');
-        if (!tokenPro) return;
-      
-        const config = {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${tokenPro}`
-          }
-        };
-
-        const fetchData = async () => {
-          try {
-            const { data } = await clientAxios.get(`/profesional/informacion-paciente-consulta/${id}`, config);
-         setConsulta(data)
-          } catch (error) {
-            console.log(error);
-          }
-        };
-      
         fetchData();
-
-      }, []); 
+      }, [id]); 
       useEffect(() => {
         if (consulta && consulta.paciente) {
           setDatosPaciente(consulta.paciente);
@@ -58,7 +55,7 @@ const FormularioTabaquismo = () => {
         };
         try {
           await clientAxios.put(`/profesional/editar-indentificacion-paciente/${consulta.paciente._id}`, datosPaciente,config);
-    
+          fetchData();
           Swal.fire('¡Perfecto!', 'Sección de consumo de tabaco actualizada', 'success');          
     
         } catch (error) {

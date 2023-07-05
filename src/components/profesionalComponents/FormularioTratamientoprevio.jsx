@@ -28,30 +28,28 @@ const FormularioTratamientoprevio = () => {
       const cerrarModal = () => {
         setMostrarFormulario(false);
       };
+      const fetchData = async () => {
+      const tokenPro = localStorage.getItem("tokenPro");
+      if (!tokenPro) return;
+  
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${tokenPro}`,
+        },
+      };
+        try {
+          const { data } = await clientAxios.get(
+            `/profesional/informacion-paciente-consulta/${id}`,
+            config
+          );
+          setConsulta(data);
+          setLoading(false);
+        } catch (error) {
+          console.log(error);
+        }
+      };
     useEffect(() => {
-        const tokenPro = localStorage.getItem("tokenPro");
-        if (!tokenPro) return;
-    
-        const config = {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${tokenPro}`,
-          },
-        };
-    
-        const fetchData = async () => {
-          try {
-            const { data } = await clientAxios.get(
-              `/profesional/informacion-paciente-consulta/${id}`,
-              config
-            );
-            setConsulta(data);
-            setLoading(false);
-          } catch (error) {
-            console.log(error);
-          }
-        };
-    
         fetchData();
       }, [id]);
 
@@ -102,6 +100,7 @@ const FormularioTratamientoprevio = () => {
           await clientAxios.put(`/profesional/editar-farmacos-previos-paciente/${farmacoprevio._id}`, farmacoprevio, config);
       
           Swal.fire('¡Perfecto!', 'Tratamiento actualizado con éxito', 'success');
+          fetchData();
         } catch (error) {
           console.error(error.message);
         }
@@ -184,6 +183,7 @@ const FormularioTratamientoprevio = () => {
 
           setConsulta(data);
           setDatosPaciente(data.farmacoprevio);
+          fetchData();
           setNombre('');
           setMotivosuspencion('');
           setEnfermedadId({});

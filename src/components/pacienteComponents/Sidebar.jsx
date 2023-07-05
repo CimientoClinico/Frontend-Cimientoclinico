@@ -82,7 +82,6 @@ useEffect(() => {
     const respuesta = await clientAxios.get('/pacientes/proxima-consulta',config);
     setConsultasProximas(respuesta.data);
   };
-
   obtenerConsultasProximas();
 }, []);
 const consultasPendientes = consultas.filter(con => con.paciente === auth._id && con.estado === 'pendiente'  && con.leidopaciente===false );
@@ -93,8 +92,12 @@ const motivosfiltrados = motivos
     (consultas.some(con => con.motivoconsulta === motivo._id && con.paciente === auth._id && con.estado === 'pendiente') || 
     consultasProximasFiltradas.some(con => con.motivoconsulta === motivo._id && con.paciente === auth._id && con.estado === 'pendiente'))
   ) 
-
-const numNotificaciones = consultasPendientes.length + consultasProximasFiltradas.length;
+  const motivosInterconsulta = consultas.filter(
+    (consulta) =>
+      consulta.motivoconsulta.paciente === auth._id &&
+      consulta.motivoconsulta.notificacioninterconsulta === true && consulta.motivoconsulta.leidopacienteinterconsulta ===false 
+  );
+const numNotificaciones = consultasPendientes.length + consultasProximasFiltradas.length + motivosInterconsulta.length;
   const menus = [
     { name: "Inicio", link: "/paciente", icon: MdHome },
     { name: "Perfil", link: "/paciente/perfil-paciente", icon: MdAccountCircle },
@@ -210,7 +213,7 @@ const numNotificaciones = consultasPendientes.length + consultasProximasFiltrada
     {con.estado === 'pendiente'  ? (
       <>
         <h1 className="text-white text-sm px-0.5 font-regular font-semibold"> Nueva propuesta de Consulta</h1>
-        <p className="text-white text-xs px-0.5 font-regular">Con el profesional {con.profesional.nombres} {con.profesional.apellidos} {`(${con.profesional.especialidad})`}  </p>
+        <p className="text-white text-xs px-0.5 font-regular">Con el profesional <span className="font-semibold">{con.profesional.nombres} {con.profesional.apellidos}</span>  {`(${con.profesional.especialidad})`}  </p>
       </>
     ) : (
       <div className="bg-lila-300 rounded-md">
@@ -221,7 +224,19 @@ const numNotificaciones = consultasPendientes.length + consultasProximasFiltrada
     <div className="border mr-1 border-gray-700 rounded-md px-0.5"></div>
   </div>
 ))}
-
+     {motivosInterconsulta.map((consulta) => (
+          <div key={consulta._id} className="mb-4">
+            <div className=" rounded-md">
+              <h1 className="text-white text-sm px-0.5 font-regular font-semibold">
+                Propuesta de interconsulta
+              </h1>
+              <p className="text-white text-xs px-0.5 font-regular">
+               El profesional  <span className="font-semibold"> {consulta.profesional.nombres} {consulta.profesional.apellidos}</span> sugiere generar una interconsulta para tu motivo de consulta: {consulta.motivoconsulta.titulo}
+              </p>
+            </div>
+            <div className="border mr-1 border-gray-700 rounded-md px-0.5"></div>
+          </div>
+        ))}
       </div>
      
       {numNotificaciones  > 0 && showNotifications &&(

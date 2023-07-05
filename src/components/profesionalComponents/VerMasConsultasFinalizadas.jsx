@@ -144,15 +144,7 @@ const VerMasConsultasPagadas= () => {
         </div>
         <div>
           <p className="font-bold mb-1">Tarifa:</p>
-          <div>{consulta.tarifa !== null ? (
-          <div>
-           {'$'}{consulta.tarifa.valor}
-          </div>
-          ):(
-          <div>
-          {'$'}{consulta.tarifaGlobal.valor}
-        </div>
-          )}</div>
+          <div>{consulta.precio && !isNaN(parseFloat(consulta.precio))? `$${parseFloat(consulta.precio).toLocaleString('es-CL')}`: ''}</div>
         </div>
         <div>
           <p className="font-bold mb-1">Estado:</p>

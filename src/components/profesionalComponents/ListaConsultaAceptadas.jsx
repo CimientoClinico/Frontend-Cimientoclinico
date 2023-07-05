@@ -77,17 +77,12 @@ const ListaConsultaAceptadas = () => {
             <tbody className="divide-y divide-gray-200 bg-white">
               {consultaspro.map(consulta => (
               <tr key={consulta._id}>
-                <td className="text-center py-4 pl-4 pr-3 text-sm font-semibold text-gray-900 sm:pl-6">{consulta.motivoconsulta.titulo}</td>
+                <td className="text-center py-4 pl-4 pr-3 text-sm font-semibold text-gray-900 sm:pl-6">{consulta.motivoconsulta.titulo || ''}</td>
                 <td className="text-center px-3 py-4 text-sm ">{ formatearFecha(consulta.fecha) }</td>
-                <td className="text-center px-3 py-4 text-sm hidden md:table-cell">{consulta.horarioinicio} </td>
-                <td className="text-center px-3 py-4 text-sm hidden md:table-cell">{consulta.horariofin} </td>
-                {consulta.tarifaGlobal 
-                ?
-                <td className="text-center px-3 py-4 text-sm "> {'$'}{consulta.tarifaGlobal.valor.toLocaleString('es-CL')}</td>
-                :
-                <td className="text-center px-3 py-4 text-sm"> {'$'}{consulta.tarifa.valor.toLocaleString('es-CL')}</td>
-                            }
-                          <td className="text-center px-3 py-4 text-sm hidden md:table-cell">{ formatearFecha(consulta.fechaCreacion) } </td>
+                <td className="text-center px-3 py-4 text-sm hidden md:table-cell">{consulta.horarioinicio || ''} </td>
+                <td className="text-center px-3 py-4 text-sm hidden md:table-cell">{consulta.horariofin || ''} </td>
+                <td className="text-center px-3 py-4 text-sm hidden md:table-cell">{consulta.precio && !isNaN(parseFloat(consulta.precio))? `$${parseFloat(consulta.precio).toLocaleString('es-CL')}`: ''}</td>
+                <td className="text-center px-3 py-4 text-sm hidden md:table-cell">{ formatearFecha(consulta.fechaCreacion) || '' } </td>
  
                              <td className="py-3 pr-3 text-center block sm:hidden">
   <Link  to={`/profesional/consulta/${consulta._id}`} className="bg-green-500 hover:bg-green-400 text-white text-sm font-nunito font-semibold mr-1 py-1 px-2 rounded">

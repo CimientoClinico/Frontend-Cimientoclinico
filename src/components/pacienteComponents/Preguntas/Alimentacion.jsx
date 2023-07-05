@@ -32,188 +32,192 @@ const handleSubmit = async e =>{
       { auth.historiaclinica?.alimentacion==='Sin datos'
     ? 
     <div className=" ">
-    <div className="title text-sm font-regular font-nunito">Según la siguiente escala,  <span className='text-lila-300'>¿qué tan conforme estás con la calidad del alimentacion?</span> </div>
+    <div className="title text-sm font-regular font-nunito"><span className='text-lila-300'>¿Calidad de la alimentación?</span> </div>
     <div className="w-full text-sm ">
 
       <form onSubmit={handleSubmit}>
-    <div className="inline-block mr-2 mt-2">
-          <div className="flex">
-          <div>
-<input type="radio" name="alimentacion" id="a1" className="peer hidden" value='1' onChange={ e => setPerfil({
+      <div className="inline-block">
+          <div className="font-nunito text-white  bg-red-800 cursor-pointer select-none  px-1 text-center peer-checked:bg-indigo-500 peer-checked:animate-pulse  peer-checked:font-bold peer-checked:text-white">
+          <div className=' '>
+          <label
+htmlFor="a0"
+className=""
+>0</label>
+</div>
+<div>
+<input type="radio" name="alimentacion" id="a0" className="" value='0' onChange={ e => setPerfil({
                ...perfil,
                [e.target.name] : e.target.value
              })} />
-<label
-htmlFor="a1"
-className="flex font-nunito text-white justify-center bg-red-700 cursor-pointer select-none rounded-xl p-1 text-center peer-checked:bg-indigo-500 peer-checked:animate-pulse  peer-checked:font-bold peer-checked:text-white"
->
-  😡
-  1 </label>
-</div>
-            
+</div>      
 </div>          
 </div>
-<div className="inline-block mr-2 mt-2">
-<div className="flex">
+<div className="inline-block">
+          <div className="font-nunito text-white  bg-red-700 cursor-pointer select-none  px-1 text-center peer-checked:bg-indigo-500 peer-checked:animate-pulse  peer-checked:font-bold peer-checked:text-white">
+          <div className=' '>
+          <label
+htmlFor="a1"
+className=""
+>1</label>
+</div>
 <div>
-<input type="radio" name="alimentacion" id="a2" className="peer hidden"   value='2'
-onChange={ e => setPerfil({
+<input type="radio" name="alimentacion" id="a1" className="" value='1' onChange={ e => setPerfil({
                ...perfil,
                [e.target.name] : e.target.value
              })} />
-<label
+</div>      
+</div>          
+</div>
+<div className="inline-block">
+          <div className="font-nunito text-white  bg-red-600 cursor-pointer select-none  px-1 text-center peer-checked:bg-indigo-500 peer-checked:animate-pulse  peer-checked:font-bold peer-checked:text-white">
+          <div className=' '>
+          <label
 htmlFor="a2"
-className="flex font-nunito bg-red-600 text-white justify-center cursor-pointer select-none rounded-xl p-1 text-center peer-checked:bg-indigo-500 peer-checked:animate-pulse peer-checked:font-bold peer-checked:text-white">
- 🤢
-  2 </label>
+className=""
+>2</label>
 </div>
-            
-</div>
-          
-  </div>
-
-  <div className="inline-block mr-2 mt-2">
-<div className="flex">
 <div>
-<input type="radio" name="alimentacion" id="a3" className="peer hidden"   value='3'onChange={ e => setPerfil({
+<input type="radio" name="alimentacion" id="a2" className="" value='2' onChange={ e => setPerfil({
                ...perfil,
                [e.target.name] : e.target.value
              })} />
-<label
+</div>      
+</div>          
+</div>
+
+<div className="inline-block">
+          <div className="font-nunito text-white  bg-red-500 cursor-pointer select-none  px-1 text-center peer-checked:bg-indigo-500 peer-checked:animate-pulse  peer-checked:font-bold peer-checked:text-white">
+          <div className=' '>
+          <label
 htmlFor="a3"
-className="flex font-nunito bg-red-500 text-white justify-center cursor-pointer select-none rounded-xl p-1 text-center peer-checked:bg-indigo-500 peer-checked:animate-pulse peer-checked:font-bold peer-checked:text-white">
-  🤒
- 
-  3</label>
+className=""
+>3</label>
 </div>
-            
-</div>
-          
-  </div>
-
-  <div className="inline-block mr-2 mt-2">
-<div className="flex">
 <div>
-<input type="radio" name="alimentacion" id="a4" className="peer hidden"   value='4' onChange={ e => setPerfil({
+<input type="radio" name="alimentacion" id="a3" className="" value='3' onChange={ e => setPerfil({
                ...perfil,
                [e.target.name] : e.target.value
              })} />
-<label
+</div>      
+</div>          
+</div>
+
+<div className="inline-block">
+          <div className="font-nunito text-white  bg-orange-500 cursor-pointer select-none  px-1 text-center peer-checked:bg-indigo-500 peer-checked:animate-pulse  peer-checked:font-bold peer-checked:text-white">
+          <div className=' '>
+          <label
 htmlFor="a4"
-className="flex font-nunito bg-orange-500 text-white justify-center cursor-pointer select-none rounded-xl p-1 text-center peer-checked:bg-indigo-500  peer-checked:animate-pulse peer-checked:font-bold peer-checked:text-white">
- 🤧
-  4 </label>
+className=""
+>4</label>
 </div>
-            
-</div>
-          
-  </div>
-
-  <div className="inline-block mr-2 mt-2">
-<div className="flex">
 <div>
-<input type="radio" name="alimentacion" id="a5" className="peer hidden"   value='5'onChange={ e => setPerfil({
+<input type="radio" name="alimentacion" id="a4" className="" value='4' onChange={ e => setPerfil({
                ...perfil,
                [e.target.name] : e.target.value
              })} />
-<label
+</div>      
+</div>          
+</div>
+
+<div className="inline-block">
+          <div className="font-nunito text-white  bg-orange-400 cursor-pointer select-none  px-1 text-center peer-checked:bg-indigo-500 peer-checked:animate-pulse  peer-checked:font-bold peer-checked:text-white">
+          <div className=' '>
+          <label
 htmlFor="a5"
-className="flex font-nunito bg-orange-400 text-white justify-center cursor-pointer select-none rounded-xl p-1 text-center peer-checked:bg-indigo-500  peer-checked:animate-pulse peer-checked:font-bold peer-checked:text-white">
- 😐
-  5 </label>
+className=""
+>5</label>
 </div>
-            
+<div>
+<input type="radio" name="alimentacion" id="a5" className="" value='5' onChange={ e => setPerfil({
+               ...perfil,
+               [e.target.name] : e.target.value
+             })} />
+</div>      
+</div>          
 </div>
-          
-  </div>
 
-  <div className="inline-block mr-2 mt-2">
-<div className="flex">
-<div>
-<input type="radio" name="alimentacion" id="a6" className="peer hidden"   value='6' onChange={ e => setPerfil({
-               ...perfil,
-               [e.target.name] : e.target.value
-             })} />
-<label
+<div className="inline-block">
+          <div className="font-nunito text-white  bg-orange-400 cursor-pointer select-none  px-1 text-center peer-checked:bg-indigo-500 peer-checked:animate-pulse  peer-checked:font-bold peer-checked:text-white">
+          <div className=' '>
+          <label
 htmlFor="a6"
-className="flex font-nunito bg-yellow-400 text-white justify-center cursor-pointer select-none rounded-xl p-1 text-center peer-checked:bg-indigo-500 peer-checked:animate-pulse peer-checked:font-bold peer-checked:text-white">
-  🤨
-  6 </label>
+className=""
+>6</label>
 </div>
-            
-</div>
-          
-  </div>
-  <div className="inline-block mr-2 mt-2">
-<div className="flex">
 <div>
-<input type="radio" name="alimentacion" id="a7" className="peer hidden"   value='7'onChange={ e => setPerfil({
+<input type="radio" name="alimentacion" id="a6" className="" value='6' onChange={ e => setPerfil({
                ...perfil,
                [e.target.name] : e.target.value
              })} />
-<label
+</div>      
+</div>          
+</div>
+<div className="inline-block">
+          <div className="font-nunito text-white  bg-yellow-300 cursor-pointer select-none  px-1 text-center peer-checked:bg-indigo-500 peer-checked:animate-pulse  peer-checked:font-bold peer-checked:text-white">
+          <div className=' '>
+          <label
 htmlFor="a7"
-className="flex font-nunito bg-yellow-300 text-white justify-center cursor-pointer select-none rounded-xl p-1 text-center peer-checked:bg-indigo-500 peer-checked:animate-pulse peer-checked:font-bold peer-checked:text-white">
-  🙂
-  7</label>
+className=""
+>7</label>
 </div>
-            
-</div>
-          
-  </div>
-  <div className="inline-block mr-2 mt-2">
-<div className="flex">
 <div>
-<input type="radio" name="alimentacion" id="a8" className="peer hidden"   value='8'onChange={ e => setPerfil({
+<input type="radio" name="alimentacion" id="a7" className="" value='7' onChange={ e => setPerfil({
                ...perfil,
                [e.target.name] : e.target.value
              })} />
-<label
+</div>      
+</div>          
+</div>
+<div className="inline-block">
+          <div className="font-nunito text-white  bg-green-400 cursor-pointer select-none  px-1 text-center peer-checked:bg-indigo-500 peer-checked:animate-pulse  peer-checked:font-bold peer-checked:text-white">
+          <div className=' '>
+          <label
 htmlFor="a8"
-className="flex font-nunito bg-green-400 text-white justify-center cursor-pointer select-none rounded-xl p-1 text-center peer-checked:bg-indigo-500 peer-checked:animate-pulse peer-checked:font-bold peer-checked:text-white">
-  😉
-  8 </label>
+className=""
+>8</label>
 </div>
-            
-</div>
-          
-  </div>
-  <div className="inline-block mr-2 mt-2">
-<div className="flex">
 <div>
-<input type="radio" name="alimentacion" id="a9" className="peer hidden"   value='9'onChange={ e => setPerfil({
+<input type="radio" name="alimentacion" id="a8" className="" value='8' onChange={ e => setPerfil({
                ...perfil,
                [e.target.name] : e.target.value
              })} />
-<label
+</div>      
+</div>          
+</div>
+<div className="inline-block">
+          <div className="font-nunito text-white  bg-green-500 cursor-pointer select-none  px-1 text-center peer-checked:bg-indigo-500 peer-checked:animate-pulse  peer-checked:font-bold peer-checked:text-white">
+          <div className=' '>
+          <label
 htmlFor="a9"
-className="flex font-nunito bg-green-500 text-white justify-center cursor-pointer select-none rounded-xl p-1 text-center peer-checked:bg-indigo-500 peer-checked:animate-pulse peer-checked:font-bold peer-checked:text-white">
- 😀
-  9 </label>
+className=""
+>9</label>
 </div>
-            
-</div>
-          
-  </div>
-  <div className="inline-block mr-2 mt-2">
-<div className="flex">
 <div>
-<input type="radio" name="alimentacion" id="a10" className="peer hidden"  value='10' onChange={ e => setPerfil({
+<input type="radio" name="alimentacion" id="a9" className="" value='9' onChange={ e => setPerfil({
                ...perfil,
                [e.target.name] : e.target.value
              })} />
-<label
+</div>      
+</div>          
+</div>
+<div className="inline-block">
+          <div className="font-nunito text-white  bg-green-500 cursor-pointer select-none  px-1 text-center peer-checked:bg-indigo-500 peer-checked:animate-pulse  peer-checked:font-bold peer-checked:text-white">
+          <div className=' '>
+          <label
 htmlFor="a10"
-className="flex font-nunito bg-green-600 text-white justify-center cursor-pointer select-none rounded-xl p-1 text-center peer-checked:bg-indigo-500 peer-checked:animate-pulse peer-checked:font-bold peer-checked:text-white">
-  😄
-  10 </label>
+className=""
+>10</label>
 </div>
-            
+<div>
+<input type="radio" name="alimentacion" id="a10" className="" value='10' onChange={ e => setPerfil({
+               ...perfil,
+               [e.target.name] : e.target.value
+             })} />
+</div>      
+</div>          
 </div>
-          
-  </div>
   <div className='p-1'> 
-   <button className="   bg-lila-200 px-2 py-2 text-white rounded-md text-center  font-nunito  hover:bg-indigo-400 ">Guardar💾</button>
+   <button className="   bg-lila-200 px-2 py-2 text-xs text-white rounded-md text-center  font-nunito  hover:bg-indigo-400 ">Guardar</button>
 </div>  </form>
 
 
@@ -223,6 +227,13 @@ className="flex font-nunito bg-green-600 text-white justify-center cursor-pointe
     <div>
          <div className='text-sm'>
       <div className='bg-white  border-gray-200 rounded-lg text-center'>
+      <div className='px-1 mt-1 font-nunito'>    { auth.historiaclinica?.alimentacion==='0' ? 
+      <div className=''>
+      <h1 className='font-bold text-xs '> Calidad de la alimentación: </h1>
+      <span className=' font-bold text-coral-300'>Crítica</span>
+      <div className='flex justify-center'>  <span className='text-2xl'> 😡</span></div>
+      </div>
+      :''} </div>
       <div className='px-1 mt-1 font-nunito'>    { auth.historiaclinica?.alimentacion==='1' ? 
       <div className=''>
       <h1 className='font-bold text-xs '> Calidad de la alimentación: </h1>

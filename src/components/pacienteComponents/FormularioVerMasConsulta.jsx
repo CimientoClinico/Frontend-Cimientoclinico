@@ -125,6 +125,57 @@ const FormularioVerMasConsulta = () => {
               }
             });
           };
+
+          const handleCambiarEstadoAceptado = async (id) => {
+            Swal.fire({
+              title: '¿Estás seguro que quieres aceptar esta propuesta de consulta?',
+              icon: 'warning',
+              showCancelButton: true,
+              confirmButtonColor: '#3085d6',
+              cancelButtonColor: '#d33',
+              confirmButtonText: 'Sí, aceptar',
+              cancelButtonText: 'Cancelar',
+            }).then(async (result) => {
+              if (result.isConfirmed) {
+                try {
+                  const token = localStorage.getItem('token')
+                  if(!token){
+                    setCargando(false)
+                    return
+                  } 
+                  const config ={
+                    headers:{
+                        "Content-Type":"application/json",
+                        Authorization:`Bearer ${token}`
+                    }
+                  }
+                  const response = await clientAxios.put(`/pacientes/aceptar-consulta/${id}`, {
+                    estado: 'pagado',
+                  }, config);
+        
+                  if (response.status === 200) {
+                    Swal.fire({
+                      title: 'La consulta fue aceptada con éxito',
+                      text: '',
+                      icon: 'success',
+                      confirmButtonColor: '#3085d6',
+                      confirmButtonText: 'Ok',
+                    });
+                    navigate(`/paciente/vermas-consulta-aprobada/${id}`)
+                  }
+                } catch (error) {
+                  console.error(error);
+                  Swal.fire({
+                    title: 'Hubo un error',
+                    text: 'No se pudo cambiar el estado de la consulta',
+                    icon: 'error',
+                    confirmButtonColor: '#3085d6',
+                    confirmButtonText: 'Ok',
+                  });
+                }
+              }
+            });
+          };
           
           if (!consulta || consulta.length === 0) {
             return <p>Cargando...</p>;
@@ -295,11 +346,7 @@ const FormularioVerMasConsulta = () => {
                             <div className="grid grid-cols-2">
                                 <div className="px-4 py-2 text-lg  font-semibold">Precio de la consulta:</div>
                                 <div className="px-4 py-2 text-lg ">
-                                { con.tarifa ?
-               <p >  {'$'}{con.tarifa.valor.toLocaleString('es-CL')}</p>
-               :
-               <p>  {'$'}{con.tarifaGlobal.valor.toLocaleString('es-CL')}</p>
-               }
+                                {con.precio && !isNaN(parseFloat(con.precio))? `$${parseFloat(con.precio).toLocaleString('es-CL')}`: ''}
                                 </div>
                             </div>
                           
@@ -383,7 +430,8 @@ const FormularioVerMasConsulta = () => {
                     <div className="grid grid-cols-2">
                     <button
             type="button"
-            className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-3 mb-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2  sm:ml-3 sm:w-auto sm:text-sm">
+            className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-3 mb-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2  sm:ml-3 sm:w-auto sm:text-sm"
+            onClick={() =>  handleCambiarEstadoAceptado(con._id)}>
            Aceptar
           </button>
           <button
@@ -392,6 +440,7 @@ const FormularioVerMasConsulta = () => {
             onClick={() => handleCambiarEstado(con._id)}>
             Rechazar
           </button>
+          
                     </div>
                     </div>
   

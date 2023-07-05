@@ -72,6 +72,8 @@ import VerConsultaAprobada from "./paginas/pacientes/VerConsultaAprobada"
 import AgendaProfesional from "./paginas/profesionales/AgendaProfesional"
 import InfoPacienteConsulta from "./paginas/profesionales/InfoPacienteConsulta"
 import ExamenesPendientes from "./paginas/pacientes/ExamenesPendientes"
+import MedidasGenerales from "./paginas/profesionales/MedidasGenerales"
+import Comunidad from "./paginas/profesionales/Comunidad"
 function App() {
   return (
     <BrowserRouter>
@@ -168,6 +170,9 @@ function App() {
         <Route path="mi-presentacion" element={ <MiPresentacion/> } />
         <Route path="agenda-profesional" element={ <AgendaProfesional/> } />
         <Route path="info-paciente-consulta/:id" element={ <InfoPacienteConsulta/> } />
+        <Route path="comunidad" element={ <Comunidad/> } />
+        <Route path="medidas-generales" element={ <MedidasGenerales/> } />
+        
 
         
 

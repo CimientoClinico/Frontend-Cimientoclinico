@@ -24,6 +24,8 @@ const FormularioinicioMotivos= ({}) => {
     const {authpro} =  proAuth()
     const [orden, setOrden] = useState("descendente");
     const [searchValue, setSearchValue] = useState('');
+    const [loading, setLoading] = useState(true);
+
     const [filtroGenero, setFiltroGenero] = useState("");
     const [filtroRangoEdad, setFiltroRangoEdad] = useState("");
 const [searchDias, setSearchDias] = useState([]);
@@ -91,6 +93,7 @@ const filtrarPorDias = (motivo) => {
 
       setMotivo(data);
       setShowModal(true);
+      
     };
     const formatearFecha = (fecha) => {
       const nuevaFecha = new Date(fecha)
@@ -220,6 +223,7 @@ const filtrarPorDias = (motivo) => {
               paciente: motivo.paciente[0], // Obtener el primer elemento del array
             }));
             setMotivos(motivos);
+            setLoading(false);
 
           } catch (error) {
             console.log(error);
@@ -352,18 +356,22 @@ const filtrarPorDias = (motivo) => {
   }
   ;
 
-  
   return (
     <>
+           {loading ? (
+        <p>Cargando...</p>
+      ) : (  <div>
+
 <div>
-  <h1 className="text-center font-bold text-4xl text-lila-300 mt-2 mb-4">Motivos de consulta</h1>
+
+<h1 className="text-center font-bold text-4xl text-lila-300 mt-2 mb-4">Motivos de consulta</h1>
 </div>
 
 <div className="flex flex-col md:flex-row md:items-center justify-center my-2 gap-2 w-full">
 
 <div className="flex justify-end px-1 py-2 ">
-    <label htmlFor="orden" className="mr-2 font-semibold">Buscar:</label>
-    <input type="text" value={searchValue} onChange={(e) => setSearchValue(e.target.value)} placeholder="Buscar motivos de consulta" className="p-1 border rounded-md w-80 placeholder:text-sm" />
+  <label htmlFor="orden" className="mr-2 font-semibold">Buscar:</label>
+  <input type="text" value={searchValue} onChange={(e) => setSearchValue(e.target.value)} placeholder="Buscar motivos de consulta" className="p-1 border rounded-md w-80 placeholder:text-sm" />
 
 </div>
 
@@ -371,143 +379,148 @@ const filtrarPorDias = (motivo) => {
 <div className="flex flex-col md:flex-row md:items-center justify-center my-2 gap-2 w-full">
 <div className="flex flex-col md:flex-row justify-center items-center gap-2">
 
-      <label htmlFor="filtro-edad">Filtrar por edad:</label>
-      <select className="border rounded-md" id="filtro-edad" value={filtroRangoEdad} onChange={handleSelectChange}>
-  <option value="">Todos los rangos</option>
-  <option value="1">0 meses a 1 mes</option>
-  <option value="2">1 mes a 12 meses</option>
-  <option value="3">12 meses a 2 años</option>
-  <option value="4">2 años a 6 años</option>
-  <option value="5">6 años a 13 años</option>
-  <option value="6">13 años a 17 años</option>
-  <option value="7">Adultos</option>
+    <label htmlFor="filtro-edad">Filtrar por edad:</label>
+    <select className="border rounded-md" id="filtro-edad" value={filtroRangoEdad} onChange={handleSelectChange}>
+<option value="">Todos los rangos</option>
+<option value="1">0 meses a 1 mes</option>
+<option value="2">1 mes a 12 meses</option>
+<option value="3">12 meses a 2 años</option>
+<option value="4">2 años a 6 años</option>
+<option value="5">6 años a 13 años</option>
+<option value="6">13 años a 17 años</option>
+<option value="7">Adultos</option>
 </select>
 
-    {filtroRangoEdad === "7" && (
-  <div className="flex flex-col md:flex-row justify-center items-center gap-2">
-    <label htmlFor="edad-minima">Edad mínima:</label>
-    <input
-    className="w-12 border rounded-md"
-      id="edad-minima"
-      type="number"
-      value={edadMin}
-      onChange={(e) => setEdadMin(e.target.value)}
-    />
-    <label htmlFor="edad-maxima">Edad máxima:</label>
-    <input
-       className="w-12 border rounded-md "
-      id="edad-maxima"
-      type="number"
-      value={edadMax}
-      onChange={(e) => setEdadMax(e.target.value)}
-    />
-  </div>
-)}
-    <label className="font-regular" htmlFor="genero">Filtrar por género:</label>
-    <select id="genero" value={filtroGenero} onChange={(e) => setFiltroGenero(e.target.value)} className="p-1 border rounded-md md:w-auto">
-      <option value="">Todos</option>
-      <option value="Hombre">Masculino</option>
-      <option value="Mujer">Femenino</option>
-    </select>
-  <label>Filtrar por fecha:</label>
+  {filtroRangoEdad === "7" && (
+<div className="flex flex-col md:flex-row justify-center items-center gap-2">
+  <label htmlFor="edad-minima">Edad mínima:</label>
   <input
-  className="border rounded-md"
-  type="date"
-  value={fechaSeleccionada || ''}
-  onChange={(e) => setFechaSeleccionada(e.target.value !== '' ? e.target.value : null)}
+  className="w-12 border rounded-md"
+    id="edad-minima"
+    type="number"
+    value={edadMin}
+    onChange={(e) => setEdadMin(e.target.value)}
+  />
+  <label htmlFor="edad-maxima">Edad máxima:</label>
+  <input
+     className="w-12 border rounded-md "
+    id="edad-maxima"
+    type="number"
+    value={edadMax}
+    onChange={(e) => setEdadMax(e.target.value)}
+  />
+</div>
+)}
+  <label className="font-regular" htmlFor="genero">Filtrar por género:</label>
+  <select id="genero" value={filtroGenero} onChange={(e) => setFiltroGenero(e.target.value)} className="p-1 border rounded-md md:w-auto">
+    <option value="">Todos</option>
+    <option value="Hombre">Masculino</option>
+    <option value="Mujer">Femenino</option>
+  </select>
+<label>Filtrar por fecha:</label>
+<input
+className="border rounded-md"
+type="date"
+value={fechaSeleccionada || ''}
+onChange={(e) => setFechaSeleccionada(e.target.value !== '' ? e.target.value : null)}
 />
 <label>Filtrar por hora:</label>
 <input
-  className="border rounded-md"
-  type="time"
-  id="horaInicio"
-  value={horaInicioSeleccionada || ''}
-  onChange={(e) => setHoraInicioSeleccionada(e.target.value)}
+className="border rounded-md"
+type="time"
+id="horaInicio"
+value={horaInicioSeleccionada || ''}
+onChange={(e) => setHoraInicioSeleccionada(e.target.value)}
 />
-    <button onClick={() => { setFiltroGenero(""); setOrden("descendente"); setFiltroRangoEdad("");  setFechaSeleccionada(null); setHoraInicioSeleccionada("");
-    }} className="bg-lila-200 hover:bg-lila-100 text-white px-2 py-1 rounded-lg md:w-auto">Borrar filtros</button>
-  </div>
+  <button onClick={() => { setFiltroGenero(""); setOrden("descendente"); setFiltroRangoEdad("");  setFechaSeleccionada(null); setHoraInicioSeleccionada("");
+  }} className="bg-lila-200 hover:bg-lila-100 text-white px-2 py-1 rounded-lg md:w-auto">Borrar filtros</button>
+</div>
 </div>
 <hr  />
 <div className="grid grid-cols-1 md:grid-cols-1 xl:px-60  gap-4 mt-2 mr-20">
-  {motivosfiltrados.map((motivo) => (
-    
-    <div key={motivo._id} className="bg-white rounded-lg shadow-md overflow-hidden w-full mb-10 border-t mt-2">
+{motivosfiltrados
+.sort((a, b) => moment(b.fecha).valueOf() - moment(a.fecha).valueOf())
+.map((motivo) => (
+  
+  <div key={motivo._id} className="bg-white rounded-lg shadow-md overflow-hidden w-full mb-10 border-t mt-2">
 
 
-      <div className="p-4">
-        <h2 className="text-lg font-medium text-gray-800 text-center">
-          {motivo.titulo}
-        </h2>
-        <div className="flex justify-between items-center ">
-          <span className="inline-block bg-gray-200 rounded-full px-2 py-1 text-xs font-semibold text-gray-700">
-            Publicado: {formatearFecha(motivo.fecha)}
-          </span>
-          <div className="flex space-x-2">
-            <div className="inline-block bg-gray-200 rounded-lg px-2 py-1 text-xs font-semibold text-gray-700">
-              <p className="text-xs font-medium text-gray-700">Sexo</p>
-              <p className="text-xs font-regular text-slate-800">{motivo.paciente.sexo}</p>
-            </div>
-            <div className="inline-block bg-gray-200 rounded-lg px-2 py-1 text-xs font-semibold text-gray-700">
-              <p className="text-xs font-medium text-gray-700">Edad</p>
-              <p className="text-xs font-regular text-slate-800">{calcularEdad(motivo.paciente.fechaNacimiento)} {'años'} </p>
-            </div>
+    <div className="p-4">
+      <h2 className="text-lg font-medium text-gray-800 text-center">
+        {motivo.titulo}
+      </h2>
+      <div className="flex justify-between items-center ">
+        <span className="inline-block bg-gray-200 rounded-full px-2 py-1 text-xs font-semibold text-gray-700">
+          Publicado: {formatearFecha(motivo.fecha)}
+        </span>
+        <div className="flex space-x-2">
+          <div className="inline-block bg-gray-200 rounded-lg px-2 py-1 text-xs font-semibold text-gray-700">
+            <p className="text-xs font-medium text-gray-700">Sexo</p>
+            <p className="text-xs font-regular text-slate-800">{motivo.paciente.sexo || ''}</p>
+          </div>
+          <div className="inline-block bg-gray-200 rounded-lg px-2 py-1 text-xs font-semibold text-gray-700">
+            <p className="text-xs font-medium text-gray-700">Edad</p>
+            <p className="text-xs font-regular text-slate-800">{calcularEdad(motivo.paciente.fechaNacimiento)} {'años'} </p>
           </div>
         </div>
-        <p className="mt-2 text-lg font-regular text-slate-800">{motivo.descripcion}</p>
-        <div className="bg-gray-100 rounded-lg px-1  py-1 mt-2">
-        <h1 className="text-md "> ⌚ Horarios disponibles Paciente</h1>
-        {Array.isArray(motivo.horarios) && motivo.horarios.length > 0 ? (
-  <div className="grid grid-cols-2 md:grid-cols-8 gap-4 px-1 py-2 mt-1">
-    {motivo.horarios
-      .filter((horario) => moment(horario.fecha).isSameOrAfter(moment(), 'day'))
-      .sort((a, b) => new Date(a.fecha) - new Date(b.fecha))
-      .map((horario, index) => (
-        <div
-          key={index}
-          className="bg-lila-100 py-2 px-1 text-xl font-regular text-white rounded-md"
-        >
-          <h4 className="text-xs font-regular mb-2">
-            {moment(horario.fecha).format('DD/MM/YYYY')}
-          </h4>
-          <h4 className="text-xs font-regular mb-2">
-            {horario.horarioinicio} - {horario.horariofin}
-          </h4>
-        </div>
-      ))}
-  </div>
+      </div>
+      <p className="mt-2 text-lg font-regular text-slate-800">{motivo.descripcion || ''}</p>
+      <div className="bg-gray-100 rounded-lg px-1  py-1 mt-2">
+      <h1 className="text-md "> ⌚ Horarios disponibles Paciente</h1>
+      {Array.isArray(motivo.horarios) && motivo.horarios.length > 0 ? (
+<div className="grid grid-cols-2 md:grid-cols-8 gap-4 px-1 py-2 mt-1">
+  {motivo.horarios
+    .filter((horario) => moment(horario.fecha).isSameOrAfter(moment(), 'day'))
+    .sort((a, b) => new Date(a.fecha) - new Date(b.fecha))
+    .map((horario, index) => (
+      <div
+        key={index}
+        className="bg-lila-100 py-2 px-1 text-xl font-regular text-white rounded-md"
+      >
+        <h4 className="text-xs font-regular mb-2">
+          {moment(horario.fecha).format('DD/MM/YYYY')}
+        </h4>
+        <h4 className="text-xs font-regular mb-2">
+          {horario.horarioinicio ||  ''} - {horario.horariofin ||' '}
+        </h4>
+      </div>
+    ))}
+</div>
 ) : (
-  <div>
-    <p className="mt-4 text-lila-400 text-lg italic">
-      El paciente no ha registrado sus horarios
-    </p>
-  </div>
+<div>
+  <p className="mt-4 text-lila-400 text-lg italic">
+    El paciente no ha registrado sus horarios
+  </p>
+</div>
 )}
 </div>
 
 
-        
-     
+      
+   
 
-      </div>
-      <div className="bg-gray-100 px-4 py-3 flex gap-2">
-        <button
-          className="bg-lila-200 hover:bg-lila-100 px-5 py-1 rounded-md text-white"
-          onClick={() => handleClick(motivo._id)}
-    
-        >
-          Ver Más
-        </button>
-      </div>
-    
-    
     </div>
-  ))}
-  {showModal && <ModalMotivo motivo={motivo} onClose={() => setShowModal(false)} />}
-  {showModalHora && (
-      <ModalHora motivo={hora} onClose={() => handleCloseModal()} />
-    )}
+    <div className="bg-gray-100 px-4 py-3 flex gap-2">
+      <button
+        className="bg-lila-200 hover:bg-lila-100 px-5 py-1 rounded-md text-white"
+        onClick={() => handleClick(motivo._id)}
+  
+      >
+        Ver Más
+      </button>
+    </div>
+  
+  
+  </div>
+))}
+{showModal && <ModalMotivo motivo={motivo} onClose={() => setShowModal(false)} />}
+{showModalHora && (
+    <ModalHora motivo={hora} onClose={() => handleCloseModal()} />
+  )}
 </div>
+
+      </div>  )}
+
 
   </>
   )

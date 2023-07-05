@@ -116,7 +116,7 @@ const Tarifas = () => {
             cancelButtonText: 'Cancelar',
           });
           if (resultado.isConfirmed) {
-          const response = await clientAxios.patch(`/profesional/borrar-tarifa/${id}`, { activo: false }, config);
+          const response = await clientAxios.delete(`/profesional/borrar-tarifa/${id}`, config);
           Swal.fire('¡Listo!', 'Tu Tarifa fue eliminada', 'success');
           if (response.status === 200) {
             const nuevasTarifas = tarifas.filter((tar) => tar._id !== id);

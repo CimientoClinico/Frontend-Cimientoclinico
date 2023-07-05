@@ -5,7 +5,7 @@ const FormularioGinecoobstetrico = () => {
 
     const {auth, actualizarGinecoobstetricos} =   useHistoriaCli()
     const [ perfil, setPerfil ] = useState({});
-    const [ocultarseccion, SetOcultarSeccion] = useState(true)
+    const [ocultarseccion, SetOcultarSeccion] = useState(false)
 const formatearFecha = (fecha) => {
   const nuevaFecha = new Date(fecha)
   nuevaFecha.setMinutes(nuevaFecha.getMinutes() + nuevaFecha.getTimezoneOffset())
@@ -40,31 +40,113 @@ const handleSubmit = async e =>{
                   } </span>                     
             </button>   
 </div>
-<form onSubmit={handleSubmit} className=  {`${ocultarseccion?'block':'hidden'} xs:block grid grid-cols-10`} >
-  <div class=" ml-6 col-span-7"> 
-  <label className="text-gray-700 font-bold text-md ">Antecedentes ginecoobstétricos</label>
-  
-<div className=" mt-1 ">
-      <textarea
-           name='nginecoobstetrico'
-            className="w-11/12 focus:outline-none focus:text-gray-900 mb-1 border border-gray-300 rounded-md placeholder-slate-400 p-2.5 h-32 resize-y "
-            placeholder="Agrega tus antecedentes ginecoobstétricos"
-            value={perfil.nginecoobstetrico || ''}
-            onChange={ e => setPerfil({
-              ...perfil,
-              [e.target.name] : e.target.value
-            })}
-          />
-</div>
 
+<form onSubmit={handleSubmit} className={`${ocultarseccion ? 'block' : 'hidden'} xs:block flex flex-col`}>
+<h1 className='px-8 text-gray-700 font-bold text-md'>Antecedentes ginecoobstétricos </h1>
+  <div className="flex flex-row">
+    <div className="flex flex-col w-1/2 mx-6">
+      <label className="text-gray-700 text-md">Gestaciones</label>
+      <div className="mt-1">
+        <input
+          name='gestaciones'
+          className="focus:outline-none focus:text-gray-900 mb-2 border border-gray-300 rounded-md placeholder-slate-400 px-4 py-2 resize-y w-full"
+          placeholder="Gestaciones"
+          value={perfil.gestaciones || ''}
+          onChange={e => setPerfil({ ...perfil, [e.target.name]: e.target.value })}
+        />
+      </div>
+    </div>
+    <div className="flex flex-col w-1/2 mx-6">
+      <label className="text-gray-700 text-md">Perdidas</label>
+      <div className="mt-1">
+        <input
+          name='perdidas'
+          className="focus:outline-none focus:text-gray-900 mb-2 border border-gray-300 rounded-md placeholder-slate-400 px-4 py-2 resize-y w-full"
+          placeholder="Perdidas"
+          value={perfil.perdidas || ''}
+          onChange={e => setPerfil({ ...perfil, [e.target.name]: e.target.value })}
+        />
+      </div>
+    </div>
   </div>
-  <div class="col-span-3 flex justify-center items-center">
-  <button className="text-white w-2/2 mx-auto max-w-sm rounded-md text-center bg-indigo-400 hover:bg-indigo-600 py-2 px-4 inline-flex items-center focus:outline-none md:float-right">
-    Actualizar🔄
-  </button>
-</div>
+  <div className="flex flex-row">
+    <div className="flex flex-col w-1/2 mx-6">
+      <label className="text-gray-700 text-md">Partos</label>
+      <div className="mt-1">
+        <input
+          name='partos'
+          className="focus:outline-none focus:text-gray-900 mb-2 border border-gray-300 rounded-md placeholder-slate-400 px-4 py-2 resize-y w-full"
+          placeholder="Partos"
+          value={perfil.partos || ''}
+          onChange={e => setPerfil({ ...perfil, [e.target.name]: e.target.value })}
+        />
+      </div>
+    </div>
+    <div className="flex flex-col w-1/2 mx-6">
+      <label className="text-gray-700 text-md">Cesáreas</label>
+      <div className="mt-1">
+        <input
+          name='cesareas'
+          className="focus:outline-none focus:text-gray-900 mb-2 border border-gray-300 rounded-md placeholder-slate-400 px-4 py-2 resize-y w-full"
+          placeholder="Cesáreas"
+          value={perfil.cesareas || ''}
+          onChange={e => setPerfil({ ...perfil, [e.target.name]: e.target.value })}
+        />
+      </div>
+    </div>
+  </div>
+  <div className="flex flex-row">
+    <div className="flex flex-col w-1/2 mx-6">
+      <label className="text-gray-700  text-md">Menarquia</label>
+      <div className="mt-1">
+        <input
+          name='menarquia'
+          className="focus:outline-none focus:text-gray-900 mb-2 border border-gray-300 rounded-md placeholder-slate-400 px-4 py-2 resize-y w-full"
+          placeholder="Menarquia"
+          value={perfil.menarquia || ''}
+          onChange={e => setPerfil({ ...perfil, [e.target.name]: e.target.value })}
+        />
+      </div>
+    </div>
+    <div className="flex flex-col w-1/2 mx-6">
+      <label className="text-gray-700 text-md">Última regla</label>
+      <div className="mt-1">
+        <input
+          name='ultimaregla'
+          className="focus:outline-none focus:text-gray-900 mb-2 border border-gray-300 rounded-md placeholder-slate-400 px-4 py-2 resize-y w-full"
+          placeholder="Última regla"
+          value={perfil.ultimaregla || ''}
+          onChange={e => setPerfil({ ...perfil, [e.target.name]: e.target.value })}
+        />
+      </div>
+    </div>
+  </div>
+  <div className="flex flex-row">
+    <div className="flex flex-col w-1/2 mx-6">
+      <label className="text-gray-700 text-md">Último PAP</label>
+      <div className="mt-1">
+        <input
+          name='ultimopap'
+          className="focus:outline-none focus:text-gray-900 mb-2 border border-gray-300 rounded-md placeholder-slate-400 px-4 py-2 resize-y w-full"
+          placeholder="Último PAP"
+          value={perfil.ultimopap || ''}
+          onChange={e => setPerfil({ ...perfil, [e.target.name]: e.target.value })}
+        />
+      </div>
+    </div>
+    <div className="flex flex-col w-1/2 mx-6">
 
+    </div>
+    
+  </div>
+  <div className="flex flex-row justify-center mt-1 mb-2">
+    <button className="text-white  mx-auto max-w-sm rounded-md text-center bg-indigo-400 hover:bg-indigo-600 py-2 px-4 inline-flex items-center focus:outline-none">
+      Actualizar🔄
+    </button>
+  </div>
 </form>
+
+
 
 
     </>

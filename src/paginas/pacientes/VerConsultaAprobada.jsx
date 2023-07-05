@@ -4,6 +4,7 @@ import clientAxios from "../../config/axios";
 import useAuth from "../../hooks/useAuth"
 import FormularioConsultaAprobada from "../../components/pacienteComponents/FormularioConsultaAprobada";
 import FormularioConsultaFinalizada from "../../components/pacienteComponents/FormularioConsultaFinalizada";
+
 const VerConsultaAprobada= () => {
     const [consulta, setConsulta] = useState([]);
     const { id } = useParams();

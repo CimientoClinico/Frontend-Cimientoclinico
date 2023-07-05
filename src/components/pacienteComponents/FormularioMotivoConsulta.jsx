@@ -173,7 +173,6 @@ const FormularioMotivoConsulta = () => {
             setProfesionales([]);
               
             }
-            console.log(motivos)
             const { msg } = alerta
   return (
     <>

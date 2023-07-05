@@ -90,7 +90,7 @@ useEffect(()=>{
 
    <div className="md:flex  lg:gap-24 xs:gap-0 ">
     <div className="sm:w-1/6 xl:w-3/6 ml-4 md:mb-0 ">
-    <h1 className="text-gray-600 font-nunito font-semibold text-lg py-5 xl:ml-20 xs:ml-0 ">¿Tienes algún diagnóstico?</h1>
+    <h1 className="text-gray-600 font-nunito font-semibold text-sm py-5 xl:ml-20 xs:ml-0 ">¿Tienes algún diagnóstico?</h1>
     </div>
     <div className="py-3 md:w-6/6 ">
    <form onSubmit={handleSubmit2}>
@@ -103,7 +103,7 @@ useEffect(()=>{
              })} />
    <label
      htmlFor="sienfermedad"
-     className=" flex font-nunito  bg-indigo-300 text-white  justify-center cursor-pointer select-none rounded-lg px-4 py-2  text-center peer-checked:bg-red-500 peer-checked:font-bold peer-checked:text-white">
+     className=" flex font-nunito text-sm  bg-indigo-300 text-white  justify-center cursor-pointer select-none rounded-lg px-4 py-2  text-center peer-checked:bg-red-500 peer-checked:font-bold peer-checked:text-white">
        Si✔️ </label>
  </div>
 
@@ -115,10 +115,10 @@ useEffect(()=>{
              })} />
    <label
      htmlFor="noenfermedad"
-     className=" flex font-nunito  bg-indigo-300 text-white    justify-center cursor-pointer select-none rounded-lg  px-3.5 py-2  text-center peer-checked:bg-green-500 peer-checked:font-bold peer-checked:text-white">
+     className=" flex font-nunito  text-sm bg-indigo-300 text-white    justify-center cursor-pointer select-none rounded-lg  px-3.5 py-2  text-center peer-checked:bg-green-500 peer-checked:font-bold peer-checked:text-white">
        No❌</label>
  </div>
- <button className="text-white w-1/2 mx-auto max-w-sm rounded-md text-center bg-lila-200 hover:bg-lila-100 py-2 px-4 inline-flex items-center focus:outline-none md:float-right">
+ <button className="text-white text-sm w-1/2 mx-auto max-w-sm rounded-md text-center bg-lila-200 hover:bg-lila-100 py-2 px-4 inline-flex items-center focus:outline-none md:float-right">
    Guardar💾
   </button>
  </div>
@@ -164,20 +164,20 @@ useEffect(()=>{
 
 <div className="md:flex  lg:gap-24 xs:gap-0 px-5 ">
       <div className="md:w-4/6 ml-4 md:mb-0   ">
-        <label className="text-gray-700 font-bold text-md">Diagnósticos</label>
+        <label className="text-gray-700 font-bold text-sm">Diagnósticos</label>
       <input
             type="text"
-            className="w-11/12 focus:outline-none focus:text-gray-900 mb-1 border border-gray-300 rounded-md placeholder-slate-400 p-2 "
+            className="w-11/12 focus:outline-none focus:text-gray-900 mb-1 border border-gray-300 rounded-md placeholder-slate-400 px-2 py-1 text-sm "
             placeholder="Escribe aquí los diagnósticos que presentas"
             value={nombre}
             onChange={e => setNombre(e.target.value) } 
           />
           <div>
-          <label className="text-gray-700 font-bold text-md" htmlFor="fechadiagnostico ">¿Cuando fue tu diagnóstico?</label>
+          <label className="text-gray-700 font-bold text-sm" htmlFor="fechadiagnostico ">¿Cuando fue tu diagnóstico?</label>
           <input
              id="fechadiagnostico"
             type="text"
-            className="w-11/12 focus:outline-none focus:text-gray-900 mb-1 border border-gray-300 rounded-md placeholder-slate-400 p-2 "
+            className="w-11/12 focus:outline-none focus:text-gray-900 mb-1 border border-gray-300 rounded-md placeholder-slate-400 px-2 py-1 text-sm  "
             placeholder="Escribe en que año o desde cuando recuerdas tener este diagnóstico"
             value={fechadiagnostico}
             onChange={e => setFechadiagnostico(e.target.value) } 
@@ -187,7 +187,7 @@ useEffect(()=>{
      
       <div className="py-3 md:w-6/6  ">
         
-      <button className="text-white w-2/2 mx-auto max-w-sm rounded-md text-center bg-lila-200 hover:bg-lila-100 py-2 px-4 inline-flex items-center focus:outline-none md:float-right">
+      <button className="text-white w-2/2 mx-auto max-w-sm rounded-md text-sm text-center bg-lila-200 hover:bg-lila-100 py-2 px-3 inline-flex items-center focus:outline-none md:float-right">
          Agregar💾
         </button>
         
@@ -197,24 +197,36 @@ useEffect(()=>{
     
     
     </form>
-     <div className=  {`${ocultarseccion?'block':'hidden'} xs:block `}>
-    { enfermedades.length ?
-
-<div className=" flex mt-2 flex-col lg:flex-row px-1">
-  <div className=" px-8  grid grid-cols-3 gap-1    ">{enfermedades.map(enf => (
-    
-    <div key={enf._id} className="flex  ">
-       <h2 className="text-gray-500 font-nunito text-sm mt-1"> {enf.nombre},</h2>
-       {enf.añoDiagnostico ?
-       <h2 className="text-gray-500 font-nunito text-sm mt-1 ml-2 "> {formatearFecha(enf.añoDiagnostico) } </h2>
-       :''}
-
+    <div className={`${ocultarseccion ? 'block' : 'hidden'} xs:block`}>
+  {enfermedades.length ? (
+    <div className="flex flex-col lg:flex-row px-1">
+      <div className="px-8 grid grid-cols-3 gap-1">
+        {enfermedades
+          .filter(enf => enf.guardadoporpaciente === true)
+          .map(enf => (
+            <div key={enf._id} className="flex">
+              <h2 className="text-gray-500 font-nunito text-sm mt-1">{enf.nombre},</h2>
+            </div>
+          ))}
+      </div>
     </div>
-))}   </div>
+  ) : null}
 </div>
 
-
-: '' }
+<div className={`${ocultarseccion ? 'block' : 'hidden'} xs:block`}>
+  {enfermedades.length ? (
+    <div className="flex flex-col lg:flex-row px-1">
+      <div className="px-8 grid grid-cols-3 gap-1">
+        {enfermedades
+          .filter(enf => enf.guardadoporpaciente === false)
+          .map((enf, index) => (
+            <div key={enf._id} className="flex">
+              <h2 className=" font-bold text-gray-900 text-sm mt-1">{`${index + 1}.- ${enf.nombre}`}  {enf.fechadiagnostico ||''} </h2>
+            </div>
+          ))}
+      </div>
+    </div>
+  ) : null}
 </div>
 
 </div>
@@ -243,33 +255,30 @@ useEffect(()=>{
 </div>
 
 
-<div className={`${ocultarseccion?'block':'hidden'} xs:block `}>
-  
-  <div className="md:inline-flex w-full space-y-4 md:space-y-0 p-2 text-gray-700 items-center ">
-<h2 className="md:w-4/12 ml-8 max-w-sm font-bold mx-auto">Diagnósticos:</h2>
-
-<div className="md:w-5/12 w-full md:pl-9 max-w-sm mx-auto space-y-5  pl-2">
-  <div className="w-full inline-flex ">
-  <h1 className="font-semibold text-xl">Paciente sin Diagnósticos</h1>
+<div className={`${ocultarseccion ? 'block' : 'hidden'} xs:block`}>
+  <div className="md:inline-flex w-full md:space-y-0 text-gray-700 items-center">
+    <h2 className="text-sm md:w-4/12 ml-8 max-w-sm font-bold mx-auto">Diagnósticos: Paciente sin Diagnósticos</h2>
+    <div className="md:w-3/12 text-center pr-6 flex items-center">
+      <form onSubmit={SiEnfermedad}>
+        <input
+          type="radio"
+          name="enfermedad"
+          className="peer hidden border border-gray-200"
+          value="Sin datos"
+          checked
+          onChange={e =>
+            setPerfil4({
+              ...perfil4,
+              [e.target.name]: e.target.value
+            })
+          }
+        />
+        <button className="text-white ml-2 rounded-md text-sm text-center bg-lila-200 hover:bg-lila-100 py-2 px-4 focus:outline-none">
+          Actualizar🔄
+        </button>
+      </form>
+    </div>
   </div>
-</div>
-
-
-<div className="md:w-3/12 text-center md:pl-6">
-<form onSubmit={SiEnfermedad}>
-<input type="radio" name="enfermedad" className="peer hidden border border-gray-200" value='Sin datos' checked
-              onChange={ e => setPerfil4({
-               ...perfil4,
-               [e.target.name] : e.target.value
-             })} />
-<button className="text-white w-2/2 mx-auto max-w-sm rounded-md text-sm text-center bg-lila-200 hover:bg-lila-100 py-2 px-4 inline-flex items-center focus:outline-none md:float-right">
-    Actualizar🔄
-  </button>
-  </form>
-
-</div>
-
-</div>
 </div>
 </div>
 

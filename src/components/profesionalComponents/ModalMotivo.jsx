@@ -15,6 +15,7 @@ export const ModalMotivo = ({ motivo, onClose}) => {
   const [fecha, setFecha] = useState('');
   const [horarioinicio, setHoraInicio] = useState('');
   const [horariofin, setHoraFin] = useState('');
+  const [precio, setPrecio] = useState('');
   const [tarifaId, setTarifaId] = useState('');
   const [tarifaGlobalId, setTarifaGlobal] = useState('');
   const [esTarifaGlobal, setEsTarifaGlobal] = useState(true);
@@ -26,6 +27,9 @@ export const ModalMotivo = ({ motivo, onClose}) => {
     const [isOpen, setIsOpen] = useState(false);
     const [actualizarTarifas, setActualizarTarifas] = useState(false);
     const datePickerRef = useRef(null);
+    const [tarifaSeleccionada, setTarifaSeleccionada] = useState(null);
+
+    
     useEffect(() => {
       obtenerTarifas();
     }, [actualizarTarifas]);
@@ -96,33 +100,6 @@ export const ModalMotivo = ({ motivo, onClose}) => {
       const tokenPro = localStorage.getItem("tokenPro");
       if (!tokenPro) return;
 
-      if (motivo.horariopaciente && motivo.horariopaciente.length > 0) {
-      const horarioInicioSeleccionado = new Date(`2000-01-01T${horarioinicio}`);
-      const horarioFinSeleccionado = new Date(`2000-01-01T${horariofin}`);
-      const fechaSeleccionada = new Date(fecha);
-    const fechaSeleccionadaString = fechaSeleccionada.toISOString().split('T')[0];
-
-      const horarioDisponible = motivo.horariopaciente.some(
-        (horario) => {
-          const fechaHorario = new Date(horario.fecha.split('T')[0]);
-          const horarioInicio = new Date(`2000-01-01T${horario.horarioinicio}`);
-          const horarioFin = new Date(`2000-01-01T${horario.horariofin}`);
-      
-          return (
-            fechaHorario.getTime() === new Date(fechaSeleccionadaString).getTime() &&
-            (horarioInicio <= horarioInicioSeleccionado && horarioFin >= horarioFinSeleccionado) ||
-            (horarioInicioSeleccionado <= horarioInicio && horarioFinSeleccionado >= horarioInicio) &&
-            (horarioInicioSeleccionado >= horarioInicio && horarioFinSeleccionado <= horarioFin)
-          );
-          
-        }
-      );
-      if (!horarioDisponible) {
-        Swal.fire('¡Error!', 'El horario seleccionado no está disponible.', 'error');
-        return;
-      }
-    }
-
       if (!fecha) {
         Swal.fire('¡Error!', 'Por favor, seleccione una fecha.', 'error');
         return;
@@ -136,15 +113,37 @@ export const ModalMotivo = ({ motivo, onClose}) => {
         Swal.fire('¡Error!', 'Por favor, agrege hora de fin para la consulta.', 'error');
         return;
       }
-      if (tarifaGlobalId && tarifaId) {
-        Swal.fire('¡Error!', 'No puede agregar una tarifa global y una tarifa personalizada al mismo tiempo.', 'error');
-        return;
-      }
-      if (!tarifaGlobalId && !tarifaId) {
-        Swal.fire('¡Error!', 'Agrege una tarifa para la consulta', 'error');
-        return;
-      }
+      if (motivo.horariopaciente && motivo.horariopaciente.length > 0) {
+        const horarioInicioSeleccionado = new Date(`2000-01-01T${horarioinicio}`);
+        const horarioFinSeleccionado = new Date(`2000-01-01T${horariofin}`);
+        const fechaSeleccionada = new Date(fecha);
+      const fechaSeleccionadaString = fechaSeleccionada.toISOString().split('T')[0];
   
+        const horarioDisponible = motivo.horariopaciente.some(
+          (horario) => {
+            const fechaHorario = new Date(horario.fecha.split('T')[0]);
+            const horarioInicio = new Date(`2000-01-01T${horario.horarioinicio}`);
+            const horarioFin = new Date(`2000-01-01T${horario.horariofin}`);
+        
+            return (
+              fechaHorario.getTime() === new Date(fechaSeleccionadaString).getTime() &&
+              (horarioInicio <= horarioInicioSeleccionado && horarioFin >= horarioFinSeleccionado) ||
+              (horarioInicioSeleccionado <= horarioInicio && horarioFinSeleccionado >= horarioInicio) &&
+              (horarioInicioSeleccionado >= horarioInicio && horarioFinSeleccionado <= horarioFin)
+            );
+            
+          }
+        );
+        if (!horarioDisponible) {
+          Swal.fire('¡Error!', 'El horario seleccionado no está disponible.', 'error');
+          return;
+        }
+      }
+      if (!precio) {
+        Swal.fire('¡Error!', 'Agregue una tarifa para generar la consulta', 'error');
+        return;
+      }
+
       const config = {
         headers: {
           "Content-Type": "multipart/form-data",
@@ -152,15 +151,24 @@ export const ModalMotivo = ({ motivo, onClose}) => {
         },
       };
 
-      const resultado = await Swal.fire({
-        title: `¿Enviar propuesta de consulta al paciente?`,
-        icon: 'warning',
-        showCancelButton: true,
-        confirmButtonColor: '#3085d6',
-        cancelButtonColor: '#d33',
-        confirmButtonText: 'Sí',
-        cancelButtonText: 'Cancelar',
-      });
+      const resumenDatos = `
+      Fecha: ${formatearFecha(fecha)}<br>
+      Horario de inicio: ${horarioinicio}<br>
+      Horario de fin: ${horariofin}<br>
+      Precio: $${parseFloat(precio).toLocaleString('es-CL')}
+    `;
+    
+
+    const resultado = await Swal.fire({
+      title: '¿Quieres enviar esta propuesta de consulta?',
+      html: `Resumen de tu propuesta<br><br>${resumenDatos}`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí',
+      cancelButtonText: 'Cancelar',
+    });
       if (resultado.isConfirmed) {
       const fechaConZonaHoraria = moment.tz(fecha, 'America/Santiago').format();
 
@@ -170,11 +178,7 @@ export const ModalMotivo = ({ motivo, onClose}) => {
       data.append('mensaje', mensaje);
       data.append('horarioinicio', horarioinicio);
       data.append('horariofin', horariofin);
-      if (esTarifaGlobal) {
-        data.append('tarifaGlobalId', tarifaGlobalId);
-      } else {
-        data.append('tarifaId', tarifaId);
-      }
+      data.append('precio', precio);
       data.append('fecha', fechaConZonaHoraria);
       await clientAxios.post('/profesional/generar-consulta', data, config);
 
@@ -184,6 +188,7 @@ export const ModalMotivo = ({ motivo, onClose}) => {
       setHoraFin('')
       setHoraInicio('')
       setFecha('')
+      setPrecio('')
       onClose()
 
     }
@@ -323,31 +328,32 @@ export const ModalMotivo = ({ motivo, onClose}) => {
             </li>
           ))}
         </ul>
+        <hr />
       </div>
     ):
     <div> 
      <h3 className="text-lg font-bold mb-2">Enfermedades</h3>
-     <h3 className="text-lg font-regular mb-2">Paciente no tiene o aún no agrega enfermedades</h3>
+     <h3 className="text-mdfont-regular mb-2">No</h3>
      </div>
     }
-   
-<hr />
+
 {motivo.antecedentesfam.length ? (
       <div>
         <h3 className="text-lg font-bold mb-2">Antecedentes familiares</h3>
         <ul className="list-disc ml-4">
           {motivo.antecedentesfam.map(antecedentesfa => (
             <li key={antecedentesfa._id} className="mb-4">
-              <h4 className="text-md font-bold mb-2">{antecedentesfa.nombre}</h4>
+              <h4 className="text-md font-bold mb-2">{antecedentesfa.nombrediagnostico}</h4>
             </li>
           ))}
         </ul>
+        <hr />
       </div>
-    ):    <div> 
-    <h3 className="text-lg font-bold mb-2">Antecedentes familiares </h3>
-    <h3 className="text-lg font-regular mb-2">Paciente no tiene o aún no agrega enfermedades</h3>
+    ):    <div>
+      <h3 className="text-lg font-bold mb-2">Antecedentes familiares</h3>
+     <h3 className="text-md font-regular mb-2">No</h3>
     </div>}
-<hr />
+
     {motivo.alergias.length ? (
       <div>
         <h3 className="text-lg font-bold mb-2">Alergias </h3>
@@ -363,12 +369,13 @@ export const ModalMotivo = ({ motivo, onClose}) => {
             </li>
           ))}
         </ul>
+        <hr />
       </div>
     ):    <div> 
-    <h3 className="text-lg font-bold mb-2">Alergias</h3>
-    <h3 className="text-lg font-regular mb-2">Paciente no tiene o aún no agrega Alergias</h3>
+      <h3 className="text-lg font-bold mb-2">Alergias</h3>
+     <h3 className="text-md font-regular mb-2">No</h3>
     </div>}
-    <hr />
+
     {motivo.farmaco.length ? (
       <div>
         <h3 className="text-lg font-bold mb-2">Tratamiento farmacológico </h3>
@@ -379,12 +386,13 @@ export const ModalMotivo = ({ motivo, onClose}) => {
             </li>
           ))}
         </ul>
+        <hr />
       </div>
     ):    <div> 
-    <h3 className="text-lg font-bold mb-2">Tratamiento farmacológico</h3>
-    <h3 className="text-lg font-regular mb-2">Paciente no tiene o aún no agrega el tratamiento farmacológico</h3>
+      <h3 className="text-lg font-bold mb-2">Tratamiento farmacológico</h3>
+     <h3 className="text-md font-regular mb-2">No</h3>
     </div>}
-    <hr />
+
     {motivo.quirurgico.length ? (
       <div>
         <h3 className="text-lg font-bold mb-2">Antecedentes Quirúrgicos </h3>
@@ -394,14 +402,14 @@ export const ModalMotivo = ({ motivo, onClose}) => {
               <h4 className="text-md font-bold mb-2">{qui.nombre}</h4>
             </li>
           ))}
-        </ul>
+        </ul>     
+    <hr />
       </div>
     ):    <div> 
-    <h3 className="text-lg font-bold mb-2">Antecedentes Quirúrgicos</h3>
-    <h3 className="text-lg font-regular mb-2">Paciente no tiene o aún no agrega Antecedentes Quirúrgicos</h3>
+          <h3 className="text-lg font-bold mb-2">Antecedentes quirurgicos</h3>
+     <h3 className="text-md font-regular mb-2">No</h3>
     </div>}
 
-    <hr />
     {motivo.hospitalizaciones.length ? (
       <div>
         <h3 className="text-lg font-bold mb-2">Hospitalizaciones</h3>
@@ -412,12 +420,13 @@ export const ModalMotivo = ({ motivo, onClose}) => {
             </li>
           ))}
         </ul>
+        <hr />
       </div>
     ):    <div> 
-    <h3 className="text-lg font-bold mb-2">Hospitalizaciones</h3>
-    <h3 className="text-lg font-regular mb-2">Paciente no tiene o aún no agrega Hospitalizaciones</h3>
+          <h3 className="text-lg font-bold mb-2">Hospitalizaciones</h3>
+     <h3 className="text-md font-regular mb-2">No</h3>
     </div>}
-    <hr />
+
     {motivo.urgencia.length ? (
       <div>
         <h3 className="text-lg font-bold mb-2">Urgencias</h3>
@@ -428,22 +437,22 @@ export const ModalMotivo = ({ motivo, onClose}) => {
             </li>
           ))}
         </ul>
+        <hr />
       </div>
+      
     ):    <div> 
-    <h3 className="text-lg font-bold mb-2">Urgencias</h3>
-    <h3 className="text-lg font-regular mb-2">Paciente no tiene o aún no agrega visitas a urgencias</h3>
+          <h3 className="text-lg font-bold mb-2">Urgencias</h3>
+     <h3 className="text-md font-regular mb-2">No</h3>
     </div>}
-    <hr />
+
 
     {motivo.paciente?.sexo === 'Mujer' ?
      <div>
      <h3 className="text-lg font-bold mb-2">Antecedentes ginecoobstétricos</h3>
-     <h2>{motivo.paciente?.nginecoobstetrico || 'Paciente no tiene o aún no agrega Antecedentes ginecoobstétricos' } </h2>
+     <h2 className="text-md">{motivo.paciente?.nginecoobstetrico || 'No' } </h2>
    </div>
 
     :  ' '}
-
-    
     
   </div>
 </div>
@@ -517,11 +526,19 @@ export const ModalMotivo = ({ motivo, onClose}) => {
       Tarifas globales:
     </label>
     <select
-      className="w-50 border max-w-2xl border-gray-300 p-2 rounded-lg "
+      className="w-50 border max-w-2xl border-gray-300 p-2 rounded-lg"
       value={tarifaGlobalId}
       onChange={(e) => {
+        const tarifaGlobalSeleccionada = tarifasglobales.find((tari) => tari._id === e.target.value);
+        setTarifaSeleccionada(tarifaGlobalSeleccionada);
         setTarifaGlobal(e.target.value);
         setEsTarifaGlobal(e.target.value !== '');
+
+        if (tarifaGlobalSeleccionada) {
+          setPrecio(tarifaGlobalSeleccionada.valor.toString());
+        } else {
+          setPrecio('');
+        }
       }}
     >
       <option value="">Selecciona una tarifa global</option>
@@ -543,29 +560,31 @@ export const ModalMotivo = ({ motivo, onClose}) => {
       className="w-50 max-w-5xl border border-gray-300 p-2 rounded-lg"
       value={tarifaId}
       onChange={(e) => {
+        const tarifaPersonalizadaSeleccionada = tarifas.find((tari) => tari._id === e.target.value);
+        setTarifaSeleccionada(tarifaPersonalizadaSeleccionada);
         setTarifaId(e.target.value);
         if (e.target.value === '') {
           setEsTarifaGlobal(true);
         } else {
           setEsTarifaGlobal(false);
         }
+
+        if (tarifaPersonalizadaSeleccionada) {
+          setPrecio(tarifaPersonalizadaSeleccionada.valor.toString());
+        } else {
+          setPrecio('');
+        }
       }}
     >
- <option value="">Selecciona una tarifa</option>
-{tarifas
-  .filter((tari) => tari.activo === true)
-  .map((tari) => (
-    <option key={tari._id} value={tari._id}>
-      {tari.nombre} ({'$'}
-      {tari.valor.toLocaleString('es-CL')}, {tari.tiempo} {'Min'})
-    </option>
-  ))}
+      <option value="">Selecciona una tarifa</option>
+      {tarifas.filter((tari) => tari.activo === true).map((tari) => (
+        <option key={tari._id} value={tari._id}>
+          {tari.nombre} ({'$'}
+          {tari.valor.toLocaleString('es-CL')}, {tari.tiempo} {'Min'})
+        </option>
+      ))}
     </select>
   </div>
-
-
-
-
 </div>
 <div>
 <button onClick={handleToggleSection} className="text-blue-500 hover:text-blue-700 mb-2">
@@ -701,6 +720,18 @@ export const ModalMotivo = ({ motivo, onClose}) => {
     className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
   />
 </div>
+<div className="mb-4">
+  <label htmlFor="precio" className="block text-gray-700 font-bold mb-2">Valor de la consulta</label>
+  <input
+    type="text"
+    id="precio"
+    name="precio"
+    value={precio}
+    onChange={(e) => setPrecio(e.target.value)}
+    className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+  />  
+</div>
+
 
                 </div>
               </div>

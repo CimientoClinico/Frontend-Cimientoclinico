@@ -37,8 +37,7 @@ const FormularioNotificacionesSinleer = () => {
             const url = `/pacientes/consultasleidas/${datos._id}`
             const {data} = await clientAxios.put(url,datos,config)   
             
-          }
-        
+          }  
         catch (error) {
           console.log(error)
         }
@@ -88,7 +87,12 @@ const FormularioNotificacionesSinleer = () => {
 
       const consultasPendientes = consultas.filter(con => con.paciente === auth._id && con.estado === 'pendiente'  && con.leidopaciente===false );
 const consultasProximasFiltradas = consultasProximas.filter(con => con.estado ==='pagado' && con.paciente._id === auth._id  );
-const numNotificaciones = consultasPendientes.length + consultasProximasFiltradas.length;
+const motivosInterconsulta = consultas.filter(
+  (consulta) =>
+    consulta.motivoconsulta.paciente === auth._id &&
+    consulta.motivoconsulta.notificacioninterconsulta === true && consulta.motivoconsulta.leidopacienteinterconsulta ===false 
+);
+const numNotificaciones = consultasPendientes.length + consultasProximasFiltradas.length + motivosInterconsulta.length;
       const handleSubmit = async e =>{
         e.preventDefault()
         await  ConsultasLeidas(perfil)      
@@ -135,6 +139,153 @@ const numNotificaciones = consultasPendientes.length + consultasProximasFiltrada
               Swal.fire({
                 title: 'Hubo un error',
                 text: 'No se pudo cambiar el estado de la consulta',
+                icon: 'error',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Ok',
+              });
+            }
+          }
+        });
+      };
+      const handleCambiarEstadoAceptado = async (id) => {
+        Swal.fire({
+          title: '¿Estás seguro que quieres aceptar esta propuesta de consulta?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Sí, aceptar',
+          cancelButtonText: 'Cancelar',
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            try {
+              const token = localStorage.getItem('token')
+              if(!token){
+                setCargando(false)
+                return
+              } 
+              const config ={
+                headers:{
+                    "Content-Type":"application/json",
+                    Authorization:`Bearer ${token}`
+                }
+              }
+              const response = await clientAxios.put(`/pacientes/aceptar-consulta/${id}`, {
+                estado: 'pagado',
+              }, config);
+    
+              if (response.status === 200) {
+                Swal.fire({
+                  title: 'La consulta fue aceptada con éxito',
+                  text: '',
+                  icon: 'success',
+                  confirmButtonColor: '#3085d6',
+                  confirmButtonText: 'Ok',
+                });
+                navigate(`/paciente/vermas-consulta-aprobada/${id}`)
+              }
+            } catch (error) {
+              console.error(error);
+              Swal.fire({
+                title: 'Hubo un error',
+                text: 'No se pudo cambiar el estado de la consulta',
+                icon: 'error',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Ok',
+              });
+            }
+          }
+        });
+      };
+
+      const Rechazarinterconsulta = async (id) => {
+        Swal.fire({
+          title: '¿Estás seguro que quieres rechazar esta interconsulta?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Sí, rechazar',
+          cancelButtonText: 'Cancelar',
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            try {
+              const token = localStorage.getItem('token')
+              if(!token){
+                setCargando(false)
+                return
+              } 
+              const config ={
+                headers:{
+                    "Content-Type":"application/json",
+                    Authorization:`Bearer ${token}`
+                }
+              }
+              const response = await clientAxios.put(`/pacientes/rechazar-interconsulta/${id}`,{interconsulta: "No", notificacioninterconsulta: false}, config);
+    
+              if (response.status === 200) {
+                Swal.fire({
+                  title: 'La interconsulta fue rechazada',
+                  text: '',
+                  icon: 'success',
+                  confirmButtonColor: '#3085d6',
+                  confirmButtonText: 'Ok',
+                });
+              }
+            } catch (error) {
+              console.error(error);
+              Swal.fire({
+                title: 'Hubo un error',
+                text: 'No se pudo rechazar la interconsulta',
+                icon: 'error',
+                confirmButtonColor: '#3085d6',
+                confirmButtonText: 'Ok',
+              });
+            }
+          }
+        });
+      };
+      const AceptarInterconsulta = async (id) => {
+        Swal.fire({
+          title: '¿Estás seguro que quieres aceptar la interconsulta?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Sí, aceptar',
+          cancelButtonText: 'Cancelar',
+        }).then(async (result) => {
+          if (result.isConfirmed) {
+            try {
+              const token = localStorage.getItem('token')
+              if(!token){
+                setCargando(false)
+                return
+              } 
+              const config ={
+                headers:{
+                    "Content-Type":"application/json",
+                    Authorization:`Bearer ${token}`
+                }
+              }
+              const response = await clientAxios.put(`/pacientes/aceptar-interconsulta/${id}`, {
+                estado: 'pagado',
+              }, config);
+    
+              if (response.status === 200) {
+                Swal.fire({
+                  title: 'La interconsulta fue aceptada',
+                  text: '',
+                  icon: 'success',
+                  confirmButtonColor: '#3085d6',
+                  confirmButtonText: 'Ok',
+                });
+              }
+            } catch (error) {
+              console.error(error);
+              Swal.fire({
+                title: 'Hubo un error',
+                text: 'No se pudo aceptar la interconsulta',
                 icon: 'error',
                 confirmButtonColor: '#3085d6',
                 confirmButtonText: 'Ok',
@@ -190,13 +341,34 @@ const numNotificaciones = consultasPendientes.length + consultasProximasFiltrada
             <h1 className="text-white text-2xl text-center"> No hay Notificaciones...</h1>
            :    
            <div>
+                                        {motivosInterconsulta.slice(0, 10).map((con) => (
+               <div key={con._id} className="mb-4 bg-gray-700 rounded-lg  px-10 py-4">
+               {con.profesional.image?.public_id ?
+                <Image cloudName="dde62spnz" publicId={con.profesional.image?.public_id}  width="50"></Image>
+               :''}
+                 <h1 className="text-blue-400">PROPUESTA DE INTERCONSULTA</h1> 
+               <p className="text-white text-sm px-0.5 font-regular">El profesional <span className="font-semibold">{con.profesional.nombres} {con.profesional.apellidos} </span> 
+                Sugiere generar una interconsulta para tu motivo: <span className="text-red-400">{con.motivoconsulta.titulo}</span> </p>
+                <div className="border mr-1 border-gray-700 rounded-md px-0.5">
+               <p className="text-gray-300 text-sm "> {""} </p>
+               <p className="text-gray-300 text-sm ">¿Quieres que tu motivo sea visible para los siguientes profesionales?: <span className=" text-gray-200 font-semibold">{con.motivoconsulta.propuestainterconsulta}</span> </p>
+               <div className="flex text-regular text-xs gap-1 mb-1 flex-col md:flex-row md:items-center">
+                <div className="flex-grow">
+                  <button className="bg-green-600 px-2 py-2 text-md rounded-lg text-white mr-2 "  onClick={() =>  AceptarInterconsulta(con.motivoconsulta._id)}>Aceptar</button>
+                </div>
+                <button className="bg-red-600 px-0.5 py-0.5 rounded-lg text-white" onClick={() => Rechazarinterconsulta(con.motivoconsulta._id)}>Rechazar</button>
+              </div>
+                <hr />
+               </div>
+             </div>
+        ))}
             
                     {consultasPendientes.slice(0, 10).map((con) => (
                <div key={con._id} className="mb-4 bg-gray-700 rounded-lg  px-10 py-4">
                {con.profesional.image?.public_id ?
                 <Image cloudName="dde62spnz" publicId={con.profesional.image?.public_id}  width="50"></Image>
                :''}
-              
+              <h1 className="text-orange-400">PROPUESTA DE CONSULTA</h1> 
                
                <p className="text-white text-sm px-0.5 font-regular">El profesional <span className="font-semibold">{con.profesional.nombres} {con.profesional.apellidos} </span> 
                 esta interesado en tu caso: <span className="text-red-400">{con.motivoconsulta.titulo}</span> </p>
@@ -204,23 +376,20 @@ const numNotificaciones = consultasPendientes.length + consultasProximasFiltrada
                <p className="text-gray-300 text-sm "> {""} </p>
                <p className="text-gray-300 text-sm ">Fecha propuesta: { formatearFecha(con.fecha)} </p>
                <p className="text-gray-300 text-sm">Horario propuesto: {con.horarioinicio}{'-'}{con.horariofin}</p>
-               { con.tarifa ?
-               <p className=" text-sm text-gray-300 ">Precio: <span className="text-bold text-white"> {'$'}{con.tarifa.valor.toLocaleString('es-CL')}</span></p>
-               :
-               <p className=" text-sm text-gray-300">Precio: <span className="text-bold text-white"> {'$'}{con.tarifaGlobal.valor.toLocaleString('es-CL')}</span></p>
-               }
-               <div className="flex text-regular text-xs gap-1 mb-1">
-                 <button className="bg-green-600 px-0.5 py-0.5 rounded-lg text-white">Aceptar</button>
-                 <button className="bg-red-600 px-0.5 py-0.5 rounded-lg text-white" onClick={() => handleCambiarEstado(con._id)}>Rechazar</button>
-                  <Link className="bg-blue-600 px-0.5 py-0.5 rounded-lg text-white" to={`/paciente/vermas-consulta/${con._id}`}>Conocer Más</Link>
-                 
+               <p className="text-gray-300 text-sm">Valor:{con.precio && !isNaN(parseFloat(con.precio))? `$${parseFloat(con.precio).toLocaleString('es-CL')}`: ''}</p>
+               <div className="flex text-regular text-xs gap-1 mb-1 flex-col md:flex-row md:items-center ">
+                <div className="flex-grow">
+                  <button className="bg-green-600 px-2 py-2 text-md rounded-lg text-white mr-2"  onClick={() =>  handleCambiarEstadoAceptado(con._id)}>Aceptar</button>
+                  <Link className="bg-blue-600 px-2 py-2 text-md rounded-lg text-white" to={`/paciente/vermas-consulta/${con._id}`}>Conocer Más</Link>
+                </div>
+                <button className="bg-red-600 px-0.5 py-0.5 rounded-lg text-white" onClick={() => handleCambiarEstado(con._id)}>Rechazar</button>
+              </div>
 
                </div>
-
-               </div>
-     
+               <hr />
              </div>
         ))}
+
            <div>
            </div>
            </div>

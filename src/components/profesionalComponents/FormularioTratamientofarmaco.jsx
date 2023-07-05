@@ -14,6 +14,7 @@ const FormularioTratamientofarmaco = () => {
     const [ocultarseccion, setOcultarSeccion] = useState(false);
     const [ocultarFarmaco, setOcultarFarmaco] = useState({});
     const [mostrarFormulario, setMostrarFormulario] = useState(false);
+    const [mostrarFormularioprevio, setMostrarFormularioprevio] = useState(false);
     const [farmacoActualId, setFarmacoActualId] = useState(null);
     const [loadingEnfermedades, setLoadingEnfermedades] = useState(true);
     const [nombre, setNombre] = useState('');
@@ -24,6 +25,8 @@ const FormularioTratamientofarmaco = () => {
     const [duracion, setDuracion] = useState('');
     const [formato, setFormato] = useState('');
     const [enfermedadId, setEnfermedadId] = useState('');
+    const [nombreprevio, setNombreprevio] = useState('');
+    const [motivosuspencion, setMotivosuspencion] = useState('');
     const toggleFarmaco = (farmacoId) => {
         setOcultarFarmaco((prevOcultarFarmaco) => ({
           ...prevOcultarFarmaco,
@@ -33,30 +36,31 @@ const FormularioTratamientofarmaco = () => {
       const cerrarModal = () => {
         setMostrarFormulario(false);
       };
+      const cerrarModalprevio = () => {
+        setMostrarFormularioprevio(false);
+      };
+      const fetchData = async () => {
+      const tokenPro = localStorage.getItem("tokenPro");
+      if (!tokenPro) return;
+      const config = {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${tokenPro}`,
+        },
+      };
+  
+        try {
+          const { data } = await clientAxios.get(
+            `/profesional/informacion-paciente-consulta/${id}`,
+            config
+          );
+          setConsulta(data);
+          setLoading(false);
+        } catch (error) {
+          console.log(error);
+        }
+      };
     useEffect(() => {
-        const tokenPro = localStorage.getItem("tokenPro");
-        if (!tokenPro) return;
-    
-        const config = {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${tokenPro}`,
-          },
-        };
-    
-        const fetchData = async () => {
-          try {
-            const { data } = await clientAxios.get(
-              `/profesional/informacion-paciente-consulta/${id}`,
-              config
-            );
-            setConsulta(data);
-            setLoading(false);
-          } catch (error) {
-            console.log(error);
-          }
-        };
-    
         fetchData();
       }, [id]);
 
@@ -68,6 +72,9 @@ const FormularioTratamientofarmaco = () => {
       }, [consulta]);
       const toggleFormulario = () => {
         setMostrarFormulario(!mostrarFormulario);
+      };
+      const toggleFormularioprevio = () => {
+        setMostrarFormularioprevio(!mostrarFormularioprevio);
       };
       const hayCamposVacios = Object.values(datosPaciente).some(
         (farmaco) =>
@@ -110,7 +117,8 @@ const FormularioTratamientofarmaco = () => {
           const farmaco = datosPaciente[farmacoActualId];
       
           await clientAxios.put(`/profesional/editar-farmacos-paciente/${farmaco._id}`, farmaco, config);
-      
+          // Obtener los datos actualizados después de la actualización
+          fetchData();
           Swal.fire('¡Perfecto!', 'Tratamiento actualizado con éxito', 'success');
         } catch (error) {
           console.error(error.message);
@@ -214,6 +222,8 @@ const FormularioTratamientofarmaco = () => {
 
           setConsulta(data);
           setDatosPaciente(data.farmaco);
+          // Obtener los datos actualizados después de la actualización
+          fetchData();
           setNombre('');
           setHorario('');
           setDosis('');
@@ -231,10 +241,62 @@ const FormularioTratamientofarmaco = () => {
           Swal.fire('¡Error!', 'No se puede guardar el farmaco', 'error');
         }
       };
+      const Agregarfarmacoprevio = async (e) => {
+        e.preventDefault();
+        try {
+          if (!nombreprevio) {
+            Swal.fire('¡Error!', 'Por favor, Agregue un nombre para el farmaco suspendido', 'error');
+            return;
+          }
+          if (!motivosuspencion) {
+            Swal.fire('¡Error!', 'Por favor, Agregue un motivo de suspención para este medicamento', 'error');
+            return;
+          }
+
+
+          const tokenPro = localStorage.getItem("tokenPro");
+          if (!tokenPro) return;
+      
+          const config = {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${tokenPro}`,
+            },
+          };
+          await clientAxios.post('/profesional/agregar-farmaco-previo-paciente', {
+            nombre:nombreprevio,
+            motivosuspencion,
+            pacienteId: consulta.paciente._id,
+          },config);
+          const { data } = await clientAxios.get(
+            `/profesional/informacion-paciente-consulta/${id}`,
+            config
+          );
+
+          setConsulta(data);
+          setDatosPaciente(data.farmacoprevio);
+           // Obtener los datos actualizados después de la actualización
+          fetchData();
+          setNombreprevio('');
+          setMotivosuspencion('');
+          setEnfermedadId({});
+          setMostrarFormulario(false)
+          // Mostrar mensaje de éxito o redireccionar a otra página
+          Swal.fire('¡Perfecto!', 'Farmaco actualizado con éxito', 'success');
+          window.location.reload();
+        } catch (error) {
+          console.log(error);
+          // Mostrar mensaje de error
+          Swal.fire('¡Error!', 'No se puede guardar el farmaco suspendido', 'error');
+        }
+      };
       const now = moment();
       const showButton = consulta && now.isSameOrAfter(moment(consulta.fecha).add(consulta.horarioinicio));
       const VerFormularioCerrado = () => {
         setMostrarFormulario(!mostrarFormulario);
+      };
+      const VerFormularioCerradoprevio = () => {
+        setMostrarFormularioprevio(!mostrarFormularioprevio);
       };
   return (
     <>
@@ -583,8 +645,7 @@ onChange={(e) => handleChange(e, farmacoId)}
       </button>
     )}
   </div>
-    <div className="flex justify-end">
-      </div>
+
     </>
       )}
 </div>
@@ -598,12 +659,15 @@ onChange={(e) => handleChange(e, farmacoId)}
 </div>
 : 
 ''}
+
 <div>
 
 </div>
+
         </div>
+        </div>        
         </div>
-        </div>
+        
         <div className="relative mb-2">
         {showButton  && (
     <button onClick={VerFormularioCerrado}
@@ -617,6 +681,33 @@ onChange={(e) => handleChange(e, farmacoId)}
   </button>
     )}
     </div>
+    {showButton  && (
+    <div className="relative ml-10">
+  {consulta.farmacoprevio.length ? (
+    ''
+  ) : (
+    
+    <button
+      onClick={VerFormularioCerradoprevio}
+      className="text-sm rounded-full focus:outline-none focus:border-lila-200 text-white bg-lila-100 hover:bg-lila-100 hover:text-lila-200"
+      style={{ position: 'absolute', top: '-18px' }}
+    >
+      {mostrarFormularioprevio ? (
+        <div className="flex">
+          <IoMdCloseCircle className="text-2xl" />
+        </div>
+      ) : (
+        <div className="flex">
+          <MdAddCircle className="text-2xl" />{' '}
+          <p className="text-xs px-1 mt-1">Tratamiento suspendido</p>
+        </div>
+      )}
+    </button>
+  )}
+</div>
+    )}
+
+
         </div>
         </>
         )}
@@ -631,7 +722,7 @@ onChange={(e) => handleChange(e, farmacoId)}
         < IoMdCloseCircle className="text-3xl text-lila-300  hover:text-lila-100 "/>
         </button>
   <form className="p-1" onSubmit={handleSubmit}>
-    <h1 className=" text-center text-xl font-bold p-1">Nuevo Farmaco</h1>
+    <h1 className=" text-center text-xl font-bold p-1">Tratamiento farmacológico</h1>
     <div className="grid grid-cols-1 sm:grid-cols-1 gap-4 ">
     <div className="flex flex-col text-sm">
         <label htmlFor="nombre" className=" ">Nombre del farmaco:</label>
@@ -734,6 +825,54 @@ onChange={(e) => handleChange(e, farmacoId)}
       </div>
     </div>
     <div className="flex justify-center ">
+        <button  type="submit" className="bg-lila-200 hover:bg-lila-100 text-white font-semibold py-1.5 px-2 rounded-lg">
+         Guardar
+        </button>
+      </div>
+
+  </form>
+  </div>
+        </div>
+)}
+      {mostrarFormularioprevio && (
+      <div className="fixed inset-0 flex  items-center justify-center z-50">
+      <div
+        className="bg-gray-800 bg-opacity-75  absolute inset-0 pointer-events-none"
+        onClick={cerrarModalprevio}
+      ></div>
+      <div className="bg-white rounded-lg p-6 relative w-96 ">
+        <button onClick={cerrarModalprevio} className="absolute top-0 right-0 p-2 ">
+        < IoMdCloseCircle className="text-3xl text-lila-300  hover:text-lila-100 "/>
+        </button>
+  <form className="p-2" onSubmit={Agregarfarmacoprevio}>
+    <h1 className=" text-center text-xl font-bold p-1">Tratamiento farmacológico suspendido</h1>
+    <div className="grid grid-cols-1 sm:grid-cols-1 gap-4 ">
+    <div className="flex flex-col text-sm">
+        <label htmlFor="nombre" className=" ">Nombre del farmaco suspendido:</label>
+        <input
+  type="text"
+  className="border  px-2 py-1 rounded-lg w-full "
+  name="nombreprevio"
+  id="nombreprevio" 
+  placeholder="Ej:Paracetamol"
+  value={nombreprevio}
+  onChange={(e) => setNombreprevio(e.target.value)} 
+/>
+      </div>
+      <div className="flex flex-col text-sm">
+        <label htmlFor="motivosuspencion"className=" ">Motivo de suspención:</label>
+        <input
+  type="text" 
+  id="motivosuspencion"
+  placeholder="Ej:Suspendido por mala tolerancia"
+  className="border  px-2 py-1 rounded-lg w-full "
+  value={motivosuspencion}
+  onChange={(e) => setMotivosuspencion(e.target.value)}
+/>
+      </div>
+
+    </div>
+    <div className="flex justify-center py-2 ">
         <button  type="submit" className="bg-lila-200 hover:bg-lila-100 text-white font-semibold py-1.5 px-2 rounded-lg">
          Guardar
         </button>

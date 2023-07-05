@@ -15,30 +15,26 @@ const FormularioDrogas = () => {
     const toggleActividad = () => {
       setOcultarActividad(!ocultarActividad);
     };
-
-      useEffect(() => {
-        const tokenPro = localStorage.getItem('tokenPro');
-        if (!tokenPro) return;
-      
-        const config = {
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${tokenPro}`
-          }
-        };
-
-        const fetchData = async () => {
-          try {
-            const { data } = await clientAxios.get(`/profesional/informacion-paciente-consulta/${id}`, config);
-         setConsulta(data)
-          } catch (error) {
-            console.log(error);
-          }
-        };
-      
+    const fetchData = async () => {
+    const tokenPro = localStorage.getItem('tokenPro');
+    if (!tokenPro) return;
+  
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${tokenPro}`
+      }
+    };
+      try {
+        const { data } = await clientAxios.get(`/profesional/informacion-paciente-consulta/${id}`, config);
+     setConsulta(data)
+      } catch (error) {
+        console.log(error);
+      }
+    };
+      useEffect(() => {    
         fetchData();
-
-      }, []); 
+      }, [id]); 
       useEffect(() => {
         if (consulta && consulta.paciente) {
           setDatosPaciente(consulta.paciente);
@@ -57,7 +53,7 @@ const FormularioDrogas = () => {
         };
         try {
           await clientAxios.put(`/profesional/editar-indentificacion-paciente/${consulta.paciente._id}`, datosPaciente,config);
-    
+       fetchData();
           Swal.fire('¡Perfecto!', 'Sección de consumo de drogras actualizado', 'success');          
     
         } catch (error) {

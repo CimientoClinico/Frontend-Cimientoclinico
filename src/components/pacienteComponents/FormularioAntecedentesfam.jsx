@@ -4,7 +4,7 @@ import useHistoriaCli from "../../hooks/paciente/useHistoriaCli"
 import Alerta from "../Alerta"
 const FormularioAntecedentesfam = () => {
   const [alerta, setAlerta ]= useState({})
-  const [nombre, setNombre] = useState('')
+  const [nombrediagnostico, setNombre] = useState('')
   const [id, setId] = useState(null)
   const {antecedentesfam,guardarAntecedentesfam, antecedentesfamiliares, auth,cuentaConAntecedentesfam, setAntecedentesfamiliares} =  useHistoriaCli()
   const [ocultarseccion, SetOcultarSeccion] = useState(true)
@@ -16,8 +16,8 @@ const FormularioAntecedentesfam = () => {
     nuevaFecha.setMinutes(nuevaFecha.getMinutes() + nuevaFecha.getTimezoneOffset())
     return new Intl.DateTimeFormat('es-CL', {dateStyle: 'long'}).format(nuevaFecha) }
   useEffect(() => {
-    if(antecedentesfam?.nombre){
-     setNombre(antecedentesfam.nombre)
+    if(antecedentesfam?.nombrediagnostico){
+     setNombre(antecedentesfam.nombrediagnostico)
      setId(antecedentesfam._id)
 
     }
@@ -56,13 +56,13 @@ useEffect(()=>{
       //AGREGANDO ANTECEDENTES FAMILIARES
       const handleSubmit = async e =>{
         e.preventDefault();
-        if([nombre].includes('')){
+        if([nombrediagnostico].includes('')){
           setAlerta({msg: 'Hay campos vacíos', error: true})
           setTimeout(()=> setAlerta({}),5000)
           return;
         }
         setAlerta({})
-        guardarAntecedentesfam({nombre})
+        guardarAntecedentesfam({nombrediagnostico})
         setNombre('')
       
        }
@@ -166,7 +166,7 @@ useEffect(()=>{
             type="text"
             className="w-11/12 focus:outline-none focus:text-gray-900 mb-1 border border-gray-300 rounded-md placeholder-slate-400 p-2 "
             placeholder="Enfermedades de familiares de primer grado"
-            value={nombre}
+            value={nombrediagnostico}
             onChange={e => setNombre(e.target.value) } 
           />
           </div>
@@ -190,7 +190,7 @@ useEffect(()=>{
   <div className=" px-8  grid grid-cols-3 gap-1    ">{antecedentesfamiliares.map(antfam => (
     
     <div key={antfam._id} className="flex  ">
-       <h2 className="text-gray-500 font-nunito text-sm mt-1"> {antfam.nombre},</h2> 
+       <h2 className="text-gray-500 font-nunito text-sm mt-1"> {antfam.nombrediagnostico},</h2> 
 
     </div>
 ))}   </div>

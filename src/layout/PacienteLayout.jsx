@@ -1,7 +1,6 @@
 import { Outlet, Navigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 import Sidebar from "../components/pacienteComponents/Sidebar";
-import NotificacionDolor from "../components/pacienteComponents/Notificaciondolor";
 
 const PacienteLayout = () => {
   const { auth, cargando } = useAuth();
@@ -20,7 +19,6 @@ const PacienteLayout = () => {
 
           <section className="contenido ">
             <article className="main  ">
-              {!cargando && <NotificacionDolor />}
               <Outlet />
             </article>
           </section>

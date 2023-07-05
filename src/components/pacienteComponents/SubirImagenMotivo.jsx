@@ -241,10 +241,10 @@ const handleFileChange = (event) => {
             className={`h-80 object-cover w-full ${imagen.visible ? '' : 'pixelated-image'}`}
             />
           <div className="p-4">
-           <h3 className="text-lg font-semibold">{imagen.nombre}</h3>
-            <h3 className="text-mdfont-regular"><span className='font-semibold'>Fecha: </span> { formatearFecha( imagen.fecha)}</h3>
+           <h3 className="text-lg font-semibold">{imagen.nombre ||''}</h3>
+            <h3 className="text-mdfont-regular"><span className='font-semibold'>Fecha: </span> { formatearFecha( imagen.fecha) ||''}</h3>
             <h3 className="text-md font-regular"> <span className='font-semibold'>Visibilidad: </span> {imagen.visible === false ? 'Oculta (Esta imagen está oculta para profesionales ) ' : 'Visible (Sera visto por el profesional que tome este mótivo)'}</h3>
-            <p className="mt-2 text-gray-600">{imagen.descripcion}</p>
+            <p className="mt-2 text-gray-800">{imagen.descripcion ||''}</p>
           </div>
           <div className=" flex bg-gray-100 px-4 py-3 gap-1">
 

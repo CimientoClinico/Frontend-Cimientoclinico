@@ -455,3 +455,14 @@ body{
 .sobrediv{
   margin-bottom: -10px;
 }
+.lined-textarea {
+  font-size: 16px; /* Ajusta el tamaño de fuente según tus necesidades */
+  line-height: 2em; /* Ajusta la altura de línea según tus necesidades */
+  padding-top: 1em; /* Ajusta el espaciado superior según tus necesidades */
+  background-image: linear-gradient(#ccc 1px, transparent 1px);
+  background-size: 100% 2em; /* Ajusta el tamaño de línea según el line-height */
+  background-position: 0 1em; /* Ajusta el espaciado superior según el padding-top */
+}
+
+
+

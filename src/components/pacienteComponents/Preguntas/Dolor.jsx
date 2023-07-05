@@ -32,7 +32,7 @@ const Dolor = () => {
 { auth.historiaclinica?.dolor==='Sin datos'
 ?
 <div className="">
-<div className="text-lila-300 title text-sm font-semibold font-nunito">¿Siente dolor u otra molestia frecuentemente?</div>
+<div className="text-lila-300 title text-xs font-semibold font-nunito">¿Siente dolor u otra molestia frecuentemente?</div>
 <div className="w-full ">
 
 <form onSubmit={handleSubmit} >
@@ -75,7 +75,7 @@ No 😃</label>
 </div>
 </div>
 <div className='p-1'> 
-<button className="   bg-lila-200 px-1 py-1 text-white rounded-md text-center  font-nunito  hover:bg-indigo-400 ">Guardar💾</button>
+<button className="   bg-lila-200 px-2 py-2 text-xs text-white rounded-md text-center  font-nunito  hover:bg-indigo-400 ">Guardar</button>
 </div></form>
 
 
