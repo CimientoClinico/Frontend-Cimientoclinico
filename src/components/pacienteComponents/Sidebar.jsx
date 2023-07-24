@@ -2,7 +2,7 @@ import React, { useState,useEffect} from "react";
 import { HiMenuAlt3 } from "react-icons/hi";
 import { MdHome, MdListAlt, MdAccountCircle,MdDarkMode } from "react-icons/md";
 import{BsFillDoorOpenFill, BsFillBellFill,BsCalendar3} from "react-icons/bs";
-import {GiNotebook} from "react-icons/Gi";
+import {GiNotebook} from "react-icons/gi";
 import { Link } from "react-router-dom";
 import useAuth from "../../hooks/useAuth"
 import clientAxios from "../../config/axios";
