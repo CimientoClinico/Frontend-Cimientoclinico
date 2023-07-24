@@ -2,7 +2,9 @@ import { useState, useEffect } from "react"
 import Alerta from '../../components/AlertaModal';
 import useProfesionales from "../../hooks/admin/useProfesionales";
 import Modal from "../../components/Modal"
+import AdminAuth from '../../hooks/adminAuth'
 import { Paginacion } from "../Paginacion";
+import clientAxios from "../../config/axios";
 const FormularioProfesionales = () => {
     const [email, setEmail] = useState('')
     const [rut, setRut] = useState('')
@@ -16,16 +18,22 @@ const FormularioProfesionales = () => {
     const [repetirPassword, setRepetirPassword] = useState('')
     const [alerta, setAlerta ]= useState({})
     const [id, setId] = useState(null)
+    const [firma, setFirma] = useState(null);
     const [showModalGuardarpro, setShowModalGuardarPro]= useState(false)
     const [showModalGuardar, setShowModalGuardar]= useState(false)
     const [showModalEditar, setShowModalEditar]= useState(false)
     const[busqueda, setBusqueda]= useState('')
-
+    const [profesionales, setProfesionales] = useState([])
+    const [pagina, setPagina] = useState (1);
+    const [porPagina, setPorPagina] = useState (7);
+    const maximo = Math.ceil(profesionales.length / porPagina) 
+    
+    const { authadmin} = AdminAuth()
    
     const {guardarProfesional, profesional, guardarSoloProfesional} = useProfesionales()
-    const {setEdicion, eliminarProfesional,setProfesionales, tablaUsuarios, pagina, setPagina, porPagina, maximo } =  useProfesionales()
+    const {setEdicion, eliminarProfesional, tablaUsuarios,setTablaUsuarios,setProfesional} =  useProfesionales()
     
-    const {profesionales} = useProfesionales()
+
     const formatearFecha = (fecha) => {
         const nuevaFecha = new Date(fecha)
         nuevaFecha.setMinutes(nuevaFecha.getMinutes() + nuevaFecha.getTimezoneOffset())
@@ -40,98 +48,193 @@ const FormularioProfesionales = () => {
         setEspecialidad(profesional.especialidad)
         setTelefono(profesional.telefono)
         setSexo(profesional.sexo)
+        setFirma(profesional.firma)
         setFechaNacimiento(new Date(profesional.fechaNacimiento).toISOString().split('T')[0]);
         setId(profesional._id)
 
        }
     }, [profesional])
-    
+    const obtenerProfesionales = async ()=>{
+ 
+      try {
+          const tokenAdm = localStorage.getItem('tokenAdm')
+          if(!tokenAdm) return
+          const config = {
+            headers:{
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${tokenAdm}`
+            }
+          }
+          const { data } = await clientAxios("/admin/modulo-profesional",config)
+          setProfesionales(data)
+          setTablaUsuarios(data);
+       
+        } catch (error) {
+          console.log(error)
+        }
+  
+   }
+    useEffect(()=>{
 
+      obtenerProfesionales()
+ 
+    },[authadmin])
+    const handleFirmaChange = (e) => {
+      const file = e.target.files[0];
+      setFirma(file);
+    };
+    const handleFirmaChangeActualizar = (e) => {
+      const file = e.target.files[0];
+      setProfesional((prevProfesional) => ({
+        ...prevProfesional,
+        firma: { file },
+      }));
+    };
+    
     //AGREGANDO PROFESIONAL
     const handleSubmit = async e =>{
         e.preventDefault();
-        if([email,rut,nombres,apellidos,password,repetirPassword,especialidad].includes('')){
-          setAlerta({msg: 'Hay campos vacíos', error: true})
-          setTimeout(()=> setAlerta({}),5000)
+        if (
+          [email, rut, nombres, apellidos, especialidad, firma].includes('') ||
+          !firma // Verifica si el campo de la firma está vacío
+        ) {
+          setAlerta({ msg: 'Hay campos vacíos o falta la imagen de la firma', error: true });
+          setTimeout(() => setAlerta({}), 5000);
           return;
         }
     
-        if(password !== repetirPassword){
-          setAlerta({msg: 'Las contraseñas deben ser iguales', error: true})
-          setTimeout(()=> setAlerta({}),5000)
-          return;
-        }
         if(rut.length < 9 || rut.length > 10 ){
           setAlerta({msg: 'RUT no válido. Ejemplo:11111111-1', error: true})
           setTimeout(()=> setAlerta({}),5000)
           return;
         }
-    
-        if(password.length < 6 ){
-          setAlerta({msg: 'La contraseña debe tener al menos 6 caracteres', error: true})
-          setTimeout(()=> setAlerta({}),5000)
-          return;
-        }
+        const rutDigits = rut.split('-')[0]; // Obtiene los dígitos del RUT sin el guión
+        const passwordrut = rutDigits.slice(-6); // Obtiene los últimos 6 dígitos del RUT
+
     
         setAlerta({})
-        guardarProfesional({email,rut,nombres,apellidos,password,fechaNacimiento,especialidad})
-      
+        try {
+          const formData = new FormData();
+          formData.append('email', email);
+          formData.append('rut', rut);
+          formData.append('nombres', nombres);
+          formData.append('apellidos', apellidos);
+          formData.append('password',passwordrut);
+          formData.append('fechaNacimiento', fechaNacimiento);
+          formData.append('especialidad', especialidad);
+          formData.append('sexo', sexo);
+          formData.append('firma', firma); // Agrega la imagen de firma al formulario
+        
+          await guardarProfesional(formData); 
+          obtenerProfesionales()
+
+            setShowModalGuardar(false)
+            setEmail('')
+            setRut('')
+      setNombres('')
+      setEspecialidad('')
+      setApellidos('')
+      setPassword('')
+      setFechaNacimiento('')
+      setSexo('')
+      setRepetirPassword('')
+      setFirma('')
+        } catch (error) {
+console.log(error)
+        }
+
+   
 
        }
     //EDITANDO PROFESIONAL
-    const Editar = async e =>{
+    const Editar = async (e) => {
       e.preventDefault();
-      if([email,rut,nombres].includes('')){
-        setAlerta({msg: 'Email, rut y nombres no pueden estar vacíos', error: true})
-        setTimeout(()=> setAlerta({}),5000)
+      if ([email, rut, nombres].includes('')) {
+        setAlerta({ msg: 'Email, rut y nombres no pueden estar vacíos', error: true });
+        setTimeout(() => setAlerta({}), 5000);
         return;
       }
-
-      
-      guardarProfesional({email,rut,nombres,apellidos,sexo,fechaNacimiento,especialidad,telefono,id})
-      if(guardarProfesional){
-
+    
+      const profesionalData = {
+        email,
+        rut,
+        nombres,
+        apellidos,
+        sexo,
+        fechaNacimiento,
+        especialidad,
+        telefono,
+        id,
+      };
+    
+      if (firma) {
+        profesionalData.firma = firma;
       }
-      setEmail('')
-      setRut('')
-      setNombres('')
-      setApellidos('')
-      setSexo('')
-      setFechaNacimiento('')
-      setEspecialidad('')
-      setTelefono('')
-      setId('')
-
-     }
+    
+      guardarProfesional(profesionalData);
+    
+      setEmail('');
+      setRut('');
+      setNombres('');
+      setApellidos('');
+      setSexo('');
+      setFechaNacimiento('');
+      setEspecialidad('');
+      setTelefono('');
+      setId('');
+      setFirma(null);
+    };
          //AGREGANDO SOLO A 1  PROFESIONAL
     const agregarProfesional= async e =>{
       e.preventDefault();
-      if([email,rut,nombres,apellidos,password,repetirPassword,especialidad].includes('')){
-        setAlerta({msg: 'Hay campos vacíos', error: true})
-        setTimeout(()=> setAlerta({}),5000)
+      if (
+        [email, rut, nombres, apellidos, especialidad, firma].includes('') ||
+        !firma // Verifica si el campo de la firma está vacío
+      ) {
+        setAlerta({ msg: 'Hay campos vacíos o falta la imagen de la firma', error: true });
+        setTimeout(() => setAlerta({}), 5000);
         return;
       }
   
-      if(password !== repetirPassword){
-        setAlerta({msg: 'Las contraseñas deben ser iguales', error: true})
-        setTimeout(()=> setAlerta({}),5000)
-        return;
-      }
+
+      const rutDigits = rut.split('-')[0]; // Obtiene los dígitos del RUT sin el guión
+        const passwordrut = rutDigits.slice(-6); // Obtiene los últimos 6 dígitos del RUT
       if(rut.length < 9 || rut.length > 10 ){
         setAlerta({msg: 'RUT no válido. Ejemplo:11111111-1', error: true})
         setTimeout(()=> setAlerta({}),5000)
         return;
       }
   
-      if(password.length < 6 ){
-        setAlerta({msg: 'La contraseña debe tener al menos 6 caracteres', error: true})
-        setTimeout(()=> setAlerta({}),5000)
-        return;
-      }
+
   
-      setAlerta({})
-      guardarSoloProfesional({email,rut,nombres,apellidos,password,fechaNacimiento,especialidad})
-    
+      try {
+        const formData = new FormData();
+        formData.append('email', email);
+        formData.append('rut', rut);
+        formData.append('nombres', nombres);
+        formData.append('apellidos', apellidos);
+        formData.append('password', passwordrut);
+        formData.append('fechaNacimiento', fechaNacimiento);
+        formData.append('sexo', sexo);
+        formData.append('especialidad', especialidad);
+        formData.append('firma', firma); // Agrega la imagen de firma al formulario
+      
+         await guardarSoloProfesional(formData);
+         obtenerProfesionales()
+      setShowModalGuardarPro(false)
+      setEmail('')
+      setRut('')
+setNombres('')
+setEspecialidad('')
+setApellidos('')
+setPassword('')
+setFechaNacimiento('')
+setSexo('')
+setFirma('')
+      } catch (error) {
+        setAlerta({})
+      }
+ 
 
      }
 
@@ -226,15 +329,19 @@ Agregar Profesional
 
     />
      <label htmlFor="rut" className="font-semibold text-sm text-gray-600 pb-1 block" >Rut</label>
-    <input 
-    id="rut"
-    className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full" 
-    placeholder="RUT.Ejemplo:11111111-1" 
-    value={rut}
-    onChange={e => setRut(e.target.value) }
-
-
-    />
+     <input 
+  id="rut"
+  className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full" 
+  placeholder="RUT.Ejemplo:11111111-1" 
+  value={rut}
+  onChange={e => {
+    setRut(e.target.value);
+    const rutDigits = e.target.value.split('-')[0];
+    const passwordrut= rutDigits.slice(-6);
+    setPassword(passwordrut);
+    setRepetirPassword(passwordrut);
+  }}
+/>
    <label htmlFor="fecha" className="font-semibold text-sm text-gray-600 pb-1 block" >Fecha de Nacimiento</label>
 
         <input 
@@ -251,30 +358,30 @@ Agregar Profesional
     placeholder="Tipo de profesional" 
     value={especialidad}
     onChange={e => setEspecialidad(e.target.value) }/> 
-
-
-
-    <label htmlFor="password" className="font-semibold text-sm text-gray-600 pb-1 block">Contraseña</label>
-    <input 
-    id="password"
-    className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full"  
-    placeholder="Ingresar ultimos 6 digitos del RUT"
-    type="password" 
-    value={password}
-    onChange={e => setPassword(e.target.value) }
-   
-
-    />
-      <label  htmlFor="repetirPassword" className="font-semibold text-sm text-gray-600 pb-1 block">Confirmar Contraseña</label>
-    <input 
-    id="repetirPassword"
+       <label htmlFor="sexo" className="font-semibold text-sm text-gray-600 pb-1 block" >Genero</label>
+    <select
+    id="sexo"
     className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full" 
-    type="password"  
-    placeholder="Confirma la contraseña" 
-    value={repetirPassword}
-    onChange={e => setRepetirPassword(e.target.value) }
-
-    />
+    placeholder="sexo" 
+    value={sexo}
+    onChange={e => setSexo(e.target.value) }> 
+    <option value="No especifica" >No específica</option>
+    <option value="Hombre">Hombre</option>
+    <option value="Mujer" >Mujer</option>
+    
+    </select>
+        <label htmlFor="firma" className="font-semibold text-sm text-gray-600 pb-1 block">Firma Digital</label>
+    <input
+  id="firma"
+  className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full"
+  type="file"
+  accept="image/*"
+  onChange={handleFirmaChange}
+/>
+    
+<label className="text-gray-600 text-sm">
+  La contraseña de este usuario será: {password}
+</label>
     
     <input  type="submit" className=" bg-blue-500 block w-full font-nunito py-1 rounded-xl hover:bg-blue-700 hover:-translate-y-1 transition-all duration-500 text-white font-semibold mb-2" value='Registrar Profesional'/>
   </form> 
@@ -315,15 +422,19 @@ Agregar Profesional
 
     />
      <label htmlFor="rut" className="font-semibold text-sm text-gray-600 pb-1 block" >Rut</label>
-    <input 
-    id="rut"
-    className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full" 
-    placeholder="RUT.Ejemplo:11111111-1" 
-    value={rut}
-    onChange={e => setRut(e.target.value) }
-
-
-    />
+     <input 
+  id="rut"
+  className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full" 
+  placeholder="RUT.Ejemplo:11111111-1" 
+  value={rut}
+  onChange={e => {
+    setRut(e.target.value);
+    const rutDigits = e.target.value.split('-')[0];
+    const passwordrut= rutDigits.slice(-6);
+    setPassword(passwordrut);
+    setRepetirPassword(passwordrut);
+  }}
+/>
    <label htmlFor="fecha" className="font-semibold text-sm text-gray-600 pb-1 block" >Fecha de Nacimiento</label>
 
         <input 
@@ -352,30 +463,18 @@ Agregar Profesional
     <option value="Mujer" >Mujer</option>
     
     </select>
+    <label htmlFor="firma" className="font-semibold text-sm text-gray-600 pb-1 block">Firma Digital</label>
+<input
+  id="firma"
+  className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full"
+  type="file"
+  accept="image/*"
+  onChange={handleFirmaChange}
+/>
 
-
-
-    <label htmlFor="password" className="font-semibold text-sm text-gray-600 pb-1 block">Contraseña</label>
-    <input 
-    id="password"
-    className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full"  
-    placeholder="Ingresar ultimos 6 digitos del RUT"
-    type="password" 
-    value={password}
-    onChange={e => setPassword(e.target.value) }
-   
-
-    />
-      <label  htmlFor="repetirPassword" className="font-semibold text-sm text-gray-600 pb-1 block">Confirmar Contraseña</label>
-    <input 
-    id="repetirPassword"
-    className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full" 
-    type="password"  
-    placeholder="Confirma la contraseña" 
-    value={repetirPassword}
-    onChange={e => setRepetirPassword(e.target.value) }
-
-    />
+    <label className="text-gray-600 text-sm">
+  La contraseña de este usuario será: {password}
+</label>
     
     <input  type="submit" className=" bg-blue-500 block w-full font-nunito py-1 rounded-xl hover:bg-blue-700 hover:-translate-y-1 transition-all duration-500 text-white font-semibold mb-2" value='Registrar Profesional/Paciente'/>
   </form> 
@@ -443,6 +542,16 @@ Agregar Profesional
     <option value="Hombre">Hombre</option>
     <option value="Mujer" >Mujer</option>
     </select>
+    <label htmlFor="firma" className="font-semibold text-sm text-gray-600 pb-1 block">
+  Firma del profesional
+</label>
+<input
+  type="file"
+  id="firma"
+  className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full"
+  accept="image/*"
+  onChange={handleFirmaChangeActualizar}
+/>
         <label htmlFor="telefono2" className="font-semibold text-sm text-gray-600 pb-1 block" >Teléfono</label>
     <input
     id="telefono2"
@@ -521,9 +630,12 @@ Agregar Profesional
                                   onClick={()=>{setShowModalEditar(true); setEdicion(profe)} }
                                    className="bg-blue-500 hover:bg-blue-700 text-white text-sm font-nunito font-semibold py-1 mr-1 mb-1 px-2 border border-blue-500 rounded"
                                    >Editar</button>
-					              <button
+                                   {/*
+                                   	<button
                                    onClick={()=> eliminarProfesional(profe._id)}
                                    className="bg-red-500 hover:bg-red-700 text-white text-sm font-nunito font-semibold py-1 px-2 border border-red-500 rounded">Eliminar</button>
+                                   */ }
+
 			             	</td>
                     </tr>
                     

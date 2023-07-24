@@ -9,9 +9,8 @@ export const ProfesionalProvider = ({children}) => {
     const [profesionales, setProfesionales] = useState([])
     const [profesional, setProfesional] = useState({})
     const [tablaUsuarios, setTablaUsuarios]= useState([]);
-    const [pagina, setPagina] = useState (1);
-    const [porPagina, setPorPagina] = useState (7);
-    const maximo = Math.ceil(profesionales.length / porPagina) 
+
+  
 
 
 
@@ -55,60 +54,65 @@ export const ProfesionalProvider = ({children}) => {
 
    },[authadmin])
 
-    const guardarProfesional = async (profesional)=>{
-      const tokenAdm = localStorage.getItem('tokenAdm')
-      const config = {
-        headers:{
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${tokenAdm}`
-        }
+   const guardarProfesional = async (profesional) => {
+    const tokenAdm = localStorage.getItem('tokenAdm');
+    const config = {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+        'Authorization': `Bearer ${tokenAdm}`
       }
-      if(profesional.id){
-        try {
-          const{data}= await clientAxios.put(`/admin/modulo-profesional/${profesional.id}`,profesional,config)
-          const profesionalActualizado = profesionales.map(profesionalState => profesionalState._id ===
-            data._id ? data : profesionalState )
-            setProfesionales(profesionalActualizado)
-            toastMixin.fire({
-              title: 'Profesional Actualizado correctamente'
-            });
-        } catch (error) {
-          console.log(error)
-        }
-
-      }else{
-   
-        try{
-      
-          const{ data }= await clientAxios.post('admin/modulo-profesional',profesional,config)
-        
-            const{ createdAt, updatedAt, __v, ...profesionalAlmacenado} = data
-          setProfesionales ([profesionalAlmacenado, ...profesionales])
-          toastMixin.fire({
-            animation: true,
-            title: 'Registrado correctamente. Email de confirmación enviado'
-          });
-          
-         }
-         catch(error){
-          Swal.fire({
-            icon: 'error',
-            title: 'Error',
-            text: 'Email o Rut ya registrado',
-          })
-     
-         }
-      }
-
-
-
+    };
+  
+    const formData = new FormData();
+    formData.append('email', profesional.email);
+    formData.append('nombres', profesional.nombres);
+    formData.append('apellidos', profesional.apellidos);
+    formData.append('rut', profesional.rut);
+    formData.append('especialidad', profesional.especialidad);
+    formData.append('sexo', profesional.sexo);
+    formData.append('fechaNacimiento', profesional.fechaNacimiento);
+    formData.append('telefono', profesional.telefono);
+  
+    // Agregar firma al FormData si existe una nueva
+    if (profesional.firma && profesional.firma.file) {
+      formData.append('firma', profesional.firma.file);
     }
+  
+    if (profesional.id) {
+      try {
+        const { data } = await clientAxios.put(`/admin/modulo-profesional/${profesional.id}`, formData, config);
+        const profesionalActualizado = profesionales.map(profesionalState => (profesionalState._id === data._id ? data : profesionalState));
+        setProfesionales(profesionalActualizado);
+        toastMixin.fire({
+          title: 'Profesional actualizado correctamente'
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      try {
+        const { data } = await clientAxios.post('admin/modulo-profesional', profesional, config);
+        const { createdAt, updatedAt, __v, ...profesionalAlmacenado } = data;
+        setProfesionales([profesionalAlmacenado, ...profesionales]);
+        toastMixin.fire({
+          animation: true,
+          title: 'Registrado correctamente. Email de confirmación enviado'
+        });
+      } catch (error) {
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: 'Email o Rut ya registrado',
+        });
+      }
+    }
+  };
 
     const guardarSoloProfesional = async (profesional)=>{
       const tokenAdm = localStorage.getItem('tokenAdm')
       const config = {
         headers:{
-            "Content-Type": "application/json",
+          'Content-Type': 'multipart/form-data',
             Authorization: `Bearer ${tokenAdm}`
         }
       }
@@ -125,11 +129,7 @@ export const ProfesionalProvider = ({children}) => {
         
        }
        catch(error){
-        Swal.fire({
-          icon: 'error',
-          title: 'Error',
-          text: 'Email o Rut ya registrado',
-        })
+console.log('error')
    
        }
     }
@@ -192,12 +192,9 @@ export const ProfesionalProvider = ({children}) => {
     setProfesionales,
     tablaUsuarios,
     setTablaUsuarios,
-    pagina,
-    setPagina,
-    porPagina,
-    setPorPagina,
-    maximo,
-    guardarSoloProfesional
+    guardarSoloProfesional,
+    setProfesional
+
 
 
    }}

@@ -66,8 +66,26 @@ const handleThemeSwitch=() =>{
         autenticarUsuario()
     
      }, [authpro])
+//ELIMINAR SESION PASADO 6 DIAS 
+     useEffect(() => {
+        const sessionStartDatePro = localStorage.getItem("sessionStartDatePro");
+    
+        if (sessionStartDatePro) {
+          const startDate = new Date(sessionStartDatePro);
+          const currentDate = new Date();
+    
+          const sixDaysInMilliseconds = 13 * 24 * 60 * 60 * 1000; // 13 días en milisegundos
+    
+          if (currentDate - startDate >= sixDaysInMilliseconds) {
+            localStorage.removeItem('tokenPro')
+            localStorage.removeItem("sessionStartDatePro");
+          }
+        }
+      }, []);
+     
      const cerrarSesion = ()=>{
         localStorage.removeItem('tokenPro')
+        localStorage.removeItem('sessionStartDatePro')
         setAuthpro({})
       }
 

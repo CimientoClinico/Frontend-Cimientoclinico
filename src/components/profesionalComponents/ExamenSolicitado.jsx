@@ -7,9 +7,10 @@ import { MdKeyboardArrowDown, MdKeyboardArrowRight } from "react-icons/md";
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from 'pdfmake/build/vfs_fonts';
 import moment from "moment";
+import proAuth from "../../hooks/proAuth"
 // Configura pdfmake con los tipos de letra necesarios
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
-const ExamenSolicitado = ({ consultaId, pacienteId, profesionalId,consulta }) => {
+const ExamenSolicitado = ({ consultaId, pacienteId, profesionalId,consulta,motivoConsultaId,nombrepaciente,apellidopaciente,rutpaciente,edadpaciente }) => {
     const [secciones, setSecciones] = useState([
         { nombre: 'Hematológicos', examenes: ['Hemograma', 'Grupo sanguineo ABO y RH','Reticulocitos','Protrombina','TTPK'] },
         { nombre: 'Bioquímicos', examenes: ['Perfil Bioquímico', 'Perfil Lipídico','Perfil Hepático',
@@ -36,6 +37,7 @@ const ExamenSolicitado = ({ consultaId, pacienteId, profesionalId,consulta }) =>
         'Drogas Terapéuticas(Ac valproicofenitoina, fenobarbital digoxina,etc)','Drogas de abuso en orina','Ferritina',
         'Trasferritina','Ferremia','Test Coombs indirecto','Chagas','Panel ETS'] },
       ]);
+      const {authpro} =  proAuth()
       const [examen, setExamen] = useState([]);
       const [seccionActiva, setSeccionActiva] = useState(null);
       const [opcionesSeleccionadas, setOpcionesSeleccionadas] = useState([]);
@@ -44,8 +46,6 @@ const ExamenSolicitado = ({ consultaId, pacienteId, profesionalId,consulta }) =>
       const [searchValue, setSearchValue] = useState("");
       const [loading, setLoading] = useState(true); 
       const [seccionVisible, setSeccionVisible] = useState(false);
-
-      useEffect(() => {
       const fetchData = async () => {
         const tokenPro = localStorage.getItem('tokenPro');
         if (!tokenPro) return;
@@ -63,6 +63,8 @@ const ExamenSolicitado = ({ consultaId, pacienteId, profesionalId,consulta }) =>
             console.log(error);
           }
         };
+      useEffect(() => {
+
             fetchData();
           }, []); 
       const openModal = () => {
@@ -108,12 +110,83 @@ const ExamenSolicitado = ({ consultaId, pacienteId, profesionalId,consulta }) =>
           setExamenPersonalizado('');
         }
       };
+      function formatearFechaReceta(fecha) {
+        const fechaActual = new Date();
+        const fechaNacimiento = new Date(fecha);
+        
+        // Calcula la diferencia en milisegundos entre la fecha actual y la fecha de nacimiento
+        let diferencia = fechaActual - fechaNacimiento;
+        
+        // Convierte la diferencia en milisegundos a años
+        const milisegundosPorAnio = 1000 * 60 * 60 * 24 * 365.25;
+        const edad = Math.floor(diferencia / milisegundosPorAnio);
+        
+        return edad;
+      }
+
+      const imageUrl = authpro.firma.secure_url;
+  
+      async function fetchImageAsBase64(url) {
+        const response = await fetch(url);
+        const blob = await response.blob();
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onloadend = () => resolve(reader.result);
+          reader.onerror = reject;
+          reader.readAsDataURL(blob);
+        });
+      }
       const solicitarExamen = async () => {
+        const rutprofesional = authpro.rut;
+        const nombreprofesional = authpro.nombres;
+        const apellidoprofesional = authpro.apellidos;
+      
         try {
+          const base64Image = await fetchImageAsBase64(imageUrl);
+      
+          // Obtener la fecha actual
+          const fechaactual = new Date().toLocaleDateString();
+          const edad = formatearFechaReceta(edadpaciente);
           // Obtener el contenido del PDF a partir de las opciones seleccionadas
-          const content = opcionesSeleccionadas.map((opcion) => {
-            return { text: opcion };
-          });
+          const content = [
+            { text: 'Cimiento Clínico', bold: true, margin: [0, 0, 0, 10] },
+            { text: 'Solicitud de Exámenes', style: 'header', margin: [0, 0, 0, 10] },
+            {
+              table: {
+                widths: ['auto', 'auto', 'auto', 'auto'],
+                body: [
+                  [
+                    { text: 'Nombre Paciente:', bold: true },
+                    { text: nombrepaciente },
+                    { text: 'Apellido Paciente:', bold: true },
+                    { text: apellidopaciente }
+                  ],
+                  [
+                    { text: 'Edad', bold: true },
+                    { text: edad },
+                    { text: 'RUT:', bold: true },
+                    { text: rutpaciente }
+                  ],
+                  [
+                    { text: 'Profesional:', bold: true },
+                    { text: `${nombreprofesional} ${apellidoprofesional}` },
+                    { text: 'RUT Profesional:', bold: true },
+                    { text: rutprofesional || '' }
+                  ]
+                ]
+              },
+              margin: [0, 0, 0, 10]
+            },
+            {
+              ul: opcionesSeleccionadas.map((opcion) => ({
+                text: opcion
+              }))
+            },
+            { text: '' , margin: [0, 20, 0, 0] },
+            { image: base64Image, width: 100, alignment: 'right', margin: [0, 20, 0, 0] },
+            { text: 'Firma Digital', alignment: 'right' , margin: [0, 20, 0, 0] },
+            { text: `Fecha actual: ${fechaactual}`, alignment: 'left', margin: [0, 10, 0, 0] },
+          ];
       
           // Crear el documento PDF
           const documentDefinition = {
@@ -125,6 +198,10 @@ const ExamenSolicitado = ({ consultaId, pacienteId, profesionalId,consulta }) =>
                 alignment: 'center',
                 margin: [0, 0, 0, 10] // Márgenes [arriba, izquierda, abajo, derecha]
               }
+            },
+            pageBackground: { fillColor: 'transparent' },
+            images: {
+              // Resto de las imágenes definidas en el documento
             }
           };
       
@@ -140,7 +217,7 @@ const ExamenSolicitado = ({ consultaId, pacienteId, profesionalId,consulta }) =>
               showCancelButton: true,
               confirmButtonColor: '#5d5ddb',
               cancelButtonColor: '#d33',
-              confirmButtonText: 'Si, Enviar solicitud'
+              confirmButtonText: 'Si, agregar examenes'
             }).then((result) => {
               if (result.isConfirmed) {
                 return true;
@@ -148,41 +225,42 @@ const ExamenSolicitado = ({ consultaId, pacienteId, profesionalId,consulta }) =>
                 return false;
               }
             });
-            
-          if(confirmar) {
-            try {
-              // Crear un FormData y agregar el PDF con el nombre 'documento'
-              const formData = new FormData();
-              formData.append('documento', blob, 'documento.pdf');
-              formData.append('opciones', opcionesSeleccionadas.join(', '));
-              formData.append('consultaId', consultaId);
-              formData.append('pacienteId', pacienteId);
-              formData.append('profesionalId', profesionalId);
       
-              // Realizar la petición al backend utilizando Axios
-              const tokenPro = localStorage.getItem('tokenPro');
-              const config = {
-                headers: {
-                  'Content-Type': 'multipart/form-data',
-                  Authorization: `Bearer ${tokenPro}`,
-                }
-              };
+            if (confirmar) {
+              try {
+                // Crear un FormData y agregar el PDF con el nombre 'documento'
+                const formData = new FormData();
+                formData.append('documento', blob, 'documento.pdf');
+                formData.append('opciones', opcionesSeleccionadas.join(', '));
+                formData.append('consultaId', consultaId);
+                formData.append('pacienteId', pacienteId);
+                formData.append('profesionalId', profesionalId);
+                formData.append('motivoConsultaId', motivoConsultaId);
       
-              const response = await clientAxios.post('/profesional/guardar-examenes-solicitado', formData, config);
+                // Realizar la petición al backend utilizando Axios
+                const tokenPro = localStorage.getItem('tokenPro');
+                const config = {
+                  headers: {
+                    'Content-Type': 'multipart/form-data',
+                    Authorization: `Bearer ${tokenPro}`,
+                  }
+                };
       
+                const response = await clientAxios.post('/profesional/guardar-examenes-solicitado', formData, config);
       
-              // Mostrar mensaje de éxito o realizar la acción deseada
-              Swal.fire('¡Perfecto!', 'Examen solicitado', 'success');
+                // Mostrar mensaje de éxito o realizar la acción deseada
+                Swal.fire('¡Perfecto!', 'Examenes agregados para solicitud', 'success');
+                fetchData();
       
-              // Limpiar las opciones seleccionadas
-              setOpcionesSeleccionadas([]);
-              setModalOpen(false)
-            } catch (error) {
-              // Manejar el error en caso de fallo al subir el PDF al backend
-              console.log(error);
-              Swal.fire('¡Error!', 'No se pudo enviar la solicitud', 'error');
+                // Limpiar las opciones seleccionadas
+                setOpcionesSeleccionadas([]);
+                setModalOpen(false)
+              } catch (error) {
+                // Manejar el error en caso de fallo al subir el PDF al backend
+                console.log(error);
+                Swal.fire('¡Error!', 'No se pudo agregar la lista de examenes a la solicitud', 'error');
+              }
             }
-          }
           });
         } catch (error) {
           // Manejar el error en caso de fallo al generar el PDF
@@ -190,6 +268,7 @@ const ExamenSolicitado = ({ consultaId, pacienteId, profesionalId,consulta }) =>
           Swal.fire('¡Error!', 'No se pudo generar el PDF', 'error');
         }
       };
+      
       
       const handleSubmit = async (e) => {
         e.preventDefault();
@@ -202,10 +281,11 @@ const ExamenSolicitado = ({ consultaId, pacienteId, profesionalId,consulta }) =>
       
           // Generar el PDF y enviarlo al backend
           await solicitarExamen();
+
         } catch (error) {
           console.log(error);
           // Mostrar mensaje de error
-          Swal.fire('¡Error!', 'No se pudo enviar la solicitud', 'error');
+          Swal.fire('¡Error!', 'No se pudo generar la solicitud de los examenes', 'error');
         }
       };
       const handleDeselectOption = (examen) => {
@@ -253,6 +333,38 @@ const ExamenSolicitado = ({ consultaId, pacienteId, profesionalId,consulta }) =>
       };
       const now = moment();
       const showButton = consulta && now.isSameOrAfter(moment(consulta.fecha).add(consulta.horarioinicio));
+      const BorrarExamenesolicitado = async (id) => {
+        
+        try {
+          const tokenPro = localStorage.getItem('tokenPro');
+          if (!tokenPro) return;
+      
+          const config = {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${tokenPro}`,
+            },
+          };
+          const resultado = await Swal.fire({
+            title: '¿Estás seguro de eliminar este examen de la lista de solicitud?',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#5d5ddb',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sí',
+            cancelButtonText: 'Cancelar',
+          });
+          if (resultado.isConfirmed) {
+          const response = await clientAxios.delete(`/profesional/eliminar-examensolicitado-ficha/${id}`, config);
+          Swal.fire('¡Listo!', 'Examen eliminado de la lista de examenes ', 'success');
+          fetchData()
+        }
+        } catch (error) {
+          console.log(error);
+        }
+      };
+
+
   return (
     <>  
     <div className='py-4'>
@@ -293,27 +405,44 @@ const ExamenSolicitado = ({ consultaId, pacienteId, profesionalId,consulta }) =>
 ) : ( 
 <div>
   {examen && examen.length > 0 ? (
-    <ul>
-      {examen.map((item, index) => (
-        <li key={index} className="flex items-center border-b border-gray-200 py-4">
-          <div className="mr-4">{`${index + 1}.- ${item.opciones}`}</div>
-          {item.documento?.secure_url ? (
-            <div className="text-sm font-medium text-gray-900 py-0.5 px-0.5">
-              <button
-                onClick={() =>
-                  downloadFile(item.documento?.secure_url, `solicitud_de_exámenes(Cimiento clínico).pdf`)
-                }
-                className="bg-lila-200 hover:bg-lila-100 text-white text-sm font-nunito font-semibold py-1 px-2 rounded inline-flex items-center"
-              >
-                📥 Descargar
-              </button>
-            </div>
-          ) : (
-            <div className="lg:px-6 lg:py-4">No se subió archivo</div>
-          )}
-        </li>
-      ))}
-    </ul>
+    <div>
+      <h1 className="text-center py-2 font-semibold">Lista de Examenes solicitados en esta Consulta</h1>
+      <ul>
+  {examen.map((item, index) => (
+    <div className="flex border-b" key={index}>
+      <div className="flex py-4 flex-grow">
+        <div className="mr-4">{`${index + 1}.- ${item.opciones}`}</div>
+        <div className="flex-grow"></div>
+        {item.profesional?._id === authpro._id && item.documento?.secure_url ? (
+          <div className="text-sm font-medium text-gray-900 py-0.5 px-0.5">
+            <button
+              onClick={() =>
+                downloadFile(item.documento?.secure_url, `solicitud_de_exámenes(Cimiento clínico).pdf`)
+              }
+              className="bg-lila-200 hover:bg-lila-100 text-white text-sm font-nunito font-semibold py-1 px-2 rounded inline-flex items-center"
+            >
+              📥 Descargar
+            </button>
+          </div>
+        ) : (
+          <div className="lg:px-6 lg:py-4"></div>
+        )}
+              <div className="flex ">
+        <button
+          onClick={() => BorrarExamenesolicitado(item._id)}
+          className="bg-coral-300 hover:bg-coral-200 px-1 py-1 rounded text-sm text-white"
+        >
+          Borrar de la lista🗑️
+        </button>
+      </div>
+      </div>
+
+    </div>
+  ))}
+</ul>
+
+
+    </div>
   ) : (
     <p className='font-bold text-center py-5 text-coral-300'>Aún no has solicitado exámenes para esta consulta</p>
   )}
@@ -447,7 +576,7 @@ const ExamenSolicitado = ({ consultaId, pacienteId, profesionalId,consulta }) =>
           type="submit"
           onClick={handleSubmit}
         >
-          Enviar la solicitud
+          Generar lista de examenes
         </button>
       </div>
 </div>

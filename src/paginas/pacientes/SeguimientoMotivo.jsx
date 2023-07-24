@@ -266,25 +266,25 @@ if (motivoConsulta.paciente !== auth._id) {
     </div>
    </div>
 <hr />
-   <div class="container mx-auto px-4 py-10 ">
-   <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
-  <div class="relative">
-    <div class="bg-gray-300 rounded-lg p-4">
-      <div class="mb-2"><span className='text-2xl font-bold bg-lila-200 px-3 py-0.5 rounded-full text-white'>1</span> <span className='text-lg font-regular'>{motivoConsulta.titulo}</span></div>
-      <div class="text-sm font-medium mb-2">Fecha de publicación: {formatearFecha(motivoConsulta.fecha) }</div>
-      <div class="text-sm">Descripción: {motivoConsulta.descripcion} </div>
+   <div className="container mx-auto px-4 py-10 ">
+   <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+  <div className="relative">
+    <div className="bg-gray-300 rounded-lg p-4">
+      <div className="mb-2"><span className='text-2xl font-bold bg-lila-200 px-3 py-0.5 rounded-full text-white'>1</span> <span className='text-lg font-regular'>{motivoConsulta.titulo}</span></div>
+      <div className="text-sm font-medium mb-2">Fecha de publicación: {formatearFecha(motivoConsulta.fecha) }</div>
+      <div className="text-sm">Descripción: {motivoConsulta.descripcion} </div>
       <div className='py-5'></div>
     </div>
-    <div class="connector"></div>
+    <div className="connector"></div>
   </div>
 
   {Seguimiento.map((seg, index) => (
-    <div class="relative" key={seg.id}>
-      <div class="bg-gray-300 rounded-lg p-4">
-        <div class="mb-2"><span className='text-2xl font-bold bg-lila-200 px-3 py-0.5 rounded-full text-white'>{index + 2}</span> <span className='text-lg font-regular'>{seg.titulo}</span></div>
-        <div class="text-sm font-medium mb-2">Fecha de publicación: {formatearFecha(seg.fecha)}</div>
-        <div class="text-sm">Nombre: {seg.nombre}</div>
-        <div class="text-sm">Descripción: {seg.descripcion}</div>
+    <div className="relative" key={seg.id}>
+      <div className="bg-gray-300 rounded-lg p-4">
+        <div className="mb-2"><span className='text-2xl font-bold bg-lila-200 px-3 py-0.5 rounded-full text-white'>{index + 2}</span> <span className='text-lg font-regular'>{seg.titulo}</span></div>
+        <div className="text-sm font-medium mb-2">Fecha de publicación: {formatearFecha(seg.fecha)}</div>
+        <div className="text-sm">Nombre: {seg.nombre}</div>
+        <div className="text-sm">Descripción: {seg.descripcion}</div>
         <button
         className="text-white hover:bg-lila-100 rounded-lg px-2 py-2 "
         onClick={() => handleEditClick(seg)}>
@@ -296,7 +296,7 @@ if (motivoConsulta.paciente !== auth._id) {
            <span className='text-md'>🗑️</span>
           </button>
       </div>
-      {index !== Seguimiento.length - 1 && <div class="connector"></div>}
+      {index !== Seguimiento.length - 1 && <div className="connector"></div>}
     </div>
   ))}
 </div>

@@ -11,7 +11,6 @@ const NuevaPassAdmin = () => {
   const [showPwd, setShowPwd] = useState(false)
   const params = useParams()
   const { token } = params
-  console.log(token)
  
   useEffect(()=>{
     const comprobarToken = async ()=>{

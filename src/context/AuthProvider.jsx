@@ -1,5 +1,7 @@
 import { useState, useEffect, createContext } from "react";
 import clientAxios from "../config/axios";
+import { IoMdEye } from 'react-icons/io';
+
 
 
 const AuthContext = createContext()
@@ -71,12 +73,28 @@ const [motivo, setMotivo] = useState({})
     autenticarUsuario()
 
  },  [auth])
+ useEffect(() => {
+    const sessionStartDate = localStorage.getItem("sessionStartDate");
+
+    if (sessionStartDate) {
+      const startDate = new Date(sessionStartDate);
+      const currentDate = new Date();
+
+      const sixDaysInMilliseconds = 13 * 24 * 60 * 60 * 1000; // 13 días en milisegundos
+
+      if (currentDate - startDate >= sixDaysInMilliseconds) {
+        localStorage.removeItem("token");
+        localStorage.removeItem("sessionStartDate");
+      }
+    }
+  }, []);
  
 
  const cerrarSesion = ()=>{
     localStorage.removeItem('token')
     localStorage.removeItem('alertShown')
     localStorage.removeItem('notificacionInicio')
+    localStorage.removeItem("sessionStartDate");
     setAuth({})
   }
   const actualizarPerfil = async datos =>{
@@ -264,43 +282,69 @@ const actualizarEstilodevida = async datos =>{
     }
   }
 
-  const guardarMotivoConsulta =  async(motivo) =>{
-    const token = localStorage.getItem('token')
+  const guardarMotivoConsulta = async (motivo) => {
+    const token = localStorage.getItem('token');
     const config = {
-      headers:{
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    };
+  
+    if (motivo.id) {
+      try {
+        const { data } = await clientAxios.put(`/pacientes/actualizar-motivodeconsulta/${motivo.id}`, motivo, config);
+  
+        const motivosActualizados = motivos.map((motivoState) => (motivoState._id === data._id ? data : motivoState));
+        setMotivos(motivosActualizados);
+  
+        toastMixin.fire({
+          animation: true,
+          title: 'Motivo de consulta actualizado',
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    } else {
+      try {
+        const { data } = await clientAxios.post('/pacientes/agregar-motivodeconsulta', motivo, config);
+        const { createdAt, updatedAt, __v, ...motivoAlmacenado } = data;
+        setMotivos([motivoAlmacenado, ...motivos]);
+
+        // Crear un resumen de los datos guardados
+        const resumenMotivoConsulta = {
+            Titulo: motivoAlmacenado.titulo,
+            Descripcion: motivoAlmacenado.descripcion,
+            Visible: motivoAlmacenado.visible ? motivoAlmacenado.especialidades : 'Tu consulta no será visible para los profesionales.',
+          };
+    
+          // Mostrar el resumen utilizando Sweet Alert en la ventana de éxito
+          const SwalWithEyeIcon = Swal.mixin({
+            customClass: {
+              icon: 'icon-with-eye',
+            },
+            icon: 'success',
+            title: '¡Listo!',
+            html: `
+              <p><strong>Motivo de consulta:</strong> ${resumenMotivoConsulta.Titulo}</p>
+              <p><strong>Descripción de tu motivo:</strong> ${resumenMotivoConsulta.Descripcion}</p>
+              <div style="display: flex; flex-direction: column; align-items: center;">
+              <p><strong>Visibilidad de tu caso</strong></p>
+              <p style="text-align: center;">
+                ${resumenMotivoConsulta.Visible} <span class="eye-icon"><IoMdEye /></span>
+              </p>
+            </div>
+              
+              `,
+          });
+
+          // Mostrar el Sweet Alert personalizado
+          SwalWithEyeIcon.fire();
+      } catch (error) {
+        console.log(error.response.data.msg);
       }
     }
-    if(motivo.id){
-     try {
-        const{data}= await clientAxios.put(`/pacientes/actualizar-motivodeconsulta/${motivo.id}`,motivo,config)
-      
-      const motivosActualizados= motivos.map( motivoState => motivoState._id===
-        data._id ? data : motivoState)
-        setMotivos(motivosActualizados)
-        toastMixin.fire({
-            animation: true,
-            title: 'Motivo de consulta actualizado'
-          });
-     } catch (error) {
-      console.log(error)
-     }
-
-    }else{
-      try {
-     
-        const{ data }= await clientAxios.post('/pacientes/agregar-motivodeconsulta',motivo,config)
-        const{ createdAt, updatedAt, __v, ...motivoAlmacenado} = data
-        setMotivos ([motivoAlmacenado, ...motivos])
-        Swal.fire('¡Listo!', 'El motivo fue publicado y será revisado si esta visible', 'success');
-    
-    } catch (error) {
-      console.log(error.response.data.msg)
-    }
-    }
- 
-    }
+  };
     const setEdicionMotivo = (motivo) => {
         setMotivo(motivo)
       }
@@ -417,10 +461,6 @@ const actualizarEstilodevida = async datos =>{
             actualizarvisiblemotivo,
             ContactoVacio
          
-          
-
-          
-   
         }}
         >
             {children}

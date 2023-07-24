@@ -1,5 +1,4 @@
 import { Link, useNavigate} from 'react-router-dom';
-import loginpro from '../../assets/img/loginpro.png'
 import { useState } from 'react';
 import Alerta from '../../components/Alerta'
 import clientAxios from '../../config/axios';
@@ -27,6 +26,8 @@ const LoginProfesional = () => {
     try {
       const {data} = await clientAxios.post(`/profesional/login`,{email,password})
       localStorage.setItem('tokenPro', data.tokenPro)
+      const currentDate = new Date();
+      localStorage.setItem("sessionStartDatePro", currentDate.toISOString()); 
       setAuthpro(data)
       setLoading(false)
 
@@ -56,8 +57,8 @@ const LoginProfesional = () => {
     <h3 className="font-semibold font-nunito text-center text-lg mb-5">Portal Profesionales</h3>
                     <div className="w-full mt-4">
                     {loading?    <div className=" container text-center">
-            <div class="animate-spin inline-block w-10 h-10 border-[3px] border-current border-t-transparent text-blue-600 rounded-full" role="status" aria-label="loading">
-  <span class="sr-only">Loading...</span>
+            <div className="animate-spin inline-block w-10 h-10 border-[3px] border-current border-t-transparent text-blue-600 rounded-full" role="status" aria-label="loading">
+  <span className="sr-only">Loading...</span>
 </div>
 </div>:''}
                     { msg && 
@@ -117,7 +118,7 @@ const LoginProfesional = () => {
                     </div>
                 </div>
             </div>
-            <div className="hidden md:block md:w-1/2 rounded-r-lg " ><img className='' src={loginpro} alt="" />
+            <div className="hidden md:block md:w-1/2 rounded-r-lg " ><img className='' src="https://res.cloudinary.com/dde62spnz/image/upload/v1689081455/Imagenes%20sitio/loginpro_bfnf64.png" alt="" />
               <Link className='text-coral-300 font-nunito font-semibold  text-2xl hover:text-coral-100  ' to="/registrar"> <h1 className='animate-bounce py-10 px-10'>¿Quieres trabajar con nosotros? <span className='font-bold '>Registrate aquí</span></h1>  </Link>
             </div>
 

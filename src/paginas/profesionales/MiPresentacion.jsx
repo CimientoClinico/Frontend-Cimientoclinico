@@ -243,10 +243,10 @@ const MiPresentacion = () => {
       <p className="text-gray-800 mt-4">{  calcularEdad(authpro.fechaNacimiento) } {'años'} </p>
         <form onSubmit={GuardarInformacionPersonal}>
         <div className="my-4 flex  flex-row px-20 ">
-					<span className=  {`z-highest rounded-l-lg w-10 h-10 flex justify-center items-center text-2xl text-gray-400 border border-r-0 ${authpro.celularvisible ? 'custom-icon-visible' : 'custom-icon-hidden'}` } >
+					<span className=  "z-highest rounded-l-lg w-10 h-10 flex justify-center items-center text-2xl text-gray-400 border border-r-0 " >
             📞
 					</span>
-					<input type="text"  name="celulartrabajo" className={`h-10 border border-gray-200 rounded-r-lg outline-none focus:ring-1 ring-blue-300 w-full pl-1 ${authpro.celularvisible ? 'custom-icon-visible' : 'custom-icon-hidden'}` }  placeholder="Nº Celular alternativo"    value={perfil.celulartrabajo || ''}
+					<input type="text"  name="celulartrabajo" className="h-10 border border-gray-200 rounded-r-lg outline-none focus:ring-1 ring-blue-300 w-full pl-1" placeholder="Nº Celular alternativo"    value={perfil.celulartrabajo || ''}
                   onChange={ e => setPerfil({
                     ...perfil,
                     [e.target.name] : e.target.value
@@ -257,11 +257,11 @@ const MiPresentacion = () => {
 
 				</div>
         <div className="my-4 flex flex-row px-20 ">
-        <span className=  {`z-highest rounded-l-lg w-10 h-10 flex justify-center items-center text-2xl text-gray-400 border border-r-0 ${authpro.correovisible ? 'custom-icon-visible' : 'custom-icon-hidden'}` } >
+        <span className=  "z-highest rounded-l-lg w-10 h-10 flex justify-center items-center text-2xl text-gray-400 border border-r-0 ">
           📧
 					</span>
 					<input type="email"  name="emailtrabajo" 
-          className={`h-10 border border-gray-200 rounded-r-lg outline-none focus:ring-1 ring-blue-300 w-full pl-1 ${authpro.correovisible ? 'custom-icon-visible' : 'custom-icon-hidden'}` }
+          className="h-10 border border-gray-200 rounded-r-lg outline-none focus:ring-1 ring-blue-300 w-full pl-1"
           placeholder="Correo alternativo"    value={perfil.emailtrabajo || ''}
                   onChange={ e => setPerfil({
                     ...perfil,

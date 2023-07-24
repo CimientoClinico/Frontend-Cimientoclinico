@@ -14,6 +14,7 @@ import FormularioAlcoholismo from "../../components/pacienteComponents/Formulari
 import FormularioDrogas from "../../components/pacienteComponents/FormularioDrogas"
 import FormularioGinecoobstetrico from "../../components/pacienteComponents/FormularioGinecoobstetrico"
 import FormularioFarmacoPrevio from "../../components/pacienteComponents/FormularioFarmacoPrevio"
+import Historiaclinicapdf from "../../components/pacienteComponents/Historiaclinicapdf"
 const HistoriaClinica = () => {
 const {auth} =  useAuth()
 const [ocultarseccion, SetOcultarSeccion] = useState(true)
@@ -41,7 +42,13 @@ const [ocultarseccion, SetOcultarSeccion] = useState(true)
   <h1 className="text-left xl:px-64 font-regular mt-4 text-white text-4xl dark:text-white shado"><span className="font-semibold"> {auth.nombres} {auth.apellidos}  </span> </h1>
        </div>
       <HeaderHistoria/>
-       <div className="py-10 bg-gray-100  bg-opacity-50  " >
+      <div className='flex justify-center p-4 bg-gray-50'>
+  <div className=' bg-lila-300 hover:bg-lila-100  max-w-lg px-3 py-1 rounded-md text-white'>
+  <Historiaclinicapdf/>
+  </div>
+
+</div>
+       <div className="py-5 bg-gray-100  bg-opacity-50  " >
       <FormularioIdentificacion/>
        </div>
 

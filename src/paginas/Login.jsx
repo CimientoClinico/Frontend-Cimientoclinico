@@ -1,7 +1,6 @@
 import { Link, useNavigate} from 'react-router-dom';
 import useAuth from '../hooks/useAuth'
 import { useState } from 'react';
-import login from '../assets/img/login.png'
 import Alerta from '../components/Alerta'
 import clientAxios from '../config/axios';
 
@@ -29,6 +28,8 @@ const Login = () => {
     try {
       const {data} = await clientAxios.post(`/pacientes/login`,{email,password})
       localStorage.setItem('token', data.token)
+      const currentDate = new Date();
+      localStorage.setItem("sessionStartDate", currentDate.toISOString()); 
       setAuth(data)
       setLoading(false)
       navigate('/paciente')
@@ -59,7 +60,7 @@ const Login = () => {
 
                   </div>
             <div className="w-full mx-auto px-20 flex-col items-center space-y-6">
-               <Link to="/"><img src={login} alt="" /></Link>
+               <Link to="/"><img src="https://res.cloudinary.com/dde62spnz/image/upload/v1689081338/Imagenes%20sitio/login_igyg1d.png" alt="" /></Link>
                
               <h1 className="text-white text-3xl font-nunito font-bold ">Ingresa a Cimiento Clínico y agenda tus consultas de telemedicina</h1>
               <Link className='text-lila-300 font-nunito font-semibold text-3xl hover:text-indigo-500  ' to="/registrar"> <h1 className='animate-bounce'>¿No tienes cuenta? <span className='font-bold '>Registrate aquí</span></h1>  </Link>

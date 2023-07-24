@@ -130,9 +130,7 @@ const FormularioConsultaFinalizada= () => {
         
         
       </div>
-      <div className=""> 
-        <button className="bg-lila-200 px-3 py-2 text-white uppercase font-semibold rounded-xl shadow-md hover:bg-lila-100 ">Ficha del paciente</button>
-      </div>
+
 
       </div>
     </div>

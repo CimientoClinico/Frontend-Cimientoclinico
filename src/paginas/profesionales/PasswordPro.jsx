@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom"
-import passpro from '../../assets/img/pass-pro.png'
 import Alerta from '../../components/Alerta';
 import clientAxios from '../../config/axios';
 import { useState } from 'react';
@@ -69,7 +68,7 @@ const PasswordPro = () => {
                     </div>
                 </div>
             </div>
-            <div className="hidden md:block md:w-1/2 rounded-r-lg " ><img className='' src={passpro} alt="" /></div>
+            <div className="hidden md:block md:w-1/2 rounded-r-lg " ><img className='' src="https://res.cloudinary.com/dde62spnz/image/upload/v1689081524/Imagenes%20sitio/pass-pro_rtzmlp.png" alt="" /></div>
 
         </div>
     </div>

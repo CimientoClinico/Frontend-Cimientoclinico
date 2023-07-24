@@ -1,21 +1,28 @@
 import { useEffect,useState } from "react";
-import { useParams, } from 'react-router-dom';
+import { useParams,useNavigate } from 'react-router-dom';
 import clientAxios from "../../config/axios";
+import proAuth from "../../hooks/proAuth"
 import moment from "moment";
 import { MdKeyboardArrowDown, MdKeyboardArrowRight,MdAddCircle } from "react-icons/md";
 import { IoMdCloseCircle} from "react-icons/io";
+import { BsFillExclamationOctagonFill} from "react-icons/bs";
 import { RxMagnifyingGlass } from "react-icons/rx";
+import { BsFillPencilFill } from "react-icons/bs";
+
 import { Paginacion } from "../Paginacion";
 import { AiFillCloseCircle } from "react-icons/ai";
 import { FaCopy } from "react-icons/fa";
 import ExamenSolicitado from "./ExamenSolicitado";
+import FormularioControles from "./FormularioControles";
 import pdfMake from 'pdfmake/build/pdfmake'; // Importar el módulo principal de pdfmake
 import pdfFonts from 'pdfmake/build/vfs_fonts'; // Importar las fuentes utilizadas por pdfmake
 // Registrar las fuentes en pdfmake
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 const FormularioLlenarConsulta = () => {
     const [consulta, setConsulta] = useState([]);
+    const navigate = useNavigate()
     const { id } = useParams();
+    const {authpro} =  proAuth()
     const [datosPaciente, setDatosPaciente] = useState({ });
     const [datosPacienteMotivo, setDatosPacienteMotivo] = useState({});
     const [datosPacientediagnostico, setDatosPacientediagnostico] = useState({});
@@ -41,8 +48,14 @@ const FormularioLlenarConsulta = () => {
     const [modalVisible, setModalVisible] = useState(false);
     const [recetamodalVisible, setRecetamodalvisible] = useState(false);
     const [searchValue, setSearchValue] = useState('');
+    const [buscarRecetaValue, setBuscarRecetaValue] = useState('');
+    const [buscarSignosValue, setBuscarSignosValue] = useState('');
     const [pagina, setPagina] = useState(1);
     const [porPagina, setPorPagina] = useState(3);
+    const [paginareceta, setPaginaReceta] = useState(1);
+    const [porPaginareceta, setPorPaginaReceta] = useState(3);
+    const [paginaSignos, setPaginaSignos] = useState(1);
+    const [porPaginaSignos, setPorPaginaSignos] = useState(3);
     const [datosPacientefarmaco, setDatosPacientefarmaco] = useState({});
     const [ocultarFarmaco, setOcultarFarmaco] = useState({});
     const [mostrarFormularioFarmaco, setMostrarFormularioFarmaco] = useState(false);
@@ -64,10 +77,81 @@ const FormularioLlenarConsulta = () => {
     const [tipoReceta, setTipoReceta] = useState('');
     const [mostrarFormularioReceta, setMostrarFormularioReceta] = useState(false);
     const [mostrarFormularioNormal, setMostrarFormularioNormal] = useState(false);
+    const [mostrarFormularioSignos, setMostrarFormularioSignos] = useState(false);
+    const [inputs, setInputs] = useState(['']); // Agregamos un campo de entrada inicial vacío
+    const [recetasmagistrales, setRecetasmagistrales] = useState([]);
+    const [signos, setSignos] = useState([]);
+    const [signoscontenido, setSignoscontenido] = useState(['']); // Agregamos un campo de entrada inicial vacío
+    const [seleccionado, setSeleccionado] = useState(
+      datosPacienteMotivo?.interconsulta === 'Si' || datosPacienteMotivo?.interconsulta === 'Interconsulta'
+    );
+    
+    const cerrarFormularioSignos = () => {
+      setMostrarFormularioSignos(false);
+      setSignoscontenido(['']);
+    };
+    const abrirFormularioSignos = () => {
+      if (datosPacienteMotivo.signosdealarma && datosPacienteMotivo.signosdealarma.length > 0) {
+        setSignoscontenido(datosPacienteMotivo.signosdealarma);
+      } else {
+        setSignoscontenido(['']);
+      }
+      setMostrarFormularioSignos(true);
+    };
+    const handleInputChangeSignos = (index, event) => {
+      const newInputs = [...signoscontenido];
+      newInputs[index] = event.target.value;
+      setSignoscontenido(newInputs);
+    };
+  
+    const handleKeyDownSignos = (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        addInput();
+      }
+    };
+  
+    const addInputSignos = () => {
+      setSignoscontenido([...signoscontenido, '']);
+    };
+    const removeInputSignos = (index) => {
+      const newInputs = signoscontenido.filter((_, i) => i !== index);
+      setSignoscontenido(newInputs);
+    };
+
+
+
+
+
+    const handleInputChange = (index, event) => {
+      const newInputs = [...inputs];
+      newInputs[index] = event.target.value;
+      setInputs(newInputs);
+    };
+  
+    const handleKeyDown = (event) => {
+      if (event.key === 'Enter') {
+        event.preventDefault();
+        addInput();
+      }
+    };
+  
+    const addInput = () => {
+      setInputs([...inputs, '']);
+    };
+    const removeInput = (index) => {
+      const newInputs = inputs.filter((_, i) => i !== index);
+      setInputs(newInputs);
+    };
+    
 
 
   //Sección farmacos
     const maximo = Math.ceil(medidas.length / porPagina);
+      //Sección recetas
+    const maximoreceta = Math.ceil(recetasmagistrales.length / porPaginareceta);
+      //Sección signos
+      const maximosignos = Math.ceil(signos.length / porPaginaSignos);
 
     useEffect(() => {
       const tokenPro = localStorage.getItem("tokenPro");
@@ -123,6 +207,7 @@ const FormularioLlenarConsulta = () => {
       const VerFormularioCerradofar = () => {
     setMostrarFormularioFarmaco(!mostrarFormularioFarmaco);
   };
+
   useEffect(() => {
     if (consulta && Array.isArray(consulta.farmaco)) {
       setDatosPacientefarmaco(consulta.farmaco);
@@ -313,6 +398,13 @@ const FormularioLlenarConsulta = () => {
   
       try {
         await clientAxios.put(`/profesional/actualizar-motivo-ficha/${datosPacienteMotivo._id}`, datosPacienteMotivo, config);
+        const { data } = await clientAxios.get(
+          `/profesional/informacion-paciente-consulta/${id}`,
+          config
+        );
+    
+        setConsulta(data);
+        setMostrarFormulariointerconsulta(false)
       } catch (error) {
         console.error(error.message);
         // Mostrar un mensaje de error o realizar acciones adicionales en caso de error
@@ -358,7 +450,67 @@ const FormularioLlenarConsulta = () => {
           Swal.fire('¡Error!', 'Ocurrió un error al copiar la descripción', 'error');
         });
     };
-    const imageUrl = 'https://res.cloudinary.com/dde62spnz/image/upload/v1687451263/Imagenes%20sitio/kisspng-digital-signature-clip-art-signature-5b0840d4458ca4.5304199015272675402849_a47lug.png';
+    const copiarAlPortapapelesIndice = (nombre, contenido) => {
+      // Verificar si contenido es un array
+      if (!Array.isArray(contenido)) {
+        console.error('El contenido no es un array');
+        return;
+      }
+    
+      // Copiar cada línea de contenido en los inputs
+      setInputs(contenido);
+    
+      // Mostrar el mensaje de éxito
+      const toastMixin = Swal.mixin({
+        toast: true,
+        icon: 'success',
+        title: `datos de receta magistral: "${nombre}" copiada con éxito`,
+        animation: false,
+        position: 'top-right',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener('mouseenter', Swal.stopTimer);
+          toast.addEventListener('mouseleave', Swal.resumeTimer);
+        }
+      });
+    
+      toastMixin.fire();
+    };
+    const copiarAlPortapapelesSignos = (nombre, contenido) => {
+      // Verificar si contenido es un array
+      if (!Array.isArray(contenido)) {
+        console.error('El contenido no es un array');
+        return;
+      }
+    
+      // Copiar cada línea de contenido en los inputs
+      setSignoscontenido(contenido);
+    
+      // Mostrar el mensaje de éxito
+      const toastMixin = Swal.mixin({
+        toast: true,
+        icon: 'success',
+        title: `datos de signos de alarma: "${nombre}" copiada con éxito`,
+        animation: false,
+        position: 'top-right',
+        showConfirmButton: false,
+        timer: 3000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+          toast.addEventListener('mouseenter', Swal.stopTimer);
+          toast.addEventListener('mouseleave', Swal.resumeTimer);
+        }
+      });
+    
+      toastMixin.fire();
+    };
+    
+    
+    
+
+    const imageUrl = authpro.firma.secure_url;
   
     async function fetchImageAsBase64(url) {
       const response = await fetch(url);
@@ -370,10 +522,30 @@ const FormularioLlenarConsulta = () => {
         reader.readAsDataURL(blob);
       });
     }
-
+    function formatearFechaReceta(fecha) {
+      const fechaActual = new Date();
+      const fechaNacimiento = new Date(fecha);
+      
+      // Calcula la diferencia en milisegundos entre la fecha actual y la fecha de nacimiento
+      let diferencia = fechaActual - fechaNacimiento;
+      
+      // Convierte la diferencia en milisegundos a años
+      const milisegundosPorAnio = 1000 * 60 * 60 * 24 * 365.25;
+      const edad = Math.floor(diferencia / milisegundosPorAnio);
+      
+      return edad;
+    }
     const generarReceta = async () => {
+      const nombrepaciente = datosPaciente.paciente.nombres;
+      const apellidopaciente = datosPaciente.paciente.apellidos;
+      const rutpaciente = datosPaciente.paciente.rut;
+      const edadpaciente = formatearFechaReceta(datosPaciente.paciente.fechaNacimiento);
+      const rutprofesional = authpro.rut;
+      const nombreprofesional = authpro.nombres;
+      const apellidoprofesional = authpro.apellidos;
+      
       try {
-        // Obtener los datos de los farmacos relacionados al motivo de consulta actual
+        // Obtener los datos de los fármacos relacionados al motivo de consulta actual
         const farmacosRelacionados = Object.keys(datosPacientefarmaco)
           .filter((farmacoId) => {
             const farmaco = datosPacientefarmaco[farmacoId];
@@ -381,50 +553,68 @@ const FormularioLlenarConsulta = () => {
           })
           .map((farmacoId) => datosPacientefarmaco[farmacoId]);
     
-                // Verificar si hay fármacos seleccionados
-            if (farmacosRelacionados.length === 0) {
-              // Si no hay fármacos, simplemente detener la ejecución de la función
-             return;
-      }
-    
-        // Generar el contenido del PDF a partir de los datos de los farmacos relacionados
-        const content = farmacosRelacionados.map((farmaco) => {
-          return `  ${farmaco.nombre ||''}   ${farmaco.horario ||''} ${farmaco.dosis||''} ${farmaco.tipodeuso||''} ${farmaco.duracion||''}  ${farmaco.formato||''}`;
-        });
+        // Verificar si hay fármacos seleccionados
+        if (farmacosRelacionados.length === 0) {
+          // Si no hay fármacos, simplemente detener la ejecución de la función
+          return;
+        }
     
         // Obtener la imagen de Cloudinary como base64
         const base64Image = await fetchImageAsBase64(imageUrl);
     
-        // Crear el documento PDF
+        // Obtener la fecha actual
+        const fechaactual = new Date().toLocaleDateString();
+    
+        // Crear el contenido de la ficha de identificación del paciente
+        const fichaPaciente = [
+          [{ text: 'Nombres del paciente:', bold: true },`${nombrepaciente} ` , { text: 'Apellidos paciente:', bold: true },apellidopaciente ],
+          [{ text: 'RUT', bold: true }, rutpaciente, { text: 'Edad:', bold: true }, edadpaciente || ''],
+          [{ text: 'Profesional', bold: true }, `${nombreprofesional} ${apellidoprofesional}`, { text: 'RUT Profesional:', bold: true }, rutprofesional || ''],
+        ];
+    
+        // Crear el contenido del documento PDF a partir de los datos de los fármacos relacionados y la ficha del paciente
+        const content = [
+          { text: 'Cimiento Clínico', bold: true, margin: [0, 0, 0, 10] },
+          { text: 'RECETA MÉDICA', style: 'header', margin: [0, 0, 0, 10] },
+          {
+            table: {
+              widths: ['auto', 'auto', 'auto', 'auto'],
+              body: fichaPaciente,
+              alignment: 'center'
+            },
+            margin: [25, 0, 0, 10],
+            alignment: 'center'
+          },
+          { text: 'Tratamiento farmacológico:', style: 'subheader', margin: [0, 10, 0, 5] },
+          {
+            ul: farmacosRelacionados.map((farmaco) => ({
+              text: [
+                { text: farmaco.nombre || '', bold: true },
+                '\n',
+                `${farmaco.horario || ''} - ${farmaco.dosis || ''} - ${farmaco.tipodeuso || ''} - ${farmaco.duracion || ''} - ${farmaco.formato || ''}`
+              ]
+            }))
+          },
+          { text: '' , margin: [0, 20, 0, 0] },
+          { image: base64Image, width: 100, alignment: 'center', margin: [0, 20, 0, 0] },
+          { text: 'Firma Digital', alignment: 'center' , margin: [0, 2, 0, 0] },
+          { text: `Fecha actual: ${fechaactual}`, alignment: 'left', margin: [0, 20, 0, 0] },
+        ];
+    
+        // Definir el documento PDF
         const documentDefinition = {
-          content: [
-            { text: 'RECETA MÉDICA', style: 'header' },
-            '\n', // Salto de línea
-            {
-              stack: [
-                content // Contenido de la receta
-              ],
-              width: '100%', // Ancho del stack es 100% del espacio disponible
-              alignment: 'justify' // Alinear el contenido de manera justificada
-            },
-            {
-              image: base64Image,
-              width: 100, // Ajustar el tamaño de la imagen según tus necesidades
-              alignment: 'right'
-            },
-            {
-              text: 'Firma Digital',
-              alignment: 'right',
-              margin: [0, 5, 0, 0] // Márgenes [arriba, izquierda, abajo, derecha]
-            },
-            // Resto de las imágenes en el documento
-          ],
+          content,
           styles: {
             header: {
               fontSize: 18,
               bold: true,
               alignment: 'center',
               margin: [0, 0, 0, 10] // Márgenes [arriba, izquierda, abajo, derecha]
+            },
+            subheader: {
+              bold: true,
+              fontSize: 14,
+              margin: [0, 5, 0, 0]
             }
           },
           pageBackground: { fillColor: 'transparent' },
@@ -435,44 +625,55 @@ const FormularioLlenarConsulta = () => {
     
         // Generar el PDF a partir del documento definido
         const pdfDocGenerator = pdfMake.createPdf(documentDefinition);
+    
         // Obtener el blob del PDF generado
         pdfDocGenerator.getBlob(async (blob) => {
-            try {
-              // Crear un FormData y agregar el PDF con el nombre 'documento'
-              const formData = new FormData();
-              formData.append('documento', blob, 'documento.pdf');
-              formData.append('pacienteId', consulta.paciente._id);
+          try {
+            // Crear un FormData y agregar el PDF con el nombre 'documento'
+            const formData = new FormData();
+            formData.append('documento', blob, 'documento.pdf');
+            formData.append('pacienteId', consulta.paciente._id);
     
-              const opciones = farmacosRelacionados.map((farmaco) => farmaco.nombre || '').join(', ');
-              formData.append('opciones', opciones);
-              formData.append('tipoReceta', tipoReceta);
+            const opciones = farmacosRelacionados.map((farmaco) => farmaco.nombre || '').join(', ');
+            formData.append('opciones', opciones);
+            formData.append('tipoReceta', tipoReceta);
     
-              formData.append('profesionalId', consulta.profesional._id);
-              formData.append('motivoId', consulta.motivoconsulta._id);
+            formData.append('profesionalId', consulta.profesional._id);
+            formData.append('motivoId', consulta.motivoconsulta._id);
+            formData.append('consultaId', consulta._id);
     
-              // Realizar la petición a tu backend utilizando Axios
-              const tokenPro = localStorage.getItem('tokenPro');
-              const config = {
-                headers: {
-                  'Content-Type': 'multipart/form-data',
-                  Authorization: `Bearer ${tokenPro}`,
-                }
-              };
-              const response = await clientAxios.post('/profesional/guardar-receta', formData, config);
-              // Manejar la respuesta del backend si es necesario
-              Swal.fire('¡Perfecto!', 'La receta fue creada y enviada por correo', 'success');
-              setRecetamodalvisible(false);
-            } catch (error) {
-              // Manejar el error en caso de fallo al subir el PDF al backend
-              console.log(error);
-            }
+            // Realizar la petición a tu backend utilizando Axios
+            const tokenPro = localStorage.getItem('tokenPro');
+            const config = {
+              headers: {
+                'Content-Type': 'multipart/form-data',
+                Authorization: `Bearer ${tokenPro}`
+              }
+            };
+            const response = await clientAxios.post('/profesional/guardar-receta', formData, config);
+            setRecetamodalvisible(false);
+          } catch (error) {
+            // Manejar el error en caso de fallo al subir el PDF al backend
+            console.log(error);
+          }
         });
       } catch (error) {
         // Manejar el error en caso de fallo al generar el PDF
         console.log(error);
       }
     };
+    
+    
+    
     const generarRecetaMagistral = async () => {
+      const nombrepaciente = datosPaciente.paciente.nombres;
+      const apellidopaciente = datosPaciente.paciente.apellidos;
+      const rutpaciente = datosPaciente.paciente.rut;
+      const edadpaciente = formatearFechaReceta(datosPaciente.paciente.fechaNacimiento);
+      const rutprofesional = authpro.rut;
+      const nombreprofesional = authpro.nombres;
+      const apellidoprofesional = authpro.apellidos;
+    
       try {
         // Obtener los datos de los farmacos relacionados al motivo de consulta actual
         const farmacosRelacionados = Object.keys(datosPacientefarmaco)
@@ -482,50 +683,61 @@ const FormularioLlenarConsulta = () => {
           })
           .map((farmacoId) => datosPacientefarmaco[farmacoId]);
     
-                // Verificar si hay fármacos seleccionados
-            if (farmacosRelacionados.length === 0) {
-              // Si no hay fármacos, simplemente detener la ejecución de la función
-             return;
-      }
+        // Verificar si hay fármacos seleccionados
+        if (farmacosRelacionados.length === 0) {
+          // Si no hay fármacos, simplemente detener la ejecución de la función
+          return;
+        }
+         // Obtener la imagen de Cloudinary como base64
+         const base64Image = await fetchImageAsBase64(imageUrl);
+        // Crear el contenido de la ficha de identificación del paciente
+        const fichaPaciente = [
+          [{ text: 'Nombres del paciente:', bold: true },`${nombrepaciente} ` , { text: 'Apellidos paciente:', bold: true },apellidopaciente ],
+          [{ text: 'RUT', bold: true }, rutpaciente, { text: 'Edad:', bold: true }, edadpaciente || ''],
+          [{ text: 'Profesional', bold: true }, `${nombreprofesional} ${apellidoprofesional}`, { text: 'RUT Profesional:', bold: true }, rutprofesional || ''],
+        ];
+        const inputsArray = Array.isArray(inputs) ? inputs : [];
+
     
-        // Generar el contenido del PDF a partir de los datos de los farmacos relacionados
-        const content = farmacosRelacionados.map((farmaco) => {
-          return `  ${farmaco.nombre ||''}   ${farmaco.horario ||''} ${farmaco.dosis||''} ${farmaco.tipodeuso||''} ${farmaco.duracion||''}  ${farmaco.formato||''}`;
-        });
+        // Generar el contenido del PDF a partir de los datos de los farmacos relacionados y la ficha del paciente
+        const content = [
+          { text: 'Cimiento Clínico', bold: true, margin: [0, 0, 0, 10] },
+          { text: 'RECETA MAGISTRAL', style: 'header', margin: [0, 0, 0, 10] },
+          {
+            table: {
+              widths: ['auto', 'auto', 'auto', 'auto'],
+              body: fichaPaciente,
+              alignment: 'center', // Centrar la tabla
+            },
+            margin: [25, 0, 0, 10],
+            alignment: 'center'
+          },
+            // Incluir los datos del array inputs en el contenido del PDF
+            {
+              text: inputsArray.join('\n'), // Unir los elementos del array con un salto de línea
+              margin: [0, 10, 0, 0],
+            },
+
+          { image: base64Image, width: 100, alignment: 'center', margin: [0, 20, 0, 0] },
+          { text: 'Firma Digital', alignment: 'center', margin: [0, 2, 0, 0] },
+          { text: `Fecha actual: ${new Date().toLocaleDateString()}`, alignment: 'left', margin: [0, 20, 0, 0] },
+
+        ];
     
-        // Obtener la imagen de Cloudinary como base64
-        const base64Image = await fetchImageAsBase64(imageUrl);
-    
-        // Crear el documento PDF
+        // Definir el documento PDF
         const documentDefinition = {
-          content: [
-            { text: 'RECETA MAGISTRAL', style: 'header' },
-            '\n', // Salto de línea
-            {
-              stack: [
-                content // Contenido de la receta
-              ],
-              width: '100%', // Ancho del stack es 100% del espacio disponible
-              alignment: 'justify' // Alinear el contenido de manera justificada
-            },
-            {
-              image: base64Image,
-              width: 100, // Ajustar el tamaño de la imagen según tus necesidades
-              alignment: 'right'
-            },
-            {
-              text: 'Firma Digital',
-              alignment: 'right',
-              margin: [0, 5, 0, 0] // Márgenes [arriba, izquierda, abajo, derecha]
-            },
-            // Resto de las imágenes en el documento
-          ],
+          content,
           styles: {
             header: {
               fontSize: 18,
               bold: true,
               alignment: 'center',
               margin: [0, 0, 0, 10] // Márgenes [arriba, izquierda, abajo, derecha]
+            },
+            subheader: {
+              bold: true,
+              fontSize: 14,
+              margin: [0, 5, 0, 0]
             }
           },
           pageBackground: { fillColor: 'transparent' },
@@ -536,45 +748,44 @@ const FormularioLlenarConsulta = () => {
     
         // Generar el PDF a partir del documento definido
         const pdfDocGenerator = pdfMake.createPdf(documentDefinition);
+    
         // Obtener el blob del PDF generado
         pdfDocGenerator.getBlob(async (blob) => {
-  
-            try {
-              // Crear un FormData y agregar el PDF con el nombre 'documento'
-              const formData = new FormData();
-              formData.append('documento', blob, 'documento.pdf');
-              formData.append('pacienteId', consulta.paciente._id);
+          try {
+            // Crear un FormData y agregar el PDF con el nombre 'documento'
+            const formData = new FormData();
+            formData.append('documento', blob, 'documento.pdf');
+            formData.append('pacienteId', consulta.paciente._id);
     
-              const opciones = farmacosRelacionados.map((farmaco) => farmaco.nombre || '').join(', ');
-              formData.append('opciones', opciones);
-              formData.append('tipoReceta', tipoReceta);
+            formData.append('opciones', inputs);
+            formData.append('tipoReceta', tipoReceta);
     
-              formData.append('profesionalId', consulta.profesional._id);
-              formData.append('motivoId', consulta.motivoconsulta._id);
+            formData.append('profesionalId', consulta.profesional._id);
+            formData.append('motivoId', consulta.motivoconsulta._id);
+            formData.append('consultaId', consulta._id);
     
-              // Realizar la petición a tu backend utilizando Axios
-              const tokenPro = localStorage.getItem('tokenPro');
-              const config = {
-                headers: {
-                  'Content-Type': 'multipart/form-data',
-                  Authorization: `Bearer ${tokenPro}`,
-                }
-              };
-              const response = await clientAxios.post('/profesional/guardar-receta', formData, config);
-              // Manejar la respuesta del backend si es necesario
-              Swal.fire('¡Perfecto!', 'La receta fue creada y enviada por correo', 'success');
-              setRecetamodalvisible(false);
-            } catch (error) {
-              // Manejar el error en caso de fallo al subir el PDF al backend
-              console.log(error);
-            }
-          
+            // Realizar la petición a tu backend utilizando Axios
+            const tokenPro = localStorage.getItem('tokenPro');
+            const config = {
+              headers: {
+                'Content-Type': 'multipart/form-data',
+                Authorization: `Bearer ${tokenPro}`
+              }
+            };
+            const response = await clientAxios.post('/profesional/guardar-receta', formData, config);
+            setRecetamodalvisible(false);
+          } catch (error) {
+            // Manejar el error en caso de fallo al subir el PDF al backend
+            console.log(error);
+          }
         });
       } catch (error) {
         // Manejar el error en caso de fallo al generar el PDF
         console.log(error);
       }
     };
+    
+    
 
 //------------------------------------------------
     //Parte de los diagnosticos
@@ -722,6 +933,35 @@ const FormularioLlenarConsulta = () => {
           // Mostrar un mensaje de error o realizar acciones adicionales en caso de error
         }
       };
+      const actualizarMotivoSignos = async () => {
+        try {
+          const tokenPro = localStorage.getItem('tokenPro');
+          if (!tokenPro) return;
+      
+          const config = {
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${tokenPro}`,
+            },
+          };
+      
+          // Aquí se pasa el array signoscontenido en el campo "signosdealarma"
+          const data = {
+            signosdealarma: signoscontenido,
+          };
+          // Realizar la petición PUT hacia la API
+          await clientAxios.put(`/profesional/actualizar-signos-motivo/${datosPacientemotivo._id}`, data, config);
+      
+          // Si la petición es exitosa, mostrar mensaje o realizar acciones adicionales
+          Swal.fire('¡Perfecto!', 'Signos de alarma registrados', 'success');
+
+        } catch (error) {
+          console.error(error.message);
+          // Mostrar un mensaje de error o realizar acciones adicionales en caso de error
+        }
+      };
+      
+      
       const actualizarPaciente = async () => {
           const tokenPro = localStorage.getItem('tokenPro');
           if (!tokenPro || !enfermedadActualId) return;
@@ -796,7 +1036,22 @@ const FormularioLlenarConsulta = () => {
             actualizarPaciente();
             actualizarPacienteFar();
             actualizarMotivoFar();
+            Swal.fire({
+              title: 'Espere un momento',
+              html: 'Cargando...',
+              allowOutsideClick: false,
+              showCancelButton: false,
+              showConfirmButton: false,
+              willOpen: () => {
+                Swal.showLoading();
+              }
+            });
       
+            await fetchData();
+      
+            Swal.close(); // Cerrar el Swal de espera
+      
+
             Swal.fire('¡Perfecto!', 'Sección publicada', 'success');
           } catch (error) {
             Swal.fire('Error', 'Ha ocurrido un error', 'error');
@@ -853,27 +1108,22 @@ const FormularioLlenarConsulta = () => {
 
       //INTERCONSULTA
       const handleOpcionSi = () => {
+        setSeleccionado(true);
         setDatosPacientemotivo((prevState) => ({
           ...prevState,
-          interconsulta: 'Si' // Establecer el valor por defecto como 'Si'
+          interconsulta: 'Si',
         }));
         setMostrarFormulariointerconsulta(true);
         // Aquí puedes enviar la información al backend utilizando la variable `datosPaciente.interconsulta` ('Si')
         // por ejemplo, puedes hacer una llamada a una API utilizando fetch o axios
       };
-    
-      const handleOpcionNo = () => {
-        setDatosPacientemotivo((prevState) => ({
-          ...prevState,
-          interconsulta: 'No' // Establecer el valor por defecto como 'No'
-        }));
-        setMostrarFormulariointerconsulta(true);
-        // Aquí puedes enviar la información al backend utilizando la variable `datosPaciente.interconsulta` ('No')
-        // por ejemplo, puedes hacer una llamada a una API utilizando fetch o axios
-      };
       const toggleSeccionVisibleinterconsulta = () => {
         setSeccionVisibleinterconsulta(!seccionVisibleinterconsulta);
       };
+     const  cerrarInterconsulta = () =>  {
+        setMostrarFormulariointerconsulta(false);
+      }
+
       const actualizarPropuestaInterconsulta = () => {
         const propuestaInterconsulta = profesionalesSeleccionados.join(', ');
         setDatosPacientemotivo((prevState) => ({
@@ -922,24 +1172,72 @@ const FormularioLlenarConsulta = () => {
       }
 
       };
+      const finalizarConsulta = async () => {
+        try {
+          const tokenPro = localStorage.getItem('tokenPro');
+          if (!tokenPro) return;
       
-      
+          const config = {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${tokenPro}`,
+            },
+          };
+          await clientAxios.put(`/profesional/finalizar-consulta/${id}`,{estado:'finalizado', visible:false},config);
+          // La petición se realiza sin esperar una respuesta o realizar acciones adicionales
+        } catch (error) {
+          console.log(error);
+          // Manejar el error
+        }
+      };     
       const handleFinalizar = async () => {
+        if (datosPacienteMotivo.medidasgenerales === '' ||datosPacienteMotivo.medidasgenerales === null ) {
+          Swal.fire('¡Error!', 'Por favor, Agregue medidas generales antes de finalizar la consulta', 'error');
+          return;
+        }
+        if (datosPacienteMotivo.impresiondiagnostica === '' ||datosPacienteMotivo.impresiondiagnostica === null ) {
+          Swal.fire('¡Error!', 'Por favor, Agregue la impresión diagnóstica antes de finalizar la consulta', 'error');
+          return;
+        }
+        if (datosPaciente.registro === '' ||datosPaciente.registro === null ) {
+          Swal.fire('¡Error!', 'Por favor, Agregue el registro de la consulta antes de finalizarla', 'error');
+          return;
+        }
+        if (!authpro.firma || !authpro.firma.secure_url) {
+          Swal.fire('¡Error!', 'Aún no tienes una firma digital para generar recetas. Por favor, contáctate con el administrador de Cimiento Clínico.', 'error');
+          return;
+        }
+        
+        if (datosPacienteMotivo.interconsulta === 'Si' && (datosPacienteMotivo.propuestainterconsulta === null || datosPacienteMotivo.propuestainterconsulta.trim() === '')) {
+          Swal.fire('¡Error!', 'Por favor, si seleccionaste "Sí" para la creación de una interconsulta, no olvides indicar los profesionales.', 'error');
+          return;
+        } 
         const farmacosRelacionados = Object.keys(datosPacientefarmaco).filter((farmacoId) => {
           const farmaco = datosPacientefarmaco[farmacoId];
           return farmaco && farmaco.motivoconsulta?.includes(motivoConsultaId);
         });
+        
+        if (farmacosRelacionados.length === 0 && tipoReceta==='normal') {
+          Swal.fire('¡Error!', 'Por favor agregue fármacos para la receta normal', 'error');
+          return;
+        }
+        if (inputs.every((input) => input === '') && tipoReceta === 'magistral') {
+          Swal.fire('¡Error!', 'Por favor agregue información para su receta magistral', 'error');
+          return;
+        }
+        
       
-        const mensajeReceta = farmacosRelacionados.length > 0 ? 'SI' : 'NO';
-        const colorReceta = farmacosRelacionados.length > 0 ? 'green' : 'red';
-      
+        const mensajeReceta = tipoReceta !=='' ? 'SI' : 'NO';
+        const colorReceta = tipoReceta !=='' > 0 ? 'green' : 'red';
+
         const confirmar = await Swal.fire({
           title: '¿Estás seguro de finalizar esta consulta?',
           html: `
             <div>
-              <p>Interconsulta: ${datosPacientemotivo.interconsulta}</p>
               <p style="color: ${colorReceta}">Creación de receta médica: ${mensajeReceta}</p>
               ${mensajeReceta === 'SI' ? `<p>Tipo de receta: ${tipoReceta === 'normal' ? 'Receta Normal' : 'Receta Magistral'}</p>` : ''}
+              <p>Impresión diagnóstica: ${datosPacientemotivo.impresiondiagnostica}</p>
+              <p>Interconsulta: ${datosPacientemotivo.interconsulta}</p>
             </div>
           `,
           icon: 'info',
@@ -948,23 +1246,46 @@ const FormularioLlenarConsulta = () => {
           cancelButtonColor: '#5d5ddb',
           confirmButtonText: 'Si, Finalizar'
         });
-        
       
         if (confirmar.isConfirmed) {
           try {
+            await actualizarPacienteFar();
             if (tipoReceta === 'normal') {
-              generarReceta(); // Llamar a la función para generar la receta normal
+              await generarReceta(); // Esperar a que se genere la receta normal
             } else if (tipoReceta === 'magistral') {
-              generarRecetaMagistral(); // Llamar a la función para generar la receta magistral
+              await generarRecetaMagistral(); // Esperar a que se genere la receta magistral
             }
-            await actualizarNotificacionInterconsulta()
-            Swal.fire('¡Perfecto!', 'Consulta finalizada', 'success');
+           
+      
+            await actualizarNotificacionInterconsulta(); // Esperar a que se actualice la notificación de interconsulta
+      
+            Swal.fire({
+              title: 'Espere un momento',
+              html: 'Cargando...',
+              allowOutsideClick: false,
+              showCancelButton: false,
+              showConfirmButton: false,
+              willOpen: () => {
+                Swal.showLoading();
+              }
+            });          
+      
+            await new Promise((resolve, reject) => {
+              setTimeout(() => {
+                resolve(); // Simulación de tiempo de espera para la generación del PDF
+                Swal.close(); // Cerrar el Swal de carga
+              }, 5000);
+            });
+      
+            await finalizarConsulta(); // Esperar a que se finalice la consulta
+            navigate(`/profesional/consulta/${id}`)
+            Swal.fire('¡Perfecto!', 'La consulta fue finalizada correctamente, se envió un correo al paciente con un resumen de su consulta', 'success');
           } catch (error) {
             Swal.fire('¡Error!', 'No se pudo finalizar la consulta', 'error');
           }
         }
       };
-
+      
       const handleTipoReceta = (tipo) => {
         setTipoReceta(tipo);
         if (tipo === 'magistral') {
@@ -977,6 +1298,10 @@ const FormularioLlenarConsulta = () => {
         } else {
           setMostrarFormularioNormal(false);
         }
+
+      };
+      const SinTipoReceta = () => {
+        setTipoReceta('');
       };
       const cerrarReceta = () => {
         setMostrarFormularioReceta(false);
@@ -984,8 +1309,178 @@ const FormularioLlenarConsulta = () => {
        const cerrarRecetaNormal = () => {
         setMostrarFormularioNormal(false);
        }
-      
+       const handleOpcionNo = async () => {
+        const interconsultaNo = datosPacienteMotivo?.interconsulta !== 'Si' && datosPacienteMotivo?.interconsulta !== 'Interconsulta';
 
+        if (interconsultaNo) {
+          setSeleccionado(false);
+        }
+        const confirmar = await Swal.fire({
+          title: '¿Estás seguro de no generar interconsulta para este motivo?',
+          icon: 'info',
+          showCancelButton: true,
+          confirmButtonColor: '#5d5ddb',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Si, Guardar'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            return true;
+          } else {
+            return false;
+          }
+        });
+      
+        if (confirmar) {
+          try {
+            const tokenPro = localStorage.getItem('tokenPro');
+            if (!tokenPro) return;
+      
+            const config = {
+              headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${tokenPro}`,
+              },
+            };
+            await clientAxios.put(
+              `/profesional/actualizar-no-interconsulta/${datosPacientemotivo._id}`,
+              {
+                interconsulta: 'No',
+                propuestainterconsulta: null,
+                notificacioninterconsulta: false,
+                motivointerconsulta: null
+              },
+              config
+            );
+      
+            // Aquí actualizamos el estado 'seleccionado' a 'no'
+            setSeleccionado(false);
+            setDatosPacientemotivo((prevState) => ({
+              ...prevState,
+              interconsulta: 'No',
+              propuestainterconsulta: null,
+              notificacioninterconsulta: false,
+              motivointerconsulta: null,
+            }));
+      
+            const { data } = await clientAxios.get(
+              `/profesional/informacion-paciente-consulta/${id}`,
+              config
+            );
+            setConsulta(data);
+          } catch (error) {
+            console.error(error.message);
+            // Mostrar un mensaje de error o realizar acciones adicionales en caso de error
+          }
+        }
+        setSeccionVisibleinterconsulta(false);
+      };
+      const farmacosRelacionados = Object.keys(datosPacientefarmaco)
+  .filter((farmacoId) => {
+    const farmaco = datosPacientefarmaco[farmacoId];
+    return farmaco && farmaco.motivoconsulta?.includes(motivoConsultaId);
+  })
+  .map((farmacoId) => datosPacientefarmaco[farmacoId]);
+
+  const BorrarFarmaco = async (id) => {
+        
+    try {
+      const tokenPro = localStorage.getItem('tokenPro');
+      if (!tokenPro) return;
+  
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${tokenPro}`,
+        },
+      };
+      const resultado = await Swal.fire({
+        title: '¿Estás seguro de eliminar este tratamiento para este motivo de consulta?',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#5d5ddb',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sí',
+        cancelButtonText: 'Cancelar',
+      });
+      if (resultado.isConfirmed) {
+      const response = await clientAxios.delete(`/profesional/eliminar-farmaco-motivo/${id}`, config);
+      Swal.fire('¡Listo!', 'Tratamiento farmacológico eliminado', 'success');
+      fetchData()
+    }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const ObtenerRecetasmagistrales = async () => {
+    const tokenPro = localStorage.getItem('tokenPro');
+    if (!tokenPro) return;
+
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${tokenPro}`
+      }
+    };
+
+    try {
+      const { data } = await clientAxios.get(`/profesional/obtener-recetasmagistrales`, config);
+      setRecetasmagistrales(data);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    ObtenerRecetasmagistrales();
+  }, [])
+  const recetasmagistralfiltradas = recetasmagistrales.filter(me => {
+    if (!me || (!me.nombre && !me.contenido)) return false;
+  
+    const nombre = me.nombre ? me.nombre.toString().toLowerCase() : '';
+    const contenido = me.contenido ? me.contenido.toString().toLowerCase() : '';
+  
+    return nombre.includes(buscarRecetaValue.toLowerCase()) ||  contenido.includes(buscarRecetaValue.toLowerCase());
+  });
+
+
+  const ObtenerSignos = async () => {
+    const tokenPro = localStorage.getItem('tokenPro');
+    if (!tokenPro) return;
+
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${tokenPro}`
+      }
+    };
+
+    try {
+      const { data } = await clientAxios.get(`/profesional/obtener-signos`, config);
+      setSignos(data);
+      setLoading(false);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    ObtenerSignos();
+  }, [])
+  const signosfiltrados = signos.filter(sig => {
+    if (!sig || (!sig.nombre && !sig.contenido)) return false;
+  
+    const nombre = sig.nombre ? sig.nombre.toString().toLowerCase() : '';
+    const contenido = sig.contenido ? sig.contenido.toString().toLowerCase() : '';
+  
+    return nombre.includes(buscarSignosValue.toLowerCase()) ||  contenido.includes(buscarSignosValue.toLowerCase());
+  });
+  useEffect(() => {
+    // Cuando datosPacienteMotivo.interconsulta cambie, actualizamos el estado seleccionado
+    setSeleccionado(
+      datosPacienteMotivo?.interconsulta === 'Si' || datosPacienteMotivo?.interconsulta === 'Interconsulta'
+    );
+  }, [datosPacienteMotivo?.interconsulta]);
   return (
     <>
     <div className="max-w-7xl mx-auto mt-10 bg-gray-200 px-5 py-5  rounded-t ">
@@ -1299,7 +1794,9 @@ onClick={() => togglefar(farmacoId)}
   <p className="text-3xl"><MdKeyboardArrowRight /></p>
 )}
 </button>
+
 </div>
+
 
 
 </div>
@@ -1309,7 +1806,13 @@ onClick={() => togglefar(farmacoId)}
   {isEnfermedadOculta && (
     <>
 {showButton ? (
+  <div>
+<div className="flex justify-end">
+
+<button  onClick={() => BorrarFarmaco(farmaco._id)} className="bg-coral-300 hover:bg-coral-200 px-1 py-1  rounded text-sm text-white">Borrar farmaco 🗑️</button>
+</div>
 <div className="grid grid-cols-2 sm:grid-cols-4 gap-1">
+  
 <div className="flex flex-col text-sm">
 <div className="flex">
 <label htmlFor="nombre">Nombre del farmaco:</label>
@@ -1367,6 +1870,7 @@ onChange={(e) => handleChangefarmaco(e, farmacoId)}
 </div>
 
 
+</div>
 </div>
 ) : (
   <div className="flex flex-col text-sm gap-1">
@@ -1460,12 +1964,7 @@ onChange={(e) => handleChangefarmaco(e, farmacoId)}
     </label>
     <label >{farmaco.tipo||''}</label>
   </div>
-  <div className="flex items-center  gap-1">
-    <label htmlFor="obsdiagnostico" className="font-bold">
-    Enfermedad asociada:
-    </label>
-    <label>{farmaco.enfermedad||''}</label>
-  </div>
+
 </div>
 )}
 </>
@@ -1519,6 +2018,7 @@ onChange={(e) => handleChangefarmaco(e, farmacoId)}
   <p className="max-w-7xl mx-auto bg-gray-200  py-5 rounded-md px-2">Cargando...</p>
 ) : ( 
 <div>
+{showButton && (  
 <div className="flex gap-2">
   <p className="mt-1">¿Qué tipo de receta quieres generar?</p>
   <button
@@ -1533,130 +2033,154 @@ onChange={(e) => handleChangefarmaco(e, farmacoId)}
   >
     Receta Magistral
   </button>
+  <button
+    className={`text-white px-2 py-2 rounded text-sm ${tipoReceta === '' ? 'bg-lila-100' : 'bg-lila-300'}`}
+    onClick={SinTipoReceta}
+  >
+    Sin Receta
+  </button>
 </div>
+)  }
 {mostrarFormularioReceta && (
-  
- <div>
-  <hr className="mt-2" />
-    <div className="flex justify-end">          
-  <button onClick={cerrarReceta} className="text-md px-1 flex "> Cerrar
-< IoMdCloseCircle className=" text-lila-300 text-2xl  hover:text-lila-100 "/>
-</button>
-  </div>
-{ Object.keys(datosPacientefarmaco)
-.filter((farmacoId) => {
-const farmaco = datosPacientefarmaco[farmacoId];
-return farmaco && farmaco.motivoconsulta?.includes(motivoConsultaId);
-})
-.map((farmacoId, index) => {
-const numeroEnumeracion = index + 1;
-const isEnfermedadOculta = ocultarFarmaco[farmacoId] || false;
-const farmaco = datosPacientefarmaco[farmacoId];
-return (
-<div className=" bg-gray-50 " key={farmacoId}>
-<div className="" >
-<div className="container mx-auto p-1">
-<div className="grid grid-cols-2 items-center  ">
-<div className="flex justify-start gap-2 ">
-<div className="">
-<h2 className="text-md font-semibold">{numeroEnumeracion}.-</h2>
-</div>
-<div>
-<h2 className="text-md font-regular">
-{farmaco.nombre}
-</h2>
-</div>
-<div>
-</div>
-<div>
-</div>
-</div>
-</div>
-    <>
-{showButton ? (
-<div className="grid grid-cols-1 sm:grid-cols-1 gap-1">
-<div className="flex flex-col text-sm">
-<div className="flex">
-<label htmlFor="magistral">Detalles del tratamiento para receta magistral:</label>
-</div>
-<textarea
-key={farmacoId}
-type="text"
-className={`border px-2 py-1.5 rounded-lg  flex-grow ${farmaco.guardadoporpaciente ? 'text-gray-600' : 'text-black'}`}
-name="magistral"
-placeholder="Detalles para generar la receta magistral. Ej:Urea 1% adapaleno 0.1%"
-value={farmaco.magistral || ''}
-onChange={(e) => handleChangefarmaco(e, farmacoId)}
-/>
-
-</div>
-
-
-</div>
-) : (''
-)}
-</>
-
-</div>
-</div>
-<hr />
-</div>
-
-
-);
-})}
-   {Object.keys(datosPacientefarmaco).length === 0 && (
-      <div className="text-center ">
-        <h1 className="font-semibold text-coral-300">Aún no se han registrado tratamientos farmacológicos para este motivo, por lo que no puedes crear una receta aún</h1>
-        <h1>Empieza registrando un tratamiento aquí</h1>
+  <div className="fixed z-50 inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+  <div className="bg-white p-2 rounded-lg min-w-4xl min-h-4xl">
+    <div className="flex justify-end">
+      <button onClick={cerrarReceta}>
+        <AiFillCloseCircle className="text-3xl text-coral-300 hover:text-coral-100" />
+      </button>
+    </div>
+    <div>
+      <h1 className="text-center  font-bold mb-6 text-xl">Generar receta magistral</h1>
+    </div>
+<div className="grid grid-cols-2 gap-8  ">
+<div className="col-span-1 bg-white p-12 rounded-lg border border-zinc-900 flex flex-col">
+  <label htmlFor="magistral" className="text-lg mb-4 font-semibold">
+    Receta magistral
+  </label>
+  {inputs.map((value, index) => (
+    <div key={index} className="mb-4">
+      <label htmlFor={`input-${index}`} className="text-md mb-2 mr-1">
+        {index + 1}.-
+      </label>
+      <input
+        id={`input-${index}`}
+        type="text"
+        value={value}
+        onChange={(event) => handleInputChange(index, event)}
+        className="border p-2 rounded-lg text-sm px-2 w-96"
+        onKeyDown={handleKeyDown}
+      />
+      {index > 0 && (
         <button
-onClick={VerFormularioCerradofar}
-className="uppercase bg-coral-200 hover:bg-coral-100 px-2 py-2 text-white rounded-md mt-2"
->
-{mostrarFormularioFarmaco ? (
-  <div className="flex">
-    <IoMdCloseCircle className="text-xl" />
+          className="px-3 py-1 ml-1 text-md rounded-md text-white bg-lila-200 hover:bg-lila-100 mt-2"
+          onClick={() => removeInput(index)}
+        >
+          X
+        </button>
+      )}
+    </div>
+  ))}
+  <div className="flex justify-center">
+  <button
+    className="px-4 py-2 text-sm rounded-md text-white bg-lila-200 hover:bg-lila-100"
+    onClick={addInput}
+  >
+    Agregar indice
+  </button>
   </div>
+</div>
+
+  <div className="col-span-1 grid gap-8">
+    <div className=" bg-white p-8 rounded-lg border border-zinc-900">
+    <div className="flex justify-center px-1 py-1 ">
+                  <label htmlFor="orden" className="mr-2 text-md font-semibold">Buscar:</label>
+                  <input type="text" value={buscarRecetaValue} onChange={(e) => setBuscarRecetaValue(e.target.value)} placeholder="Buscar datos receta magistral" className="p-1 border rounded-md w-52 placeholder:text-sm" />
+
+                </div>
+    </div>
+    <div className="row-span-1 bg-white p-12 rounded-lg border border-zinc-900">
+    <div className="">
+  {recetasmagistralfiltradas.slice((paginareceta - 1) * porPaginareceta, (paginareceta - 1) * porPaginareceta + porPaginareceta).map((me) => (
+    <div key={me._id} className="py-2 border border-neutral-800 cursor-pointer hover:bg-gray-100" onClick={() => copiarAlPortapapelesIndice(me.nombre, me.contenido)}>
+      <div className="flex justify-end ">
+        <button className="px-2 py-1 text-sm rounded-md text-white bg-lila-200 hover:bg-lila-100" onClick={() => copiarAlPortapapelesIndice(me.nombre, me.contenido)}>
+          <FaCopy />
+        </button>
+      </div>  
+      <p className="text-center text-sm font-semibold">{me.nombre || ''}</p>
+      {Array.isArray(me.contenido) ? (
+        me.contenido.map((linea, index) => (
+          <p key={index} className="text-xs bg-gray-100 px-2 p-1 ">{`${index + 1}.- ${linea}`}</p>
+        ))
+      ) : (
+        <p className="text-xs bg-gray-100 px-2 p-1 ">{me.contenido}</p>
+      )}
+
+      <p className="text-left text-sm font-semibold"> Fuente:{me.fuente || ''}</p>
+      <div className="text-left text-sm font-semibold flex"> Publicado por:{me.anonimo ===false ?<p> {me.profesional.nombres} {me.profesional.apellidos} </p> :'Anónimo'}</div>
+
+      <hr />
+    </div>
+  ))}
+</div>
+
+                {recetasmagistralfiltradas.length ? (
+  <Paginacion
+    maximo={maximoreceta}
+    pagina={paginareceta}
+    setPagina={setPaginaReceta}
+  />
 ) : (
-  <div className="flex">
-    Agregar farmaco<MdAddCircle className="text-2xl" />
-  </div>
+
+  <div> <h1 className="text-center">Aún no hay datos para filtrar </h1> </div>
 )}
-</button>
-      </div>
-    )}
+
+
+    </div>
+  </div>
+</div>
+
+    <div className="flex justify-center mt-8">
+      {showButton && (
+        <button onClick={cerrarReceta} className="px-6 py-2 text-sm rounded-md text-white bg-lila-200 hover:bg-lila-100">
+          Guardar información
+        </button>
+      )}
+    </div>
+  </div>
 </div>
 
     )}
 {mostrarFormularioNormal && (
   
   <div>
-   <hr className="mt-2" />
-     <div className="flex justify-end">          
-   <button onClick={cerrarRecetaNormal} className="text-md px-1 flex "> Cerrar
- < IoMdCloseCircle className=" text-lila-300 text-2xl  hover:text-lila-100 "/>
- </button>
-   </div>
-    {Object.keys(datosPacientefarmaco).length === 0 && (
-       <div className="text-center ">
-         <h1 className="font-semibold text-coral-300">Aún no se han registrado tratamientos farmacológicos para este motivo, por lo que no puedes crear una receta aún</h1>
-         <h1>Empieza registrando un tratamiento aquí</h1>
-         <button
- onClick={VerFormularioCerradofar}
- className="uppercase bg-coral-200 hover:bg-coral-100 px-2 py-2 text-white rounded-md mt-2"
- >
- {mostrarFormularioFarmaco ? (
-   <div className="flex">
-     <IoMdCloseCircle className="text-xl" />
-   </div>
- ) : (
-   <div className="flex">
-     Agregar farmaco<MdAddCircle className="text-2xl" />
-   </div>
- )}
- </button>
-       </div>
-     )}
+
+{farmacosRelacionados.length === 0 && (
+  <div className="text-center">
+    <hr className="mt-2" />
+        <div className="flex justify-end">          
+  <button onClick={cerrarRecetaNormal} className="text-md px-1 flex "> Cerrar
+< IoMdCloseCircle className=" text-lila-300 text-2xl  hover:text-lila-100 "/>
+</button>
+  </div>
+    <h1 className="font-semibold text-coral-300">Aún no se han registrado tratamientos farmacológicos para este motivo, por lo que no puedes crear una receta aún</h1>
+    <h1>Empieza registrando un tratamiento aquí</h1>
+    <button
+      onClick={VerFormularioCerradofar}
+      className="uppercase bg-coral-200 hover:bg-coral-100 px-2 py-2 text-white rounded-md mt-2"
+    >
+      {mostrarFormularioFarmaco ? (
+        <div className="flex">
+          <IoMdCloseCircle className="text-xl" />
+        </div>
+      ) : (
+        <div className="flex">
+          Agregar farmaco<MdAddCircle className="text-2xl" />
+        </div>
+      )}
+    </button>
+  </div>
+)}
  </div>
      )}
   {receta && receta.length > 0 ? (
@@ -1669,21 +2193,25 @@ className="uppercase bg-coral-200 hover:bg-coral-100 px-2 py-2 text-white rounde
         <li key={index} className="flex items-center border-b border-gray-200 py-4">
           <div className="mr-4">
             
+            
             {`${index + 1}.- Farmacos de la receta: ${item.opciones.join(', ')}`}/ Tipo de receta: {item.tipoReceta ==='normal'?'Receta Normal':'Receta Magistral'} </div>
-          {item.documento?.secure_url ? (
-            <div className="text-sm font-medium text-gray-900 py-0.5 px-0.5">
-              <button
-                onClick={() =>
-                  downloadFile(item.documento?.secure_url, `Receta médica(Cimiento clínico).pdf`)
-                }
-                className="bg-lila-200 hover:bg-lila-100 text-white text-sm font-nunito font-semibold py-1 px-2 rounded inline-flex items-center"
-              >
-                📥 Descargar
-              </button>
-            </div>
-          ) : (
-            <div className="lg:px-6 lg:py-4">No se subió archivo</div>
-          )}
+          
+            {item.profesional?._id === authpro._id && item.documento?.secure_url ? (
+  <div className="text-sm font-medium text-gray-900 py-0.5 px-0.5">
+    <button
+      onClick={() =>
+        downloadFile(item.documento?.secure_url, `Receta médica(Cimiento clínico).pdf`)
+      }
+      className="bg-lila-200 hover:bg-lila-100 text-white text-sm font-nunito font-semibold py-1 px-2 rounded inline-flex items-center"
+    >
+      📥 Descargar
+    </button>
+  </div>
+) : (
+  <div className="lg:px-6 lg:py-4"></div>
+)}
+
+
         </li>
       ))}
     </ul>
@@ -1705,23 +2233,26 @@ className="uppercase bg-coral-200 hover:bg-coral-100 px-2 py-2 text-white rounde
   <p className="max-w-7xl mx-auto bg-gray-200  py-5 rounded-md px-2">Cargando...</p>
 ) : (
   <div>
+
        <ExamenSolicitado
         consultaId={consulta._id}
         pacienteId={consulta.paciente._id}
         profesionalId={consulta.profesional._id}
+        motivoConsultaId={consulta.motivoconsulta._id}
         consulta={consulta}
+        nombrepaciente={datosPaciente.paciente.nombres}
+        apellidopaciente={datosPaciente.paciente.apellidos}
+        rutpaciente={datosPaciente.paciente.rut}
+        edadpaciente={datosPaciente.paciente.fechaNacimiento}
+
       />
   </div>
 )}
-   </div>
-      </div>
-    )}
-  </div>
-     {/*INTERCONSULTA */}
-     <div className=" py-4">
-    <div className="max-w-7xl mx-auto bg-lila-300 px-3 py-1 rounded-t flex justify-start">
+        {/*INTERCONSULTA */}
+        <div className=" py-1 mb-5">
+    <div className="max-w-7xl mx-auto  px-3 py-1 rounded-t flex justify-start">
       <button
-        className=" py-2 text-sm rounded-md  text-white "
+        className=" py-2 text-sm rounded-md  text-black "
         onClick={toggleSeccionVisibleinterconsulta}>
         {seccionVisibleinterconsulta ? <div className="flex "> <p className="text-sm font-semibold">Interconsulta: </p>  
         <div>{datosPacienteMotivo.interconsulta ==='Interconsulta'?<p className="text-sm font-semibold px-1"> {datosPacienteMotivo.especialidades} </p> : ''} </div>
@@ -1742,94 +2273,171 @@ className="uppercase bg-coral-200 hover:bg-coral-100 px-2 py-2 text-white rounde
       </button>
     </div>
     {seccionVisibleinterconsulta && (
- <div className="max-w-7xl mx-auto px-2 border-l-2 border-l-indigo-200 border-r-2 border-r-indigo-200 border-b-2  border-b-indigo-200 bg-gray-50">
+ <div className="max-w-7xl mx-auto px-2  bg-gray-50">
  <div className="py-2">
   <div className="flex ">
- <h1>{datosPacienteMotivo.interconsulta ==='Interconsulta'?<p>Se genero una interconsulta con profesional/es: {datosPacienteMotivo.especialidades}</p>:<p></p>}</h1>
+ <h1>{datosPacienteMotivo.interconsulta ==='Interconsulta'?<p className="font-semibold">Se genero una interconsulta con profesional/es: {datosPacienteMotivo.especialidades || ''}<button onClick={handleOpcionSi}>< BsFillPencilFill className="text-lila-300 hover:text-lila-200 ml-1"/></button></p>:<p></p>}</h1>
+ <h1>{datosPacienteMotivo.interconsulta ==='Si'?<p className="font-semibold">Actualmente se propuso una interconsulta con los profesionales: {datosPacienteMotivo.propuestainterconsulta|| ''} <button onClick={handleOpcionSi}>< BsFillPencilFill  className="text-lila-300 hover:text-lila-200 ml-1"/></button>  </p>:<p></p>}</h1>
   </div>
   <div className="flex gap-2">
 
    <label htmlFor="" className="text-md font-regular mt-2">
-   <h1>{datosPacienteMotivo.interconsulta ==='Interconsulta'?<p> ¿Quieres generar una nueva interconsulta?</p>:<p>¿Generar Interconsulta?</p>}</h1>
-
+   <h1>{datosPacienteMotivo.interconsulta  ==='Interconsulta' || datosPacienteMotivo.interconsulta ==='Si'?<p> ¿Quieres generar una nueva interconsulta?</p>:<p>¿Generar Interconsulta?</p>}</h1>
    </label>
-   <div className="mt-1">
-     <button
-       className="px-2 py-1 mr-2  text-black rounded"
-       onClick={handleOpcionSi}>
-       Si
-     </button>
-     <button
-       className="px-2 py-1  text-black rounded"
-       onClick={handleOpcionNo}>
-       No
-     </button>
-   </div>
+   <div className="toggle-switch">
+      <button
+        className={`toggle-option ${seleccionado ? 'selected' : ''}`}
+        onClick={handleOpcionSi}
+      >
+        Si
+      </button>
+      <button
+        className={`toggle-option ${!seleccionado ? 'selected' : ''}`}
+        onClick={handleOpcionNo}
+      >
+        No
+      </button>
+    </div>
+
+
    </div>
    {mostrarFormulariointerconsulta && (
-      <div className="mt-2">
-        {/* Aquí puedes agregar los campos adicionales del formulario */}
-        {datosPacientemotivo.interconsulta === 'Si' ? (
-             <div>
-             <p>Selecciona los profesionales de la salud:</p>
-             <div>
-               <label>
-               <input
-                      type="checkbox"
-                      value="Médico"
-                      onChange={handleCheckboxChange}
-                    />
-                 Médico
-               </label>
-             </div>
-             <div>
-               <label>
-               <input
-                      type="checkbox"
-                      value="Cirujano"
-                      onChange={handleCheckboxChange}
-                    />
-                 Cirujano
-               </label>
-             </div>
-             <div>
-               <label>
-               <input
-                      type="checkbox"
-                      value="Nutricionista"
-                      onChange={handleCheckboxChange}
-                    />
-                 Nutricionista
-               </label>
-             </div>
-             {/* Agrega más checkboxes para otros profesionales si es necesario */}
-           </div>
-        ) : (
-          <h1></h1>
-        )}
+    <div className="fixed z-50 inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50 ">
 
-{datosPacientemotivo.interconsulta === 'No' ? (
-             <div>
-              <h1>No se generara Interconsulta para este motivo</h1>
-           </div>
-        ) : (
-          <h1></h1>
-        )}
-      </div>
+
+  <div className="bg-white p-6 rounded-lg">
+    <div className="flex justify-end">
+    <button onClick={cerrarInterconsulta}>
+    <AiFillCloseCircle className="text-3xl text-coral-300  hover:text-coral-100"/>
+      </button>
+    </div>
+
+    <div className="mt-2">
+      {/* Aquí puedes agregar los campos adicionales del formulario */}
+      {datosPacientemotivo.interconsulta === 'Si' && (
+        <div>
+           <h1>{datosPacienteMotivo.interconsulta ==='Interconsulta'?<p className="font-semibold">Se genero una interconsulta con profesional/es: {datosPacienteMotivo.especialidades}</p>:<p></p>}</h1>
+ <h1>{datosPacienteMotivo.interconsulta ==='Si'?<div className="font-semibold flex">Actualmente se propuso una interconsulta con los profesionales: <p className="text-lila-300">{datosPacienteMotivo.propuestainterconsulta}</p> </div>:<p></p>}</h1>
+          <p className="text-sm font-semibold">Selecciona los profesionales de la salud:</p>
+          <div className="grid grid-cols-3 sm:grid-cols-8 gap-1">
+            <div>
+              <label>
+                <input
+                  type="checkbox"
+                  value="Médico"
+                  onChange={handleCheckboxChange}
+                  className="mr-1"
+                />
+                Médico
+              </label>
+            </div>
+            <div>
+              <label>
+                <input
+                  type="checkbox"
+                  value="Cirujano"
+                  onChange={handleCheckboxChange}
+                  className="mr-1"
+                />
+                Cirujano
+              </label>
+            </div>
+            <div>
+              <label>
+                <input
+                  type="checkbox"
+                  value="Nutricionista"
+                  onChange={handleCheckboxChange}
+                  className="mr-1"
+                />
+                Nutricionista
+              </label>
+            </div>
+            <div>
+              <label>
+                <input
+                  type="checkbox"
+                  value="diabetólogo"
+                  onChange={handleCheckboxChange}
+                  className="mr-1"
+                />
+                Diabetologo
+              </label>
+            </div>
+          </div>
+          <div className="mt-4">
+            <label htmlFor="motivointerconsulta" className="block text-sm font-semibold mb-1">Motivo de la interconsulta</label>
+            <textarea
+              className="w-full h-32 p-3 bg-white border rounded border-gray-300 resize-none outline-none focus:border-indigo-500"
+              placeholder="Escribe el motivo por el cual se propone una interconsulta..."
+              type="text"
+              name="motivointerconsulta"
+              value={datosPacienteMotivo.motivointerconsulta || ''}
+              onChange={Actualizacionmodo}
+            ></textarea>
+          </div>
+        </div>
+      )}
+
+    </div>
+    <div className=" flex justify-center mt-2">
+             {showButton && (
+               <button className="px-1 py-2 text-sm rounded-md text-center mb-2 text-white bg-lila-200 hover:bg-lila-100" onClick={guardarDatos}>
+              Guardar interconsulta
+             </button>
+            )}
+   </div>
+  </div>
+</div>
+
     )}
  </div>
 </div>
             )  }
 
         </div>
-</div>)}
-<div className=" flex justify-center mt-2">
-             {showButton && (
-               <button className="px-4 py-3 text-sm rounded-md text-center mb-2 text-white bg-lila-200 hover:bg-lila-100" onClick={guardarDatos}>
-               GUARDAR REGISTRO DE LA CONSULTA
-             </button>
-            )}
+
+
+{/* SECCIÓN DE CONTROLES! */}
+{cargando || !datosCargados ? (
+  <p className="max-w-7xl mx-auto bg-gray-200  py-5 rounded-md px-2">Cargando...</p>
+) : (
+  <div>
+       <FormularioControles
+        consultaId={consulta._id}
+        pacienteId={consulta.paciente._id}
+        motivoId={consulta.motivoconsulta._id}
+        consulta={consulta}
+        profesionalId={consulta.profesional._id}
+      />
+  </div>
+)}
+
    </div>
+
+      </div>
+    )}
+    
+  </div>
+
+</div>)}
+<div>
+{cargando || !datosCargados ? ( 
+  <p className="max-w-7xl mx-auto bg-gray-200  py-5 rounded-md px-2">Cargando...</p>
+
+ )  :
+ <div className=" flex justify-center mt-2">
+{showButton && (
+  <button className="px-4 py-3 text-sm rounded-md text-center mb-2 text-white bg-lila-200 hover:bg-lila-100" onClick={guardarDatos}>
+  GUARDAR REGISTRO DE LA CONSULTA
+</button>
+)}
+</div>
+ 
+ }
+
+</div>
+
       {mostrarFormularioFarmaco && (
   <div className="fixed inset-0 flex  items-center justify-center z-50">
     <div
@@ -1943,10 +2551,167 @@ className="uppercase bg-coral-200 hover:bg-coral-100 px-2 py-2 text-white rounde
    </div>  
 
    {/*BOTON PARA FINALIZAR CONSULTA (ENVIARA PROPUIESTA INTERCONSULTA) */}
-   <div className=" flex justify-center p-4">
+   <div>
+   {cargando || !datosCargados ? ( 
+  <p className=""></p>)  :
+ <div>
+{showButton && (
+  <div className="fixed bottom-0 right-0 p-4">
+    <button onClick={handleFinalizar} className="text-[14px] bg-gradient-to-r from-coral-200 to-coral-300 hover:from-coral-100 hover:to-coral-300 px-3 py-1.5 rounded-full shadow-lg text-white font-semibold">
+      Finalizar la consulta
+    </button>
+  </div>
+)}
 
-        <button className="text-5xl text-white bg-coral-200 hover:bg-coral-300 px-2 py-2 rounded-md" onClick={handleFinalizar}>Finalizar la consulta</button>
+</div>
+ } 
+</div>
+   {/*BOTON PARA ABIR SECCIÓN DE SIGNOS DE ALARMA*/}
+   <div>
+   {cargando || !datosCargados ? ( 
+  <p className=""></p>)  :
+ <div>
+{showButton && (
+  <div className="fixed bottom-28 right-0 p-4">
+  <button
+    onClick={abrirFormularioSignos}
+    className="flex flex-col items-center text-[14px] bg-gradient-to-r from-blue-300 to-blue-400 hover:from-blue-200 hover:to-blue-500 px-3 py-1.5 rounded-full shadow-lg text-white "
+  >
+    <div className="text-lg text-blue-900">
+      <BsFillExclamationOctagonFill />
+    </div>
+    <div className="text-xs text-white">
+      Signos de alarma
+    </div>
+  </button>
+</div>
+
+
+
+)}
+
+</div>
+ } 
+</div>
+
+
+
+
+{mostrarFormularioSignos && (
+  <div className="fixed z-50 inset-0 flex items-center justify-center bg-gray-900 bg-opacity-50">
+  <div className="bg-white p-2 mx-10 my-10 rounded-lg w-full">
+    <div className="flex justify-end">
+      <button onClick={cerrarFormularioSignos}>
+        <AiFillCloseCircle className="text-3xl text-coral-300 hover:text-coral-100" />
+      </button>
+    </div>
+    <div>
+      <h1 className="text-center text-lila-300  font-bold mb-6 text-xl">Signos de alarma</h1>
+    </div>
+<div className="grid grid-cols-1 sm:grid-cols-2 gap-8  ">
+<div className="col-span-1 bg-white p-12 rounded-lg border border-zinc-900 flex flex-col">
+  <div>
+        <h1 className="text-center text-lila-300 font-bold mb-6 text-xl">
+          {datosPacienteMotivo.signosdealarma === null || datosPacienteMotivo.signosdealarma === undefined || datosPacienteMotivo.signosdealarma===''
+            ? 'Registro de signos de alarma'
+            : 'Actualiza los signos de alarma'}
+        </h1>
       </div>
+  {signoscontenido.map((value, index) => (
+    <div key={index} className="mb-4 w-full flex">
+      <label htmlFor={`input-${index}`} className="text-md mb-2 mr-1 ">
+        {index + 1}.-
+      </label>
+      <input
+        id={`input-${index}`}
+        type="text"
+        value={value}
+        onChange={(event) => handleInputChangeSignos(index, event)}
+        className="border p-2 rounded-lg text-sm px-2 w-full"
+        onKeyDown={handleKeyDownSignos}
+      />
+      
+      {index > 0 && (
+        <button
+          className="px-3 py-1 ml-1 text-md rounded-md text-white bg-lila-200 hover:bg-lila-100 mt-2"
+          onClick={() => removeInputSignos(index)}
+        >
+          X
+        </button>
+      )}
+    </div>
+  ))}
+  <div className="flex justify-center">
+  <button
+    className="px-4 py-2 text-sm rounded-md text-white bg-lila-200 hover:bg-lila-100"
+    onClick={addInputSignos}
+  >
+    Agregar indice
+  </button>
+  </div>
+</div>
+
+  <div className="col-span-1 grid gap-8">
+    <div className=" bg-white p-8 rounded-lg border border-zinc-900">
+    <div className="flex justify-center px-1 py-1 ">
+                  <label htmlFor="orden" className="mr-2 text-md font-semibold">Buscar:</label>
+                  <input type="text" value={buscarSignosValue} onChange={(e) => setBuscarSignosValue(e.target.value)} placeholder="Buscar signos de alarma" className="p-1 border rounded-md w-full placeholder:text-sm" />
+
+                </div>
+    </div>
+    <div className="row-span-1 bg-white p-1 sm:p-12 rounded-lg border border-zinc-900">
+    <div className="">
+  {signosfiltrados.slice((paginaSignos - 1) * porPaginaSignos, (paginaSignos - 1) * porPaginaSignos + porPaginaSignos).map((me) => (
+    <div key={me._id} className="py-2 border border-neutral-800 cursor-pointer hover:bg-gray-100" onClick={() => copiarAlPortapapelesSignos(me.nombre, me.contenido)}>
+      <div className="flex justify-end ">
+        <button className="px-2 py-1 text-sm rounded-md text-white bg-lila-200 hover:bg-lila-100" onClick={() => copiarAlPortapapelesSignos(me.nombre, me.contenido)}>
+          <FaCopy />
+        </button>
+      </div>  
+      <p className="text-center text-sm font-semibold">{me.nombre || ''}</p>
+      {Array.isArray(me.contenido) ? (
+        me.contenido.map((linea, index) => (
+          <p key={index} className="text-xs bg-gray-100 px-2 p-1 ">{`${index + 1}.- ${linea}`}</p>
+        ))
+      ) : (
+        <p className="text-xs bg-gray-100 px-2 p-1 ">{me.contenido}</p>
+      )}
+
+      <p className="text-left text-sm font-semibold"> Fuente:{me.fuente || ''}</p>
+      <div className="text-left text-sm font-semibold flex"> Publicado por:{me.anonimo ===false ?<p> {me.profesional.nombres} {me.profesional.apellidos} </p> :'Anónimo'}</div>
+
+      <hr />
+    </div>
+  ))}
+</div>
+
+   {signosfiltrados.length ? (
+  <Paginacion
+    maximo={maximosignos}
+    pagina={paginaSignos}
+    setPagina={setPaginaSignos}
+  />
+) : (
+
+  <div> <h1 className="text-center">Aún no hay datos para filtrar </h1> </div>
+)}
+
+
+    </div>
+  </div>
+</div>
+
+    <div className="flex justify-center mt-8">
+      {showButton && (
+        <button onClick={actualizarMotivoSignos} className="px-6 py-2 text-sm rounded-md text-white bg-lila-200 hover:bg-lila-100">
+          Guardar información
+        </button>
+      )}
+    </div>
+  </div>
+</div>
+
+    )}
 
     </>
   )

@@ -34,7 +34,7 @@ useEffect(() => {
 
 
    <div className="md:flex  lg:gap-14 xs:gap-0 ">
-    <div className="sm:w-1/6 xl:w-3/6 ml-4 md:mb-0 ">
+    <div className="sm:w-1/6 xl:w-3/6 ml-10 md:mb-0 ">
     <h1 className="text-gray-600 font-nunito font-semibold text-lg py-5 xl:ml-20 xs:ml-0 ">¿Consumes drogas?</h1>
     </div>
     <div className="py-3 md:w-6/6 ">

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import clientAxios from "../../config/axios"
 import useHistoriaCli from "../../hooks/paciente/useHistoriaCli"
 import Alerta from "../Alerta"
+import CustomTooltip from "./CustomTooltip"
 const FormularioAlergia = () => {
   const [alerta, setAlerta ]= useState({})
   const [nombre, setNombre] = useState('')
@@ -150,7 +151,12 @@ useEffect(()=>{
 
     <div className="md:flex  lg:gap-24 xs:gap-0 px-5 ">
       <div className="md:w-4/6 ml-4 md:mb-0   ">
-      <label className="text-gray-700 font-bold text-md">Alergias</label>
+      <div>
+  <label className="text-gray-700 font-bold text-sm" data-tooltip-id="antecedentes-tooltip" data-tooltip-content="Ingresa cualquier tipo de alergia que tengas (alimentos,medicamentos,etc)">
+  Alergias
+    <CustomTooltip id="antecedentes-tooltip" message="Ingresa cualquier tipo de alergia que tengas(alimentos,medicamentos,etc)" />
+  </label>
+</div>
       <input
             type="text"
             className="w-11/12 focus:outline-none focus:text-gray-900  border border-gray-300 rounded-md placeholder-slate-400 p-2 "

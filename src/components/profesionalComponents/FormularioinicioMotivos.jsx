@@ -8,6 +8,7 @@ import { ModalMotivo } from "./ModalMotivo";
 import {ModalHora} from "./ModalHora"
 import proAuth from "../../hooks/proAuth"
 import moment from 'moment-timezone';
+import { Paginacion } from "../Paginacion"
 import { parseISO, isSameDay, startOfDay,parse, isAfter, isBefore} from 'date-fns';
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -25,6 +26,9 @@ const FormularioinicioMotivos= ({}) => {
     const [orden, setOrden] = useState("descendente");
     const [searchValue, setSearchValue] = useState('');
     const [loading, setLoading] = useState(true);
+    const [pagina, setPagina] = useState (1);
+   const [porPagina, setPorPagina] = useState (5);
+   
 
     const [filtroGenero, setFiltroGenero] = useState("");
     const [filtroRangoEdad, setFiltroRangoEdad] = useState("");
@@ -255,7 +259,10 @@ const filtrarPorDias = (motivo) => {
       },[consultas])
 
 
-
+      const removeAccents = (text) => {
+        return text.normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      };
+      
       const motivosfiltrados = motivos
       .filter(
         (motivo) =>
@@ -272,12 +279,12 @@ const filtrarPorDias = (motivo) => {
   ||motivo.descripcion.toString().toLowerCase().includes(searchValue.toLowerCase())
    )
    .filter(motivo => {
-    if (motivo.especialidades === 'General') {
-      return true; // Se muestra si la especialidad es 'General'
+    if (motivo.especialidades === 'General' || motivo.especialidades === 'Médico General') {
+      return true; // Se muestra si la especialidad es 'General' o 'Médico General'
     } else {
-      const especialidadesProfesional = especialidades.map(e => e.nombre.toLowerCase());
+      const especialidadesProfesional = especialidades.map(e => removeAccents(e.nombre.toLowerCase()));
       const especialidadesMotivo = motivo.especialidades.toLowerCase().split(', ');
-      return especialidadesMotivo.some(especialidad => especialidadesProfesional.includes(especialidad));
+      return especialidadesMotivo.some(especialidad => especialidadesProfesional.some(profesional => removeAccents(profesional).includes(removeAccents(especialidad))));
     }
   })
    
@@ -355,6 +362,7 @@ const filtrarPorDias = (motivo) => {
     motivosFiltradosOrdenados.reverse();
   }
   ;
+  const maximo = Math.ceil(motivosfiltrados.length / porPagina) 
 
   return (
     <>
@@ -438,11 +446,18 @@ onChange={(e) => setHoraInicioSeleccionada(e.target.value)}
 </div>
 <hr  />
 <div className="grid grid-cols-1 md:grid-cols-1 xl:px-60  gap-4 mt-2 mr-20">
-{motivosfiltrados
-.sort((a, b) => moment(b.fecha).valueOf() - moment(a.fecha).valueOf())
-.map((motivo) => (
-  
-  <div key={motivo._id} className="bg-white rounded-lg shadow-md overflow-hidden w-full mb-10 border-t mt-2">
+  {motivosfiltrados.slice(
+                (pagina - 1)* porPagina,
+                (pagina - 1 ) * porPagina + porPagina
+                )
+    .sort((a, b) => moment(b.fecha).valueOf() - moment(a.fecha).valueOf())
+    .map((motivo) => {
+      if (!Array.isArray(motivo.horarios) || motivo.horarios.length === 0) {
+        return null; // No se muestra el motivo si no tiene horarios
+      }
+      
+      return (
+        <div key={motivo._id} className="bg-white rounded-lg shadow-md overflow-hidden w-full mb-10 border-t mt-2">
 
 
     <div className="p-4">
@@ -512,7 +527,9 @@ onChange={(e) => setHoraInicioSeleccionada(e.target.value)}
   
   
   </div>
-))}
+   );
+  })}
+  <Paginacion pagina={pagina} setPagina={setPagina} maximo={maximo} />
 {showModal && <ModalMotivo motivo={motivo} onClose={() => setShowModal(false)} />}
 {showModalHora && (
     <ModalHora motivo={hora} onClose={() => handleCloseModal()} />

@@ -1,8 +1,4 @@
 import { Link } from "react-router-dom"
-import pro from"../assets/img/s1.webp"
-import img1 from"../assets/img/s3.webp"
-import img2 from"../assets/img/s4.webp"
-import img3 from"../assets/img/s5.jpg"
 const PortalProfesional = () => {
   return (
     <>
@@ -20,7 +16,7 @@ const PortalProfesional = () => {
     </div>
     <div className="hidden lg:block lg:w-1/2" >
         <div className=" object-cover" >
-            <img id="pro" src={pro} alt="" />
+            <img id="pro" src="https://res.cloudinary.com/dde62spnz/image/upload/v1689082297/Imagenes%20sitio/s1_ahin2a.webp" alt="" />
             <div className="h-full bg-black opacity-25"></div>
         </div>
     </div>
@@ -30,7 +26,7 @@ const PortalProfesional = () => {
 <div className="flex min-h-screen items-center justify-center p-10 bg-blue-500">
   <div className="container grid max-w-screen-xl gap-8 lg:grid-cols-2 lg:grid-rows-2">
     <div className="row-span-2 flex flex-col rounded-md border border-slate-200">
-      <div className="h-1/2 flex-1"><img src={img1} className="w-full object-cover object-right-top" alt="omnichannel" /></div>
+      <div className="h-1/2 flex-1"><img src="https://res.cloudinary.com/dde62spnz/image/upload/v1689082345/Imagenes%20sitio/s3_tr7bc9.webp" className="w-full object-cover object-right-top" alt="omnichannel" /></div>
       <div className="p-10 bg-blue-100 ">
         <h3 className="text-xl font-medium text-gray-700">Omnichannel support center</h3>
         <p className="mt-2 text-slate-500">Chatwoot connects with popular customer communication channels like Email, Website live-chat, Facebook, Twitter, WhatsApp, Instagram, Line, etc., and helps you deliver a consistent customer experience across channels.</p>
@@ -46,7 +42,7 @@ const PortalProfesional = () => {
 
       <div className="relative hidden h-full w-1/3 overflow-hidden lg:block">
         <div className="absolute inset-0">
-          <img src={img2} className="h-full w-full object-cover object-left-top" alt="" />
+          <img src="https://res.cloudinary.com/dde62spnz/image/upload/v1689082369/Imagenes%20sitio/s4_sq2yyf.webp" className="h-full w-full object-cover object-left-top" alt="" />
         </div>
       </div>
     </div>
@@ -59,7 +55,7 @@ const PortalProfesional = () => {
 
       <div className="relative hidden h-full w-1/3 overflow-hidden lg:block">
         <div className="absolute inset-0">
-          <img src={img3} className="h-full w-full object-cover object-left-top" alt="" />
+          <img src="https://res.cloudinary.com/dde62spnz/image/upload/v1689082403/Imagenes%20sitio/s5_um9lwc.jpg" className="h-full w-full object-cover object-left-top" alt="" />
         </div>
       </div>
     </div>

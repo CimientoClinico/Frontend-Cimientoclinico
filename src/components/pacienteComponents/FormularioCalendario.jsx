@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import clientAxios from '../../config/axios';
-const FormularioCalendario = () => {
+const FormularioCalendario = ({ onClose }) => {
   const [fechaSeleccionada, setFechaSeleccionada] = useState(null);
   const [mostrarModal, setMostrarModal] = useState(false);
   const [horarioInicio, setHorarioInicio] = useState('');
@@ -101,6 +101,7 @@ const FormularioCalendario = () => {
     setFechasSeleccionadas([]);
     setHorarioInicio('');
     setHorarioFin('');
+    onClose();
   };
   
 
@@ -143,10 +144,7 @@ const FormularioCalendario = () => {
 <div className='flex justify-center'>
 
   <div className=''>
-  <h1 className='text-4xl text-center font-bold text-lila-300 pb-10 '>Guarda Tu Horario</h1>
-    <div className='pb-4 '>
-    <h2 className='text-2xl font-regular '>Selecciona aquí tus días disponibles</h2>
-    </div>
+
 
     <Calendar
           className='p-4 rounded-lg shadow-lg max-w-xl'
@@ -215,7 +213,12 @@ const FormularioCalendario = () => {
                 </li>
               ))}
             </ul>
-            <div className="flex justify-end mt-4">
+            <div className="flex justify-end mt-4 gap-1">
+            <input
+                type="submit"
+                value="Guarda tu horario"
+                className="px-2 py-3 text-white font-medium rounded-md shadow-xl hover:bg-lila-100 bg-lila-200"
+              />
               <button
                 type="button"
                 className="px-4 py-2 mr-2 text-white bg-red-500 rounded-md shadow-xl hover:bg-red-600 focus:outline-none focus:bg-red-600"
@@ -223,11 +226,7 @@ const FormularioCalendario = () => {
               >
                 Cerrar
               </button>
-              <input
-                type="submit"
-                value="Guarda tu horario"
-                className="px-2 py-3 text-white font-medium rounded-md shadow-xl hover:bg-lila-100 bg-lila-200"
-              />
+
             </div>
           </form>
         </div>

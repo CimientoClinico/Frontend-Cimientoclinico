@@ -11,7 +11,7 @@ const Examenes = () => {
   const [enfermedades, setEnfermedades] = useState([]);
   const [quirurgicos, setQuirurgicos] = useState([]);
   const [alerta, setAlerta ]= useState({})
-  const {nombre,setNombre,enfermedadId,setEnfermedadId,documento,setDocumento, guardarExamen,auth ,quirurgicoId, setQuirurgicoId} =  useHistoriaCli()
+  const {nombre,setNombre,enfermedadId,setEnfermedadId,documento,setDocumento, guardarExamen,auth } =  useHistoriaCli()
 
   useEffect(() => {
     const obtenerEnfermedades = async() =>{
@@ -34,27 +34,7 @@ const Examenes = () => {
     }
     obtenerEnfermedades()
   }, []);
-  useEffect(() => {
-    const obtenerQuirurgicos = async() =>{
-      try {
-        const token = localStorage.getItem('token')
-        if(!token) return
-  
-        const config={
-          headers:{
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
-        }
-        }
-        const { data } = await clientAxios.get('/pacientes/obtener-quirurgico',config)
-        setQuirurgicos(data)
-      } catch (error) {
-        console.log(error)
-      }
-  
-    }
-    obtenerQuirurgicos()
-  }, []);
+
 
 
 
@@ -74,7 +54,7 @@ const Examenes = () => {
     setNombre('');
     setDocumento('');
     setEnfermedadId({});
-    setQuirurgicoId({});
+
   };
   const { msg } = alerta
   return (
@@ -117,7 +97,7 @@ const Examenes = () => {
   <div className="w-full sm:w-auto mb-4 sm:mb-0 sm:mr-4 relative">
     <label className="block font-medium mb-2">
       Enfermedad asociada:
-      <select className="w-full border border-gray-300 p-2 rounded-lg appearance-none" value={enfermedadId} onChange={(e) => setEnfermedadId(e.target.value)}>
+      <select className="w-full border border-gray-300 p-2 rounded-lg" value={enfermedadId} onChange={(e) => setEnfermedadId(e.target.value)}>
         <option className="font-bold" value="">Sin enfermedad</option>
         {enfermedades.map((enfermedad) => (
           <option key={enfermedad._id} value={enfermedad._id}>
@@ -125,27 +105,10 @@ const Examenes = () => {
           </option>
         ))}
       </select>
-      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-        <svg className="fill-current h-4 w-4" viewBox="0 0 20 20"><path d="M10 12l-6-6h12z"/></svg>
-      </div>
+
     </label>
   </div>
-  <div className="w-full sm:w-auto mb-4 sm:mb-0 sm:mr-4">
-    <label className="block font-medium mb-2">
-      Antecedente quirúrgico:
-      <select className="w-full border border-gray-300 p-2 rounded-lg appearance-none" value={quirurgicoId} onChange={(e) => setQuirurgicoId(e.target.value)}>
-        <option className="font-bold" value="">Sin Antecedentes quirúrgicos</option>
-        {quirurgicos.map((quirurgico) => (
-          <option key={quirurgico._id} value={quirurgico._id}>
-            {quirurgico.nombre}
-          </option>
-        ))}
-      </select>
-      <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-700">
-        <svg className="fill-current h-4 w-4" viewBox="0 0 20 20"><path d="M10 12l-6-6h12z"/></svg>
-      </div>
-    </label>
-  </div>
+
   <div className="w-full sm:w-auto mb-4 sm:mb-0 sm:mr-4">
     <label className="block font-medium mb-2" htmlFor="documento">
       Subir examen:

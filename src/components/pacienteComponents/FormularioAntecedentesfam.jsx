@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import clientAxios from "../../config/axios"
 import useHistoriaCli from "../../hooks/paciente/useHistoriaCli"
 import Alerta from "../Alerta"
+import CustomTooltip from "./CustomTooltip"
 const FormularioAntecedentesfam = () => {
   const [alerta, setAlerta ]= useState({})
   const [nombrediagnostico, setNombre] = useState('')
@@ -161,7 +162,12 @@ useEffect(()=>{
 
 <div className="md:flex  lg:gap-24 xs:gap-0 px-5 ">
       <div className="md:w-4/6 ml-4 md:mb-0   ">
-        <label className="text-gray-700 font-bold text-md">Antecedentes familiares</label>
+        <div>
+  <label className="text-gray-700 font-bold text-sm" data-tooltip-id="antecedentes-tooltip" data-tooltip-content="Registra los diagnósticos que tengan algunos de tus familiares">
+  Antecedentes familiares
+    <CustomTooltip id="antecedentes-tooltip" message="Registra los diagnósticos que tengan algunos de tus familiares" />
+  </label>
+</div>
       <input
             type="text"
             className="w-11/12 focus:outline-none focus:text-gray-900 mb-1 border border-gray-300 rounded-md placeholder-slate-400 p-2 "

@@ -6,6 +6,9 @@ import { Link } from "react-router-dom"
 import{AiFillEdit, AiFillDelete} from "react-icons/ai"
 import{IoMdEyeOff,IoMdEye} from "react-icons/io"
 import { Paginacion } from "../Paginacion"
+import FormularioCalendario from "./FormularioCalendario"
+import { IoMdCloseCircle} from "react-icons/io";
+import { BsFillCalendarWeekFill} from "react-icons/bs";
 
 const FormularioMotivoConsulta = () => {
     const [alerta, setAlerta ]= useState({})
@@ -21,7 +24,11 @@ const FormularioMotivoConsulta = () => {
    const [especialidad, setEspecialidad] = useState('');
    const [profesionales, setProfesionales] = useState([]);
    const [showModal, setShowModal] = useState(false);
+   const [horarios, setHorarios] = useState([]);
+   const [mostrarModalHorarios, setMostrarModalHorarios] = useState(false);
+   const [mostrarCalendario, setMostrarCalendario] = useState(false);
 
+   const [loading, setLoading] = useState(true);
    const handleModalOpen = () => {
     setShowModal(true);
     setTimeout(handleModalClose, 10000); 
@@ -84,6 +91,41 @@ const FormularioMotivoConsulta = () => {
     
       obtenerMotivosConsulta();
     }, []);
+    const obtenerHorarios = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        if (!token) return;
+    
+        const config = {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        };
+        const response = await clientAxios.get('/pacientes/ver-MiHorario', config);
+        setHorarios(response.data);
+        setLoading(false);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    
+    useEffect(() => {
+      obtenerHorarios();
+    }, []);
+    
+
+    const AbrirModalCalendario = () => {
+      setMostrarCalendario(true);  
+      };
+
+
+    const handleCerrarModal = () => {
+      setMostrarModalHorarios(false);
+    };
+    const CerrarModalCalendario = () => {
+      setMostrarCalendario(false);
+    };
 
       const actualizarVisible = async (id, nuevoValorVisible) => {
         try {
@@ -131,12 +173,26 @@ const FormularioMotivoConsulta = () => {
     
       const handleProfesionalesChange = (event) => {
         const { value, checked } = event.target;
+        const formattedValue = value.toLowerCase(); // Convertir el valor a minúsculas (o mayúsculas si lo prefieres)
+        
         if (checked) {
-          setProfesionales((prevProfesionales) => [...prevProfesionales, value]);
+          setProfesionales((prevProfesionales) => {
+            const formattedProfesionales = prevProfesionales.map(profesional => profesional.toLowerCase()); // Convertir los valores existentes a minúsculas (o mayúsculas)
+            
+            if (formattedProfesionales.includes(formattedValue)) {
+              return prevProfesionales; // Evitar agregar la especialidad si ya está en el array
+            } else {
+              return [...prevProfesionales, value]; // Agregar la nueva especialidad
+            }
+          });
         } else {
-          setProfesionales((prevProfesionales) => prevProfesionales.filter((profesional) => profesional !== value));
+          setProfesionales((prevProfesionales) =>
+            prevProfesionales.filter((profesional) => profesional.toLowerCase() !== formattedValue) // Convertir los valores existentes a minúsculas (o mayúsculas)
+          );
         }
       };
+      
+      
 
             //AGREGANDO MOTIVO DE CONSULTA
             const handleSubmit = async e =>{
@@ -164,14 +220,21 @@ const FormularioMotivoConsulta = () => {
               especialidades = profesionales.join(', ');
             }
 
-            guardarMotivoConsulta({titulo,descripcion,visible,consentimiento,id,especialidades})
+           await guardarMotivoConsulta({titulo,descripcion,visible,consentimiento,id,especialidades})
+           setTimeout(() => {
+            if (!loading && horarios.length === 0 && visible===true) {
+              setMostrarModalHorarios(true);
+            
+            }
+          }, 2000);
             setTitulo('')
             setDescripcion('')
             setId('')
             setConsentimiento(false)
             setVisible(false)
             setProfesionales([]);
-              
+
+
             }
             const { msg } = alerta
   return (
@@ -196,6 +259,7 @@ const FormularioMotivoConsulta = () => {
       value={titulo}
       onChange={(e) => setTitulo(e.target.value)}
     />
+  
 
     <label className="text-white" htmlFor="campo2 ">Describe tu consulta <span className="text-red-600 text-lg">*</span></label>
     <textarea
@@ -210,12 +274,16 @@ const FormularioMotivoConsulta = () => {
       value={descripcion}
       onChange={(e) => setDescripcion(e.target.value)}
     />
+        <div className="py-2 flex gap-2"><label className=" text-white" htmlFor="campo1">Registra tus horarios disponibles:</label><button type="button" onClick={AbrirModalCalendario} > <BsFillCalendarWeekFill className=" text-2xl text-indigo-700 hover:text-indigo-100 focus:text-coral-300"/> </button> </div>
+       
+       
  <div>
+  
  {showModal && (
   <div className="  pt-1 items-center justify-center 0 rounded-lg  ">
     <div className="bg-lila-300  rounded border  ">
       <div className=" flex justify-end">
-      <button className="bg-gray-300 px-0.5 py-0.5 rounded-full text-sm " onClick={handleModalClose}>❌</button>
+      <button className=" px-2 py-1 rounded-full text-lg font-cursive text-white hover:text-gray-300 " onClick={handleModalClose}>X</button>
       </div>
       <div>
       <p className="px-2 mb-2 text-white  font-regular text-sm">
@@ -247,10 +315,10 @@ const FormularioMotivoConsulta = () => {
     <div>
       <button
         type="button"
-        className="ml-2 bg-gray-300 px-2 py-1 rounded-full"
+        className="px-2 py-1 rounded-full text-3xl font-cursive text-cyan-200 font-semibold hover:text-cyan-400"
         onClick={handleModalOpen}
       >
-        ❓
+        ?
       </button>
     </div>
   </div>
@@ -292,12 +360,34 @@ const FormularioMotivoConsulta = () => {
         />
         Odontólogo
       </label>
+      <label className="flex items-center">
+        <input
+          type="checkbox"
+          value="diabetologo"
+          checked={profesionales.includes('diabetologo')}
+          onChange={handleProfesionalesChange}
+          className="mr-2"
+        />
+        Diabetólogo
+      </label>
+      <label className="flex items-center text-[14px] ">
+        <input
+          type="checkbox"
+          value="medico"
+          checked={profesionales.includes('medico')}
+          onChange={handleProfesionalesChange}
+          className="mr-2"
+        />
+        Médico general
+      </label>
+
+
       {/* Otras opciones de profesionales */}
     </div>
   </div>
 )}
 
-    <div className="flex items-center pt-5">
+    <div className="flex items-center pt-2">
       <input
         type="checkbox"
         id="campo3"
@@ -332,7 +422,7 @@ const FormularioMotivoConsulta = () => {
 
     <input type="submit" className="bg-lila-200 w-full p-3 text-white
         uppercase font-bold hover:bg-lila-300 cursor-pointer transition-colors rounded-md"
-        value={id ? 'Actualizar tu caso': 'Publicar tu caso'} />
+        value={id ? 'Actualizar tu caso': 'Subir tu caso'} />
   </form>
 </div>
 
@@ -407,6 +497,7 @@ const FormularioMotivoConsulta = () => {
   <button className=" flex rounded-md bg-slate-600 hover:bg-slate-500 text-white text-sm font-nunito font-semibold py-1 px-2"  onClick={() => actualizarVisible(motivo._id, !motivo.visible)}>
             {motivo.visible ?<   IoMdEyeOff title="Ocultar" className="mt-0.5 text-lg"/>   :  <IoMdEye title="Hacer visible"  className="mt-0.5 text-lg"/>  }
           </button>
+          <button className="flex rounded-md bg-lime-500 hover:bg-lime-300 text-white hover:text-gray-800 text-sm font-nunito font-semibold py-1 px-2" type="button" onClick={AbrirModalCalendario} > Tus horarios <BsFillCalendarWeekFill className=" text-2xl text-indigo-700  ml-1"/> </button> 
 
   </div>
 </div>
@@ -420,7 +511,50 @@ const FormularioMotivoConsulta = () => {
   </div>
     }
 </div>
+{mostrarModalHorarios && (
+  <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
+    <div className="bg-white rounded-lg p-5 max-w-xl">
+      <div className="flex justify-end">
+        <button
+          className="mt-1 px-2 py-1 text-lila-300 hover:text-lila-100 rounded-full text-3xl"
+          onClick={handleCerrarModal}
+        >
+          <IoMdCloseCircle />
+        </button>
+      </div>
+      <h2 className="font-bold mb-4 text-lila-300 text-3xl text-center">¡Importante!</h2>
+      <p className="bg-blue-200 px-2 py-2 text-sm mb-2 rounded-md">
+        Asegúrate de mantener tus horarios disponibles al día para que los
+        profesionales de cimiento clínico puedan tomar tus motivos de
+        consulta. Recuerda que puedes seleccionar múltiples días en el
+        calendario a continuación.
+      </p>
 
+      <FormularioCalendario onClose={handleCerrarModal} />
+    </div>
+  </div>
+)}
+
+{mostrarCalendario && (
+        <div className="fixed top-0 left-0 right-0 bottom-0 flex items-center justify-center bg-gray-800 bg-opacity-75">
+          <div className="bg-white rounded-lg p-5">
+          <div className="flex justify-end">
+          <button
+              className="mt-1 px-2 py-1 text-lila-300  hover:text-lila-100 rounded-full text-3xl"
+              onClick={CerrarModalCalendario}
+            >
+               <IoMdCloseCircle/>
+            </button>
+          </div>
+            <div>
+              <h1 className="font-bold mb-4 text-lila-300 text-xl text-center">Registra tus horarios disponibles</h1>
+            </div>
+
+
+            <FormularioCalendario onClose={CerrarModalCalendario} />
+          </div>
+        </div>
+      )}
     </>
   )
 }

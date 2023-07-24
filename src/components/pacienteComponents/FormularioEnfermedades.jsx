@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import clientAxios from "../../config/axios"
 import useHistoriaCli from "../../hooks/paciente/useHistoriaCli"
 import Alerta from "../Alerta"
+import CustomTooltip from "./CustomTooltip"
 const FormularioEnfermedad = () => {
   const [alerta, setAlerta ]= useState({})
   const [nombre, setNombre] = useState('')
@@ -164,7 +165,11 @@ useEffect(()=>{
 
 <div className="md:flex  lg:gap-24 xs:gap-0 px-5 ">
       <div className="md:w-4/6 ml-4 md:mb-0   ">
-        <label className="text-gray-700 font-bold text-sm">Diagnósticos</label>
+      <div>
+      <label className="text-gray-700 font-bold text-sm" data-tooltip-id="my-tooltip" data-tooltip-content="Registra los diagnósticos que hayas tenido durante tu vida">
+        Diagnósticos <CustomTooltip id="my-tooltip" message="Registra los diagnósticos que hayas tenido durante tu vida" />
+      </label>
+    </div>
       <input
             type="text"
             className="w-11/12 focus:outline-none focus:text-gray-900 mb-1 border border-gray-300 rounded-md placeholder-slate-400 px-2 py-1 text-sm "
@@ -173,7 +178,11 @@ useEffect(()=>{
             onChange={e => setNombre(e.target.value) } 
           />
           <div>
-          <label className="text-gray-700 font-bold text-sm" htmlFor="fechadiagnostico ">¿Cuando fue tu diagnóstico?</label>
+          <div>
+      <label className="text-gray-700 font-bold text-sm" data-tooltip-id="my-tooltip" data-tooltip-content="Agrega una fecha estimada de tu diagnóstico">
+      ¿Cuando fue tu diagnóstico? <CustomTooltip id="my-tooltip" message="Agrega una fecha estimada de tu diagnóstico" />
+      </label>
+    </div>
           <input
              id="fechadiagnostico"
             type="text"

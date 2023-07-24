@@ -6,7 +6,8 @@ import {GiNotebook} from "react-icons/Gi";
 import { Link } from "react-router-dom";
 import useAuth from "../../hooks/useAuth"
 import clientAxios from "../../config/axios";
-
+import {FiArrowRight } from "react-icons/fi";
+import {MdClose } from "react-icons/md";
 
 const Sidebar = () => {
   const {cerrarSesion,handleThemeSwitch} =  useAuth()
@@ -14,7 +15,43 @@ const Sidebar = () => {
   const [motivos, setMotivos] = useState([]);
   const [consultas, setConsultas] = useState([]);
   const [consultasProximas, setConsultasProximas] = useState([]);
+
   const { auth} =  useAuth()
+// Datos de los mensajes a mostrar
+const messagesData = [
+  { name: "Mi historia clínica", mensaje: "Aquí podrás registrar todos los datos \nde tu historia clínica" },
+  {
+    name: "Motivos de consulta",
+    mensaje: "Ingresa y sube tu caso clínico,\npara que sea revisado por profesionales \nde Cimiento Clínico",
+  },
+  { name: "Mi calendario", mensaje: "Recuerda mantener tus horarios \ndisponibles al día y revisar tu \ncalendario de consultas" },
+];
+
+
+  const [messages, setMessages] = useState(messagesData);
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [showMessages, setShowMessages] = useState(false);
+  const [showDarkOverlay, setShowDarkOverlay] = useState(false);
+  const [messageClosed, setMessageClosed] = useState(false);
+
+  useEffect(() => {
+    const alertShown = localStorage.getItem('alertShown');
+    setShowMessages(!alertShown);
+  }, []);
+  useEffect(() => {
+    const alertShown = localStorage.getItem('alertShown');
+    setShowMessages(!alertShown);
+    setShowDarkOverlay(alertShown !== 'true' && !messageClosed);
+  }, [messageClosed]);
+  const handleNextMessage = () => {
+    if (currentIndex < messages.length - 1) {
+      setCurrentIndex(currentIndex + 1);
+    } else {
+      setShowMessages(false);
+      setMessageClosed(true);
+      localStorage.setItem('alertShown', true);
+    }
+  };
 
   const handleNotificationClick = () => {
     setShowNotifications(true);
@@ -95,7 +132,7 @@ const motivosfiltrados = motivos
   const motivosInterconsulta = consultas.filter(
     (consulta) =>
       consulta.motivoconsulta.paciente === auth._id &&
-      consulta.motivoconsulta.notificacioninterconsulta === true && consulta.motivoconsulta.leidopacienteinterconsulta ===false 
+      consulta.motivoconsulta.notificacioninterconsulta === true && consulta.motivoconsulta.leidopacienteinterconsulta ===false && consulta.estado==='finalizado'
   );
 const numNotificaciones = consultasPendientes.length + consultasProximasFiltradas.length + motivosInterconsulta.length;
   const menus = [
@@ -103,7 +140,7 @@ const numNotificaciones = consultasPendientes.length + consultasProximasFiltrada
     { name: "Perfil", link: "/paciente/perfil-paciente", icon: MdAccountCircle },
     { name: "Mi historia clínica", link: "/paciente/historia-clinica", icon: MdListAlt },
     { name: "Motivos de consulta", link: "/paciente/consultas", icon: GiNotebook },
-    { name: "Mis Horarios", link: "/paciente/agenda", icon: BsCalendar3 },
+    { name: "Mi calendario", link: "/paciente/agenda", icon: BsCalendar3 },
 
 
     
@@ -121,29 +158,37 @@ const numNotificaciones = consultasPendientes.length + consultasProximasFiltrada
 
   ];
   const [open, setOpen] = useState(true);
- 
+
   return (
   
         <aside>
+
+
+          {showDarkOverlay && (
+        <div className="fixed z-50 inset-0 flex items-center justify-center bg-gray-900 bg-opacity-80 ml-[288px] ">
+          {/* Contenido oscuro aquí */} 
+        </div>
+      )}
       <div 
       id="lateral"
-        className={`bg-lila-100 dark:bg-slate-800  mb-0  ${
+        className={`bg-lila-100 dark:bg-slate-800  mb-0   ${
           open ? "w-72" : "w-16"
         } duration-500 text-white  px-4  `}
       >
-        <div className="py-3 flex justify-end">
-        <HiMenuAlt3
-          size={26}
-          className="cursor-pointer"
-          onClick={() => {
-            setOpen(!open);
-            setShowNotifications(false);
-          }}
-        />
-          
+          {!showDarkOverlay && (
+        <div className="py-3 flex justify-end ">
+          <HiMenuAlt3
+            size={26}
+            className="cursor-pointer"
+            onClick={() => {
+              setOpen(!open);
+              setShowNotifications(false);
+            }}
+          />
         </div>
+      )}
         {open ?   <div className="flex gap-x-4 items-center">
-           <h1 className={`cursor-pointer font-nunito font-extrabold duration-500 text-2xl `}> Cimiento Clínico</h1>
+           <Link to={"/paciente"} className={`cursor-pointer font-nunito font-extrabold duration-500 text-2xl `}> Cimiento Clínico</Link>
          
           
            </div>
@@ -258,39 +303,28 @@ const numNotificaciones = consultasPendientes.length + consultasProximasFiltrada
           </div>
         )}
 
-          {menus?.map((menu, i) => (
-            <Link
-              to={menu?.link}
-              key={i}
-              className={` ${
-                menu?.margin && "mt-5"
-              } group flex items-center text-sm  gap-3.5 font-medium p-2 hover:bg-lila-200 rounded-md`}
-            >
-              <div>{React.createElement(menu?.icon, { size: "20" })}</div>
-              <h2
-                style={{
-                  transitionDelay: `${i + 3}00ms`,
-                }}
-                className={`whitespace-pre duration-500 ${
-                  !open && "opacity-0 translate-x-28 overflow-hidden"
-                }`}
-              >
-                {menu?.name}
-              </h2>
-              <h2
-                className={`${
-                  open && "hidden"
-                } absolute  left-48 bg-white font-semibold whitespace-pre text-gray-900 rounded-md drop-shadow-lg px-0 py-0 w-0 overflow-hidden group-hover:px-2 group-hover:py-1 group-hover:left-14 group-hover:duration-300 group-hover:w-fit  `}
-              >
-                {menu?.name}
-              </h2>
-          
-            </Link>
+{menus.map((menu, index) => (
+  <div key={index} className={`group flex flex-col gap-1 p-2 hover:bg-lila-200 rounded-md`}>
+    <Link to={menu.link} className="group flex items-center text-sm gap-3.5 font-medium">
+      <div>{React.createElement(menu.icon, { size: "20" })}</div>
+      <h2>{menu.name}</h2>
+    </Link>
 
-            
-          ))}
+    {menu.name === messages[currentIndex].name && showMessages && (
+        <div className="flex max-w-xs  ">
+      <div className="bg-white font-semibold whitespace-pre text-gray-900 rounded-md drop-shadow-lg px-2 py-1 text-[14px]  ">
+        {messages[currentIndex].mensaje}
+        <br />
+      
+        <span className="text-lila-300 cursor-pointer" onClick={handleNextMessage}>
+          {currentIndex === messages.length - 1 ?<p className="flex text-red-600">Cerrar<MdClose className="  text-red-600 text-xl"/> </p>  :<p className="flex">Siguiente<FiArrowRight className=" mt-0.5 text-lila-300 text-lg"/> </p> } 
+        </span>
+      </div>
+      </div>
+    )}
+  </div>
+))}
 
-     
 
       {menus3?.map((menu3, i) => (
             <button onClick={handleThemeSwitch}

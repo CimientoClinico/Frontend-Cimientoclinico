@@ -371,9 +371,12 @@ Agregar paciente
                                   onClick={()=>{setShowModalEditar(true); setEdicion(pacien)} }
                                    className="bg-teal-500 hover:bg-teal-700 text-white text-sm font-nunito font-semibold py-1 mr-1 mb-1 px-2 border border-teal-500 rounded"
                                    >Editar</button>
-					              <button
+                                   {/*
+                                   	<button
                                    onClick={()=> eliminarPaciente(pacien._id)}
                                    className="bg-red-500 hover:bg-red-700 text-white text-sm font-nunito font-semibold py-1 px-2 border border-red-500 rounded">Eliminar</button>
+                                   */}
+
 			             	</td>
                     </tr>
                     

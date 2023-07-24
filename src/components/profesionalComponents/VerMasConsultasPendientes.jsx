@@ -164,6 +164,7 @@ const VerMasConsultasPendientes= () => {
           <p>{consulta.estado? 'Pendiente' : ''}</p>
         </div>
 
+
       </div>
       </div>
     </div>

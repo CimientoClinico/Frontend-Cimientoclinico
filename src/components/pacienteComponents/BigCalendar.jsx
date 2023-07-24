@@ -43,8 +43,10 @@ const BigCalendar = () => {
   const [selectedEvent, setSelectedEvent] = useState(null);
   const { auth} =  useAuth()
   const [showModal, setShowModal] = useState(false); 
-  const [showModalConsulta, setShowModalConsulta] = useState(false); 
+  const [showModalConsulta, setShowModalConsulta] = useState(false);
+  const [showModalControl, setShowModalControl] = useState(false); 
   const [consultas, setConsultas] = useState([]);
+  const [controles, setControles] = useState([]);
   const obtenerEventos = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -63,6 +65,28 @@ const BigCalendar = () => {
       console.log(error);
     }
   };
+  useEffect(() => {
+    const obtenerControles = async() =>{
+      try {
+        const token = localStorage.getItem('token')
+        if(!token) return
+  
+        const config={
+          headers:{
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+        }
+        }
+        const { data } = await clientAxios.get(`/pacientes/ver-controles-paciente/${auth._id}`,config)
+        setControles(data)
+
+      } catch (error) {
+        console.log(error)
+      }
+  
+    }
+    obtenerControles()      
+  },[])
   useEffect(() => {
     const obtenerMotivosConsulta = async() =>{
       try {
@@ -87,7 +111,7 @@ const BigCalendar = () => {
 
   useEffect(() => {
     obtenerEventos();
-  }, []);
+  }, [eventos]);
   const eliminarHorario = async (id) => {
     const confirmar = await Swal.fire({
       title: '¿Estás seguro de eliminar tu horario disponible?',
@@ -117,6 +141,7 @@ const BigCalendar = () => {
       }
       await clientAxios.delete(`/pacientes/borrar-horario/${selectedEvent.id}`,config);
       setEventos(eventos.filter((evento) => evento.id !== id)); 
+      setShowModal(false)
 
     } catch (error) {
       console.log(error);
@@ -180,6 +205,25 @@ const formatEventos = (eventos) => {
   });
 };
 
+const formatControles = () => {
+  return controles.map((control) => {
+    const fecha = dayjs(control.fecha).tz("America/Santiago").toDate();
+
+    // Establece la hora de inicio y fin en la fecha correspondiente
+    fecha.setHours(0);
+    fecha.setMinutes(0);
+
+    return {
+      title: `Indicación de Control para el motivo de consulta: ${control.motivoconsulta.titulo}`,
+      start: fecha,
+      end: fecha,
+      id: control._id,
+      isHorario: false
+    };
+  });
+};
+
+
 const handleSelectEvent = (event) => {
   if (event.title.includes('Horario')) {
     setSelectedEvent(event);
@@ -201,6 +245,12 @@ const handleSelectEvent = (event) => {
     setSelectedEvent(selectedConsulta);
     setShowModalConsulta(true);
   }
+  if (event.title.includes('Control')) {
+    const selectedControl = controles.find(control => event.id.includes(control._id));
+    setSelectedEvent(selectedControl);
+    setShowModalControl(true);
+  }
+
 };
   const closeModal = () => {
     setSelectedEvent(null); // Desmarca el evento seleccionado al cerrar el modal
@@ -209,6 +259,10 @@ const handleSelectEvent = (event) => {
   const closeModalConsulta = () => {
     setSelectedEvent(null); 
     setShowModalConsulta(false);
+  };
+    const closeModalControl = () => {
+    setSelectedEvent(null); 
+    setShowModalControl(false);
   };
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -270,7 +324,9 @@ const handleSelectEvent = (event) => {
   };
   const eventosFormateados = formatEventos(eventos);
 const consultasFormateadas = formatconsultas(consultasPendientes);
-const eventosCombinados = eventosFormateados.concat(consultasFormateadas);
+const controlesFormateados = formatControles();
+const eventosCombinados = eventosFormateados.concat(consultasFormateadas, controlesFormateados);
+
   const eventStyleGetter = (event) => {
     let backgroundColor = '';
     if (event.title.includes('Horario disponible')) {
@@ -280,6 +336,10 @@ const eventosCombinados = eventosFormateados.concat(consultasFormateadas);
     } else {
       backgroundColor = '#cfb1ff'; 
     }
+    if (event.title.includes('Control')) {
+      backgroundColor = '#86c6e9'
+     
+    } 
 
     return {
       style: {
@@ -396,6 +456,37 @@ const eventosCombinados = eventosFormateados.concat(consultasFormateadas);
           <div className='flex justify-center mt-2'> 
           <Link  to={`/paciente/vermas-consulta-aprobada/${selectedEvent._id}`}  className='rounded-lg bg-lila-200 hover:bg-lila-100 text-white px-2 py-2'>Ingresar</Link>
           </div>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
+
+{showModalControl && (
+  <div className="fixed z-10 inset-0 overflow-y-auto">
+    <div className="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+      <div className="fixed inset-0 transition-opacity">
+        <div className="absolute inset-0 bg-gray-500 opacity-75"></div>
+      </div>
+      <div className="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full" role="dialog" aria-modal="true" aria-labelledby="modal-headline">
+        <button
+          type="button"
+          className="absolute top-0 right-0 m-4 bg-gray-300  rounded-full py-1 px-1 focus:outline-none"
+          onClick={closeModalControl}
+        >
+         ❌
+        </button>
+        <div className="bg-white px-4 py-5 sm:p-6">
+          <h3 className="text-lg font-medium leading-6 text-gray-900">Indicaciones de control</h3>
+          <p className="mt-2 text-sm text-gray-500">Fecha: {selectedEvent.fecha}</p>
+          <p className="mt-2 text-sm text-gray-500">Motivo del control: {selectedEvent.descripcion}</p>
+          <hr />
+          <p className="mt-2 text-sm text-gray-500">Asignado por el profesional: {selectedEvent.profesional.nombres} {selectedEvent.profesional.apellidos}</p>
+          <p className="mt-2 text-sm text-gray-500">Motivo de consulta: {selectedEvent.motivoconsulta.titulo} </p>
+
+
           
         </div>
       </div>

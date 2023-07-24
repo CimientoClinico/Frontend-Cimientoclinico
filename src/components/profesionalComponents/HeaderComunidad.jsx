@@ -10,6 +10,10 @@ const HeaderComunidad = () => {
  </Link>
  <Link to="/profesional/medidas-generales"  className={`text-white text-sm hover:text-gray-300 bg-green-600 px-3 py-1 xl:rounded-t-lg xs:rounded-md font-regular flex ${location.pathname === '/profesional/medidas-generales' && 'text-gray-300  '}`}>Medidas Generales
  </Link>
+ <Link to="/profesional/datos-recetasmagistral"  className={`text-white text-sm hover:text-gray-300 bg-orange-600 px-3 py-1 xl:rounded-t-lg xs:rounded-md font-regular flex ${location.pathname === '/profesional/datos-recetasmagistral' && 'text-gray-300  '}`}>Recetas magistrales
+ </Link>
+ <Link to="/profesional/datos-signos-alarma"  className={`text-white text-sm hover:text-gray-300 bg-yellow-500 px-3 py-1 xl:rounded-t-lg xs:rounded-md font-regular flex ${location.pathname === '/profesional/datos-signos-alarma' && 'text-gray-300  '}`}>Signos de alarma
+ </Link>
          </nav>
      </div>
    </header>

@@ -1,7 +1,0 @@
-/* fullcalendar.css */
-@import "@fullcalendar/daygrid/main.css";
-
-.fc-day-grid-event {
-  background-color: #f00;
-  color: #fff;
-}

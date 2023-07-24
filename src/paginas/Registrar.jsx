@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
-import registrar from '../assets/img/registrar.png'
 import Alerta from '../components/Alerta';
 import clientAxios from "../config/axios";
 const Registrar = () => {
@@ -88,7 +87,7 @@ const Registrar = () => {
 
                   </div>
             <div className="w-full mx-auto px-20 flex-col items-center space-y-6">
-               <img src={registrar} alt="" />
+               <img src="https://res.cloudinary.com/dde62spnz/image/upload/v1689081665/Imagenes%20sitio/registrar_ldq2qd.png" alt="" />
               <h1 className="text-white text-3xl font-nunito font-bold">Registrate en Cimiento Clínico y agenda tus consultas de telemedicina</h1>
             </div>
           </div>

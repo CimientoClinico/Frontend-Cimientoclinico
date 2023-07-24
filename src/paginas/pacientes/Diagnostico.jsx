@@ -80,7 +80,7 @@ const Diagnostico = () => {
                <span className="font-normal normal-case font-nunito text-black"> {enf.tratamiento} </span>
 
            </p>
-           { enf.ultimocontrol === null ?
+           { enf.ultimocontrol === null || ' ' ?
            
            <p className="font-bold py-1  text-md font-nunito text-slate-700">Último control: {' '}
        </p>

@@ -90,7 +90,7 @@ const consultasProximasFiltradas = consultasProximas.filter(con => con.estado ==
 const motivosInterconsulta = consultas.filter(
   (consulta) =>
     consulta.motivoconsulta.paciente === auth._id &&
-    consulta.motivoconsulta.notificacioninterconsulta === true && consulta.motivoconsulta.leidopacienteinterconsulta ===false 
+    consulta.motivoconsulta.notificacioninterconsulta === true && consulta.motivoconsulta.leidopacienteinterconsulta ===false && consulta.estado==='finalizado'
 );
 const numNotificaciones = consultasPendientes.length + consultasProximasFiltradas.length + motivosInterconsulta.length;
       const handleSubmit = async e =>{
@@ -221,7 +221,9 @@ const numNotificaciones = consultasPendientes.length + consultasProximasFiltrada
                     Authorization:`Bearer ${token}`
                 }
               }
-              const response = await clientAxios.put(`/pacientes/rechazar-interconsulta/${id}`,{interconsulta: "No", notificacioninterconsulta: false}, config);
+              const response = await clientAxios.put(`/pacientes/rechazar-interconsulta/${id}`,{interconsulta: "No",
+              notificacioninterconsulta: false , propuestainterconsulta: null , motivointerconsulta:null}, config);
+   
     
               if (response.status === 200) {
                 Swal.fire({
@@ -269,7 +271,8 @@ const numNotificaciones = consultasPendientes.length + consultasProximasFiltrada
                 }
               }
               const response = await clientAxios.put(`/pacientes/aceptar-interconsulta/${id}`, {
-                estado: 'pagado',
+                visible: true, interconsulta:"Interconsulta",
+                notificacioninterconsulta : false
               }, config);
     
               if (response.status === 200) {
@@ -352,6 +355,7 @@ const numNotificaciones = consultasPendientes.length + consultasProximasFiltrada
                 <div className="border mr-1 border-gray-700 rounded-md px-0.5">
                <p className="text-gray-300 text-sm "> {""} </p>
                <p className="text-gray-300 text-sm ">¿Quieres que tu motivo sea visible para los siguientes profesionales?: <span className=" text-gray-200 font-semibold">{con.motivoconsulta.propuestainterconsulta}</span> </p>
+               <p className="text-gray-300 text-sm ">Motivo de la interconsulta: <span className=" text-gray-200 font-semibold">{con.motivoconsulta.motivointerconsulta || ' '}</span> </p>
                <div className="flex text-regular text-xs gap-1 mb-1 flex-col md:flex-row md:items-center">
                 <div className="flex-grow">
                   <button className="bg-green-600 px-2 py-2 text-md rounded-lg text-white mr-2 "  onClick={() =>  AceptarInterconsulta(con.motivoconsulta._id)}>Aceptar</button>

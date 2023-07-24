@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import clientAxios from "../../config/axios"
 import useHistoriaCli from "../../hooks/paciente/useHistoriaCli"
 import Alerta from "../Alerta"
+import CustomTooltip from "./CustomTooltip"
 const FormularioFarmacoPrevio = () => {
   const [alerta, setAlerta ]= useState({})
   const [nombre, setNombre] = useState('')
@@ -154,7 +155,11 @@ useEffect(()=>{
 
     <div className="md:flex  lg:gap-24 xs:gap-0 px-5 ">
       <div className="md:w-4/6 ml-4 md:mb-0   ">
-      <label className="text-gray-700 font-bold text-md">Tratamiento farmacológico suspendido</label>
+      <div>
+      <label className="text-gray-700 font-bold text-sm" data-tooltip-id="my-tooltip" data-tooltip-content="Registra los medicamentos que hayas utilizado y que fueron suspendidos por un profesional">
+      Tratamiento farmacológico suspendido <CustomTooltip id="my-tooltip" message="Registra los medicamentos que hayas utilizado y que fueron suspendidos por un profesional" />
+      </label>
+    </div>
       <input
             type="text"
             className="w-11/12 focus:outline-none focus:text-gray-900  border border-gray-300 rounded-md placeholder-slate-400 p-2 "

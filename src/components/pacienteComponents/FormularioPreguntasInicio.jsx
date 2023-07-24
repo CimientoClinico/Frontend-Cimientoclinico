@@ -77,10 +77,10 @@ const FormularioPreguntasInicio = () => {
     <div className='mt-1 mx-auto max-w-3xl grid gap-4 grid-cols-2 md:grid-cols-4'>
     { auth.historiaclinica?.estadogeneral < 6 && auth.historiaclinica?.estadogeneralpregunta ==='Sin datos'
     ? 
-<div class=" shadow-lg rounded-xl ">
-  <div class=" px-1 rounded-xl bg-lila-100 py-1">
+<div className=" shadow-lg rounded-xl ">
+  <div className=" px-1 rounded-xl bg-lila-100 py-1">
 
-	<p class=" py-2 text-sm text-gray-100 font-semibold">
+	<p className=" py-2 text-sm text-gray-100 font-semibold">
     ¿Has considerado consultar por tu salud general?
 	</p>
     <form onSubmit={handleSubmit}>
@@ -119,10 +119,10 @@ className="flex font-nunito text-black justify-center bg-white cursor-pointer se
 
 { auth.historiaclinica?.sueño < 6 && auth.historiaclinica?.sueñopregunta ==='Sin datos'
     ? 
-    <div class="shadow-lg rounded-xl ">
-  <div class="px-1 rounded-xl bg-lila-100 py-1">
+    <div className="shadow-lg rounded-xl ">
+  <div className="px-1 rounded-xl bg-lila-100 py-1">
 
-	<p class="py-2 text-sm text-gray-100 font-semibold">
+	<p className="py-2 text-sm text-gray-100 font-semibold">
     ¿Has considerado consultar por tu calidad de sueño?
 	</p>
     <form onSubmit={guardarSueño}>
@@ -162,10 +162,10 @@ className="flex font-nunito text-black justify-center bg-white cursor-pointer se
 
 { auth.historiaclinica?.saludmental < 6 && auth.historiaclinica?.saludmentalpregunta ==='Sin datos'
     ? 
-    <div class="shadow-lg rounded-xl ">
-  <div class="px-1 rounded-xl bg-lila-100 py-1">
+    <div className="shadow-lg rounded-xl ">
+  <div className="px-1 rounded-xl bg-lila-100 py-1">
 
-	<p class="py-2 text-sm text-gray-100 font-semibold">
+	<p className="py-2 text-sm text-gray-100 font-semibold">
     ¿Has considerado consultar por tu salud mental?
 	</p>
     <form onSubmit={guardarSaludmental}>
@@ -204,10 +204,10 @@ className="flex font-nunito text-black justify-center bg-white cursor-pointer se
 
 { auth.historiaclinica?.dolor === 'Si' && auth.historiaclinica?.dolorpregunta ==='Sin datos'
     ? 
-    <div class="shadow-lg rounded-xl ">
-    <div class="px-1 rounded-xl bg-lila-100 py-1">
+    <div className="shadow-lg rounded-xl ">
+    <div className="px-1 rounded-xl bg-lila-100 py-1">
   
-    <p class="py-2 text-sm text-gray-100 font-semibold">
+    <p className="py-2 text-sm text-gray-100 font-semibold">
     ¿Ha considerado consultar por su molestia?
 	</p>
     <form onSubmit={guardarPreguntasdolor}>

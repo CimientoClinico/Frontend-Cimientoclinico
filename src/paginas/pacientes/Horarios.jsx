@@ -70,6 +70,9 @@ const Horarios= () => {
     obtenerMotivosConsulta()      
   },[])
 
+
+
+
   useEffect(() => {
     obtenerEventos();
   }, []);

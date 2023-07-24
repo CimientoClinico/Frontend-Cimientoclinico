@@ -53,7 +53,6 @@ const FormularioConsultaAprobada = () => {
         try {
           const { data } = await clientAxios.get(`/pacientes/vermas-consulta-aprobada/${id}`, config);
           setConsulta(data);
-          console.log(data)
 
     
           // Agregar condición para asegurarse de que la propiedad `profesional._id` esté definida
@@ -163,6 +162,7 @@ const FormularioConsultaAprobada = () => {
         }));
         setDatosGuardados(false); // Actualizar la bandera de datos guardados
       };
+
       useEffect(() => {
         if (consulta) {
           setPreguntaspro(consulta);
@@ -324,16 +324,21 @@ const FormularioConsultaAprobada = () => {
   </div>
 
 </div>
-  <div className="p-4 bg-gray-200">   
+  <div className="p-4 bg-gray-200">
+
+    {consulta.link?  
   <div className=" mt-4">
-  <div class="  flex items-center justify-center">
-
-<button class="rounded-lg bg-neutral-200 px-10 py-3 text-2xl font-semibold  border-neutral-400 border-2 text-lila-300 hover:text-white hover:shadow-[inset_18rem_0_0_0] hover:shadow-blue-400 duration-[400ms,700ms] transition-[color,box-shadow]">
+  <div className="  flex items-center justify-center">
+<a href={consulta.link} target="_blank" rel="noopener noreferrer" className="rounded-lg bg-neutral-200 px-10 py-3 text-2xl font-semibold  border-neutral-400 border-2 text-lila-300 hover:text-white hover:shadow-[inset_18rem_0_0_0] hover:shadow-blue-400 duration-[400ms,700ms] transition-[color,box-shadow]">
     Link de la consulta
-</button>
-
+</a>
 </div>
+<div className="flex justify-center py-2 hover:text-blue-400">
+  <a href={consulta.link} target="_blank" rel="noopener noreferrer">Ó bien ingresa aquí</a>
+</div>
+
   </div>
+  :<p className="text-center text-lila-300 font-semibold" >Aún no hay link para tu teleconsulta</p>} 
   <div className=" mt-4">
   <div className="bg-white p-3 shadow-sm rounded-sm">
                     <div className="flex items-center space-x-2 font-semibold text-gray-900 leading-8">

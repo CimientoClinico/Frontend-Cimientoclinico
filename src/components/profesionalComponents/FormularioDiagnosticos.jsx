@@ -16,8 +16,8 @@ const FormularioDiagnosticos = () => {
   const [ocultarEnfermedad, setOcultarEnfermedad] = useState({});
   const [nombre, setNombre] = useState('');
   const [fechadiagnostico, setFechadiagnostico] = useState('');
-  const [tratamiento, setTratamiento] = useState('');
-  const [ultimocontrol, setUltimoControl] = useState('');
+  const [tratamiento, setTratamiento] = useState(''); 
+  const [ultimocontrol, setUltimoControl] = useState(null);
   const [obsdiagnostico, setObsdiagnostico] = useState('');
   const [mostrarFormulario, setMostrarFormulario] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
@@ -349,7 +349,7 @@ const numeroEnumeracion = index + 1;
       </div>
       <div>
     <h2 className="text-md font-regular">
-    {enfermedad.guardadoporpaciente ===false ? ` (${formatearFecha(enfermedad.fechadiagnostico)}) `  : ` (${enfermedad.fechadiagnostico}) ` } 
+    {enfermedad.guardadoporpaciente ===false ? ` (${enfermedad.fechadiagnostico}) `  : ` (${enfermedad.fechadiagnostico}) ` } 
     
     </h2>
       </div>
@@ -403,19 +403,28 @@ const numeroEnumeracion = index + 1;
 </div>
       <div className="flex flex-col text-sm">
         <div className="flex items-center">
-        <label htmlFor="fechadiagnostico" className={` ${enfermedad.pacientefechadiagnostico===true ? 'text-gray-600' : 'text-black'}`}> Fecha de diagnóstico: {enfermedad.pacientefechadiagnostico===true ? enfermedad.fechadiagnostico : '' }</label>
+        <label htmlFor="fechadiagnostico" className={` ${enfermedad.pacientefechadiagnostico===true ? 'text-gray-600' : 'text-black'}`}> Año del diagnóstico: {enfermedad.pacientefechadiagnostico===true ? enfermedad.fechadiagnostico : '' }</label>
         {fechadiagnosticavacia && (
               <span className="text-red-500 text-md"><FaExclamation className="animate-pulso text-lg" /></span>
                 )}
-
-      <input
+<input
   key={enfermedadId}
-  type="date"
+  type="text"
+  pattern="^[0-9]*$" 
   className={`border px-2 py-1.5 rounded-lg ml-6 flex-grow ${enfermedad.guardadoporpaciente ? 'text-gray-600' : 'text-black' }`}
   name="fechadiagnostico"
-  value={isValidDate(enfermedad.fechadiagnostico) ? enfermedad.fechadiagnostico : ''}
-  onChange={(e) => handleChange(e, enfermedadId)}
+  placeholder="Agrega el año del diagnóstico"
+  value={enfermedad.fechadiagnostico || ''}
+  onChange={(e) =>
+  {  
+    const re = /^[0-9\b]+$/; // Expresión regular que acepta solo números
+    if (e.target.value === '' || re.test(e.target.value)) {
+      handleChange(e, enfermedadId)
+  }
+}}
+
 />
+
 </div>
       </div>
       <div className="flex flex-col  text-sm">
@@ -426,7 +435,7 @@ const numeroEnumeracion = index + 1;
           type="date"
           className={`border px-2 py-1.5 rounded-lg ml-16 flex-grow ${enfermedad.guardadoporpaciente ? 'text-gray-600' : 'text-black'}`}
           name="ultimocontrol"
-          value={enfermedad.ultimocontrol || ''}
+          value={enfermedad.ultimocontrol || null}
           onChange={(e) => handleChange(e, enfermedadId)}
         />
         </div>
@@ -486,7 +495,7 @@ const numeroEnumeracion = index + 1;
                 : "text-black"
             }`}
           >
-            Fecha de diagnóstico:{"  "}
+            Año del diagnóstico:{"  "}
             {enfermedad.pacientefechadiagnostico === true
               ? enfermedad.fechadiagnostico
               : ""}
@@ -536,40 +545,7 @@ const numeroEnumeracion = index + 1;
   {modalOpen && (
   <div className="fixed inset-0 flex items-center justify-center z-50">
     <div className="bg-gray-900 bg-opacity-25 absolute inset-0"></div>
-    <div className="grid grid-cols-2 gap-4 bg-white rounded-lg shadow-lg pt-0 pb-10 pl-10 pr-10 z-10">
-      <div>
-        
-        <div className="py-5"></div>
-
-      <h2 className="text-xl font-semibold ">Solicitar un nuevo examen</h2>
-
-      {showButton ? (
-       <form onSubmit={GenerarSolicitudExamen}>
-        <div className="flex flex-col text-sm mt-7">
-        <label htmlFor="nombreexamen" className="mb-2 ">Nombre del examen</label>
-        <input
-            id="nombreexamen"
-            type="text"
-            className='border px-4 py-2 rounded-lg'
-            name="nombreexamen"
-            value={nombreExamen}
-            onChange={(e) => setNombreExamen(e.target.value)} 
-          />
-           <input
-                type="hidden"
-                name="enfermedadId"
-                defaultValue={enfermedadIdSeleccionada}
-              />
-      </div>
-      <div className="flex justify-center py-3">
-      {showButton && (
-                <button className="bg-lila-200 hover:bg-lila-100 px-2 py-2 rounded-md  text-white">Generar solicitud</button>
-    )}
-      </div>
-
-       </form>
-       ) : ( 'Aquí se mostraran los exámenes una vez iniciada la consulta')}
-      </div>
+    <div className="grid grid-cols-1 gap-4 bg-white rounded-lg shadow-lg pt-0 pb-10 pl-10 pr-10 z-10">
       <div>
       <div className="flex justify-end">
           <button
@@ -713,13 +689,20 @@ const numeroEnumeracion = index + 1;
 />
       </div>
       <div className="flex flex-col text-sm">
-        <label htmlFor="fechadiagnostico"className="mb-2 ">Fecha de diagnóstico:</label>
+        <label htmlFor="fechadiagnostico"className="mb-2 ">Año del diagnóstico:</label>
         <input
-  type="date" 
+  type="text" 
   id="fechadiagnostico"
+  placeholder="Agrega el año del diagnóstico"
   className="border px-4 py-2 rounded-lg w-full "
   value={fechadiagnostico}
-  onChange={(e) => setFechadiagnostico(e.target.value)}
+  onChange={(e) =>
+    {  
+      const re = /^[0-9\b]+$/; // Expresión regular que acepta solo números
+      if (e.target.value === '' || re.test(e.target.value)) {
+        setFechadiagnostico(e.target.value)
+    }
+  }}
 />
       </div>
       <div className="flex flex-col text-sm">

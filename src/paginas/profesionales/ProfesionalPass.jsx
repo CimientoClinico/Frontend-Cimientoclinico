@@ -1,4 +1,3 @@
-import ingresopro from '../../assets/img/ingreso-pro.png'
 import { Link } from 'react-router-dom'
 const ProfesionalPass = () => {
   return (
@@ -23,7 +22,7 @@ const ProfesionalPass = () => {
                     </div>
                 </div>
             </div>
-            <div className="hidden md:block md:w-1/2 rounded-r-lg " ><img className='' src={ingresopro} alt="" /></div>
+            <div className="hidden md:block md:w-1/2 rounded-r-lg " ><img className='' src="https://res.cloudinary.com/dde62spnz/image/upload/v1689082008/Imagenes%20sitio/ingreso-pro_cpza95.png" alt="" /></div>
 
         </div>
     </div>

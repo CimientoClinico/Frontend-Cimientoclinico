@@ -126,7 +126,6 @@ const handleFileChange = (event) => {
       if (resultado.isConfirmed) {
         const response = await clientAxios.delete(`/pacientes/eliminar-imagen-motivo/${id}`, config);
         Swal.fire('¡Listo!', 'El motivo de consulta ha sido actualizado.', 'success');
-        console.log(response.data);
 
       }
     } catch (error) {

@@ -49,40 +49,8 @@ const HeaderHistoria = () => {
          <nav className="flex flex-col items-center md:flex-row xl:gap-1 sm:gap-1 xl:mt-2 lg:mt-0  ">
              <Link to="/paciente/historia-clinica" className={`text-white text-sm hover:text-gray-300 bg-blue-600 px-3 py-1 xl:rounded-t-lg xs:rounded-md font-regular ${location.pathname === '/paciente/historia-clinica' && 'text-gray-400  '}`}>Historial Clínica</Link>
              <Link to="/paciente/diagnosticos" className={`text-white text-sm hover:text-gray-300 bg-yellow-600 px-3 py-1 xl:rounded-t-lg xs:rounded-md font-regular ${location.pathname === '/paciente/diagnosticos' && 'text-gray-600'}`}>Diagnósticos</Link>
-             <div className="relative">
-             <button
-                      onClick={toggleSubMenu}
-                      className={`text-white text-sm hover:text-gray-300 bg-green-600 px-3 py-1 xl:rounded-t-lg xs:rounded-md font-regular ${location.pathname === '/paciente/examenes' && 'text-gray-600'}`}>
-                      Exámenes
-                      {examenesPendientes > 0 && (
-                        <span className={`inline-block h-4 w-5 rounded-full ${examenesPendientesClass} ml-1`}>
-                          <span className="text-white text-xs flex items-center justify-center">{examenesPendientes}</span>
-                        </span>
-                      )}
-                    </button>
-              {isOpen && (
-                <div className="absolute left-0 mt-2 bg-green-600   shadow-lg rounded-md py-2 bottom-10">
-                  <Link
-                    to="/paciente/examenesPendientes"
-                    className=" text-sm block px-2 py-1 text-gray-200  hover:text-gray-600"
-                  >
-                    Exámenes Pendientes
-                    {examenesPendientes > 0 && (
-                        <span className={`inline-block h-4 w-5 rounded-full ${examenesPendientesClass} ml-1`}>
-                          <span className="text-white text-xs flex items-center justify-center">{examenesPendientes}</span>
-                        </span>
-                      )}
-                  </Link>
-                  <hr />
-                  <Link
-                    to="/paciente/examenes"
-                    className=" text-sm block px-2 py-1 text-gray-200  hover:text-gray-600"
-                  >
-                    Mis exámenes
-                  </Link>
-                </div>
-              )}
-            </div>
+             <Link to="/paciente/examenes" className={`text-white text-sm hover:text-gray-300 bg-green-600 px-3 py-1 xl:rounded-t-lg xs:rounded-md font-regular ${location.pathname === '/paciente/examenes' && 'text-gray-600'}`}>Examenes</Link>
+
              <div className="relative">
              <button
                       onClick={toggleSubMenuArchivo}

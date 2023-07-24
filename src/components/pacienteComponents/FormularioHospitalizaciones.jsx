@@ -3,6 +3,7 @@ import clientAxios from "../../config/axios"
 import useHistoriaCli from "../../hooks/paciente/useHistoriaCli"
 import Alerta from "../Alerta"
 import { Link } from "react-router-dom"
+import CustomTooltip from "./CustomTooltip"
 const FormularioHospitalizaciones = () => {
   const [alerta, setAlerta ]= useState({})
   const [nombre, setNombre] = useState('')
@@ -151,7 +152,7 @@ useEffect(()=>{
     <>
 { auth.historiaclinica?.hospitalizaciones==='Sin datos' ?
   <div className="md:flex  lg:gap-24 xs:gap-0 ">
-    <div className="sm:w-1/6 xl:w-3/6 ml-4 md:mb-0 ">
+    <div className="sm:w-1/6 xl:w-3/6  md:mb-0 ">
     <h1 className="text-gray-600 font-nunito font-semibold text-lg py-5 xl:ml-20 xs:ml-0 ">¿Tienes alguna hospitalización?</h1>
     </div>
     <div className="py-3 md:w-6/6 ">
@@ -224,7 +225,11 @@ useEffect(()=>{
 
 <div className="md:flex  lg:gap-24 xs:gap-0 px-5 ">
       <div className="md:w-4/6 ml-4 md:mb-0   ">
-        <label className="text-gray-700 font-bold text-md">Hospitalizaciones</label>
+        <div>
+      <label className="text-gray-700 font-bold text-sm" data-tooltip-id="my-tooltip" data-tooltip-content="Registra las hospitalizaciones que hayas tenido durante tu vida">
+      Hospitalizaciones <CustomTooltip id="my-tooltip" message="Registra las hospitalizaciones que hayas tenido durante tu vida" />
+      </label>
+    </div>
 
           </div>
      
@@ -376,7 +381,11 @@ useEffect(()=>{
 
 <div className="md:flex  lg:gap-24 xs:gap-0 px-5 ">
       <div className="md:w-4/6 ml-4 md:mb-0   ">
-        <label className="text-gray-700 font-bold  text-md">Urgencias</label>
+        <div>
+      <label className="text-gray-700 font-bold text-sm" data-tooltip-id="my-tooltip" data-tooltip-content="Registra las atenciones en urgencias que hayas tenido durante tu vida">
+      Urgencias <CustomTooltip id="my-tooltip" message="Registra las atenciones en urgencias que hayas tenido durante tu vida" />
+      </label>
+    </div>
       <input
             type="text"
             className="w-11/12 focus:outline-none focus:text-gray-900 mb-1 border border-gray-300 rounded-md placeholder-slate-400 p-2 "

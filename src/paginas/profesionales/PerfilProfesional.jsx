@@ -4,7 +4,6 @@ import { Image} from "cloudinary-react";
 import proAuth from "../../hooks/proAuth"
 import Alerta from '../../components/Alerta';
 import AlertaP from '../../components/AlertaPaciente'
-import sinfoto from '../../assets/img/sinfoto.png'
 import HeaderPerfil from "../../components/profesionalComponents/HeaderPerfil";
 const PerfilProfesional = () => {
   const [showPwd, setShowPwd] = useState(false)
@@ -73,6 +72,16 @@ const cambiarContraseña = async e =>{
     setTimeout(()=> setAlertap({}),5000)
   return
   }
+    // Validar que la contraseña nueva contenga al menos una letra mayúscula y un número
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d).+$/;
+    if (!passwordRegex.test(contraseña.pwd_nuevo)) {
+      setAlertap({
+        msgp: 'La contraseña debe contener al menos una letra mayúscula y un número',
+        error: true,
+      });
+      setTimeout(() => setAlertap({}), 5000);
+      return;
+    }
   if(contraseña.pwd_nuevo !== repetirPassword){
     setAlertap({msgp: 'Las nuevas contraseñas no son iguales', error: true})
     setTimeout(()=> setAlertap({}),5000)
@@ -116,7 +125,7 @@ const cambiarContraseña = async e =>{
 : 
 
 <div className="">
-                  { authpro.image === undefined ? <img src={sinfoto}/> :<Image cloudName="dde62spnz" width="150" publicId={authpro.image.public_id}>
+                  { authpro.image === undefined ? <img src="https://res.cloudinary.com/dde62spnz/image/upload/v1684334055/Imagenes%20sitio/sinfoto_bm34kj.png"/> :<Image cloudName="dde62spnz" width="150" publicId={authpro.image.public_id}>
                  </Image> }
 
    </div>}

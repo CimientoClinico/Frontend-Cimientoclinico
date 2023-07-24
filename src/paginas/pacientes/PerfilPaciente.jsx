@@ -5,7 +5,6 @@ import { Image} from "cloudinary-react";
 import useAuth from "../../hooks/useAuth"
 import Alerta from '../../components/Alerta';
 import AlertaP from '../../components/AlertaPaciente'
-import sinfoto from '../../assets/img/sinfoto.png'
 const PerfilPaciente = () => {
 
     const [showPwd, setShowPwd] = useState(false)
@@ -75,6 +74,16 @@ const fotoPerfil = async (e)  =>{
     setTimeout(()=> setAlertap({}),5000)
   return
   }
+    // Validar que la contraseña nueva contenga al menos una letra mayúscula y un número
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d).+$/;
+    if (!passwordRegex.test(contraseña.pwd_nuevo)) {
+      setAlertap({
+        msgp: 'La contraseña debe contener al menos una letra mayúscula y un número',
+        error: true,
+      });
+      setTimeout(() => setAlertap({}), 5000);
+      return;
+    }
   if(contraseña.pwd_nuevo !== repetirPassword){
     setAlertap({msgp: 'Las nuevas contraseñas no son iguales', error: true})
     setTimeout(()=> setAlertap({}),5000)
@@ -84,12 +93,10 @@ const fotoPerfil = async (e)  =>{
  setAlertap(respuesta)
  setTimeout(()=> setAlertap({}),5000)
  
-
   toastMixin.fire({
     animation: true,
     title: 'Seras redireccionado al Login de paciente en 7 segundos...'
   });
-
 
 
  }
@@ -121,7 +128,7 @@ const fotoPerfil = async (e)  =>{
 : 
 
 <div className="">
-                  { auth.image === undefined ? <img src={sinfoto}/> :<Image cloudName="dde62spnz" publicId={auth.image.public_id}>
+                  { auth.image === undefined ? <img src="https://res.cloudinary.com/dde62spnz/image/upload/v1684334055/Imagenes%20sitio/sinfoto_bm34kj.png"/> :<Image cloudName="dde62spnz" publicId={auth.image.public_id}>
                  </Image> }
 
    </div>}

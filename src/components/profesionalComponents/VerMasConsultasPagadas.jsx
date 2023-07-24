@@ -9,6 +9,56 @@ const VerMasConsultasPagadas= () => {
     const [timeLeft, setTimeLeft] = useState({});
     const { id } = useParams();
     const {authpro} =  proAuth()
+    const toastMixin = Swal.mixin({
+      toast: true,
+      icon: 'success',
+      title: 'Titulo',
+      animation: false,
+      position: 'top-right',
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+        toast.addEventListener('mouseenter', Swal.stopTimer)
+        toast.addEventListener('mouseleave', Swal.resumeTimer)
+      }
+  });
+    const handleFormSubmit = async (e) => {
+      e.preventDefault();
+    
+      try {
+        const tokenPro = localStorage.getItem('tokenPro')
+        if (!tokenPro) return;
+    
+        const config = {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${tokenPro}`
+          }
+        }
+    
+        const requestBody = {
+          link: consulta.link // Agregar el campo link al objeto de datos a enviar
+        };
+    
+        const { data } = await clientAxios.put(`/profesional/actualizar-link-consulta/${id}`, requestBody, config);
+        toastMixin.fire({
+          animation: true,
+          title: 'Link de consulta actualizada'
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    }
+
+    const handleChangePreguntas = (e) => {
+      const { name, value } = e.target;
+      setConsulta((prevValues) => ({
+        ...prevValues,
+        [name]: value
+      }));
+    };
+    
     const calcularEdad = (fechaNacimiento) => {
         const hoy = new Date();
         const cumpleanos = new Date(fechaNacimiento);
@@ -47,7 +97,7 @@ const VerMasConsultasPagadas= () => {
         
           fetchData();
         }, []);
-        
+
         useEffect(() => {
           const intervalId = setInterval(() => {
             if (!consulta.fecha || !consulta.horarioinicio) return;
@@ -73,7 +123,7 @@ const VerMasConsultasPagadas= () => {
         
           return () => clearInterval(intervalId);
         }, [consulta]);
-      
+
           if (!consulta || consulta.length === 0) {
             return <p>Cargando...</p>;
           }
@@ -115,6 +165,28 @@ const VerMasConsultasPagadas= () => {
     </>
   )}
 </div>
+<div className="py-5">
+  <h3 className="text-lg font-semibold text-center">
+    {consulta.link ? "Link subido para la consulta" : "Ingresa el link para desarrollar la consulta"}
+  </h3>
+  <form onSubmit={handleFormSubmit} className="flex flex-row mt-4 justify-center">
+    <div className="w-2/5">
+      <input
+        type="text"
+        name="link"
+        value={consulta.link || ''}
+        onChange={handleChangePreguntas}
+        placeholder="Sube el link para la consulta Ej: https://meet.google.com/1234567890"
+        className="block w-full border-gray-300 border rounded-md shadow-sm py-2 px-3 placeholder-gray-400 placeholder:text-xs focus:outline-none focus:ring-lila-300 focus:border-lila-300 sm:text-sm"
+      />
+    </div>
+    <button className="bg-lila-300 hover:bg-lila-100 py-2 px-4 rounded-md text-white font-semibold ml-2">
+      
+      {consulta.link ? "Actualizar link de la consulta" : "Subir link de la consulta"}
+    </button>
+  </form>
+</div>
+
 
     <div className="flex justify-center py-2">
 <div className="text-center px-4 py-4  bg-green-200 max-w-xl rounded-full">
@@ -228,14 +300,22 @@ const VerMasConsultasPagadas= () => {
           <p className="font-bold mb-1">Estado:</p>
           <p>{consulta.estado? 'Pagada' : ''}</p>
         </div>
+        <div>
+          <p className="font-bold mb-1">Fecha en donde se acepto la consulta:</p>
+          <p>{consulta.fechaaceptada || ''}</p>
+        </div>
 
       </div>
-      <div className="py-2"> 
-        <button className="bg-lila-200 px-3 py-2 text-white uppercase font-semibold rounded-xl shadow-md hover:bg-lila-100 ">Link de la consulta</button>
-      </div>
-      <div className="py-2"> 
-      <a href="#">Ó bien ingresa aquí</a>
-      </div>
+      <div className="py-2">
+  <a href={consulta.link} target="_blank" rel="noopener noreferrer" className="bg-lila-200 px-3 py-2 text-white uppercase font-semibold rounded-xl shadow-md hover:bg-lila-100">
+    Link de la consulta
+  </a>
+</div>
+<div className="py-2">
+  <a className="hover:text-blue-400" href={consulta.link} target="_blank" rel="noopener noreferrer">Ó bien ingresa aquí</a>
+</div>
+
+
       </div>
       
     </div>

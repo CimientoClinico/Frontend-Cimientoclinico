@@ -1,5 +1,4 @@
 
-import ingreso from '../assets/img/ingreso-pass.png'
 import { Link } from 'react-router-dom'
 const PacientePass = () => {
   return (
@@ -22,7 +21,7 @@ const PacientePass = () => {
 
         </div>
         <div className="w-full mx-auto px-20 flex-col items-center space-y-6">
-        <img src={ingreso} alt="" />
+        <img src="https://res.cloudinary.com/dde62spnz/image/upload/v1689081827/Imagenes%20sitio/ingreso-pass_pmu5rf.png" alt="" />
         <h1 className="text-white text-3xl font-nunito font-bold">Contraseña restablecida, Ya puedes iniciar sesión</h1>
         
         </div>

@@ -74,6 +74,9 @@ import InfoPacienteConsulta from "./paginas/profesionales/InfoPacienteConsulta"
 import ExamenesPendientes from "./paginas/pacientes/ExamenesPendientes"
 import MedidasGenerales from "./paginas/profesionales/MedidasGenerales"
 import Comunidad from "./paginas/profesionales/Comunidad"
+import VerSeguimientoConsulta from "./paginas/pacientes/VerSeguimientoConsulta"
+import DatosRecetaMagistral from "./paginas/profesionales/DatosRecetaMagistral"
+import Signosdealarma from "./paginas/profesionales/Signosdealarma"
 function App() {
   return (
     <BrowserRouter>
@@ -141,6 +144,7 @@ function App() {
         <Route path="consultas-rechazadas" element={ < ConsultasRechazadasPaciente/> } />
         <Route path="consultas-finalizadas" element={ < ConsultasFinalizadasPaciente/> } />
         <Route path="vermas-consulta-aprobada/:id" element={ <VerConsultaAprobada/> } />
+        <Route path="vermas-seguimiento-consulta/:id" element={ <VerSeguimientoConsulta /> } />
 
         
 
@@ -172,6 +176,10 @@ function App() {
         <Route path="info-paciente-consulta/:id" element={ <InfoPacienteConsulta/> } />
         <Route path="comunidad" element={ <Comunidad/> } />
         <Route path="medidas-generales" element={ <MedidasGenerales/> } />
+        <Route path="datos-recetasmagistral" element={ <DatosRecetaMagistral/> } />
+        <Route path="datos-signos-alarma" element={ <Signosdealarma/> } />
+
+        
         
 
         

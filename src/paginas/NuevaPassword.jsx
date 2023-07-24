@@ -2,7 +2,6 @@ import {  useParams } from 'react-router-dom';
 import { Navigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import Alerta from '../components/Alerta';
-import recuperar from '../assets/img/recuperar.png'
 import clientAxios from '../config/axios';
 const NuevaPassword = () => {
 
@@ -13,7 +12,6 @@ const NuevaPassword = () => {
   const [showPwd, setShowPwd] = useState(false)
   const params = useParams()
   const { token } = params
-  console.log(token)
  
   useEffect(()=>{
     const comprobarToken = async ()=>{
@@ -124,7 +122,7 @@ const { msg } = alerta
 
               </div>
               <div className="w-full mx-auto px-20 flex-col items-center space-y-6">
-              <img src={recuperar} alt="" />
+              <img src="https://res.cloudinary.com/dde62spnz/image/upload/v1689082141/Imagenes%20sitio/recuperar_afzzuu.png" alt="" />
               <h1 className="text-white text-3xl font-nunito font-bold">Recupera tu contraseña e ingresa Cimiento Clínico y agenda tus consultas de telemedicina</h1>
               </div>
            

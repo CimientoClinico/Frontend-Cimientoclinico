@@ -171,8 +171,28 @@ const InfoPacienteConsulta = () => {
         const nuevaFecha = new Date(fecha)
         nuevaFecha.setMinutes(nuevaFecha.getMinutes() + nuevaFecha.getTimezoneOffset())
         return new Intl.DateTimeFormat('es-CL', {dateStyle: 'long'}).format(nuevaFecha) }
+
+
+
           if (!consulta || consulta.length === 0) {
             return <p>Cargando...</p>;
+          }
+
+          if ( consulta.estado === 'finalizado') {
+            return (
+              <div className="text-center">
+                <h2>No se puede acceder a este contenido</h2>
+                <p>La consulta ya ha finalizado.</p>
+              </div>
+            );
+          }
+          if (consulta.estado === 'rechazada' ) {
+            return (
+              <div className="text-center">
+                <h2>No se puede acceder a este contenido</h2>
+                <p>La consulta ha sido rechazada</p>
+              </div>
+            );
           }
 
           if (consulta && consulta.profesional._id !== authpro._id ) {
@@ -397,7 +417,7 @@ const InfoPacienteConsulta = () => {
   </div>
 
 
-<div className="fixed bottom-4 right-8">
+<div className="fixed bottom-16 right-8">
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
   <div className="absolute inset-0 bg-black opacity-50"></div>

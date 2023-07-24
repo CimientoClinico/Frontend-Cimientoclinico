@@ -22,16 +22,16 @@ const FormularioMiHorario = () => {
     <>
     <h1 className='text-2xl text-gray-600 text-center mt-2'>REGISTRA TUS HORARIOS DE PACIENTE</h1>
     <form onSubmit={handleSubmit}>
-      <div class="px-3 md:lg:xl:px-40   border-b py-20 bg-opacity-10" >
+      <div className="px-3 md:lg:xl:px-40   border-b py-20 bg-opacity-10" >
         <div >
         <h1 className='bg-blue-200 text-2xl text-gray-600 font-regular cursor-pointer text-center'>¿Que días estas disponible durante la semana?</h1>
-        <div class=" bg-blue-200 grid grid-cols-3 gap-1">
-  <div class="p-4 flex flex-col items-center text-center group  cursor-pointer">
-    <div class="flex items-center p-6 space-x-12 bg-white rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-500">
-      <div class="flex py-3 px-4 rounded-lg text-gray-500 font-semibold cursor-pointer">
+        <div className=" bg-blue-200 grid grid-cols-3 gap-1">
+  <div className="p-4 flex flex-col items-center text-center group  cursor-pointer">
+    <div className="flex items-center p-6 space-x-12 bg-white rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-500">
+      <div className="flex py-3 px-4 rounded-lg text-gray-500 font-semibold cursor-pointer">
         <span>Lunes?</span>
       </div>
-      <div class="bg-yellow-400 py-3 px-5 text-white font-semibold rounded-lg hover:shadow-lg transition duration-3000 cursor-pointer">
+      <div className="bg-yellow-400 py-3 px-5 text-white font-semibold rounded-lg hover:shadow-lg transition duration-3000 cursor-pointer">
       <div className="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
       <input
         type="checkbox"
@@ -53,12 +53,12 @@ const FormularioMiHorario = () => {
     </div>
   </div>
 
-  <div class="p-4 flex flex-col items-center text-center group  cursor-pointer">
-    <div class="flex items-center p-6 space-x-12 bg-white rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-500">
-      <div class="flex py-3 px-4 rounded-lg text-gray-500 font-semibold cursor-pointer">
+  <div className="p-4 flex flex-col items-center text-center group  cursor-pointer">
+    <div className="flex items-center p-6 space-x-12 bg-white rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-500">
+      <div className="flex py-3 px-4 rounded-lg text-gray-500 font-semibold cursor-pointer">
         <span>Martes?</span>
       </div>
-      <div class="bg-yellow-400 py-3 px-5 text-white font-semibold rounded-lg hover:shadow-lg transition duration-3000 cursor-pointer">
+      <div className="bg-yellow-400 py-3 px-5 text-white font-semibold rounded-lg hover:shadow-lg transition duration-3000 cursor-pointer">
       <div className="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
       <input
         type="checkbox"
@@ -79,12 +79,12 @@ const FormularioMiHorario = () => {
       </div>
     </div>
   </div>
-  <div class="p-4 flex flex-col items-center text-center group  cursor-pointer">
-    <div class="flex items-center p-6 space-x-12 bg-white rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-500">
-      <div class="flex py-3 px-4 rounded-lg text-gray-500 font-semibold cursor-pointer">
+  <div className="p-4 flex flex-col items-center text-center group  cursor-pointer">
+    <div className="flex items-center p-6 space-x-12 bg-white rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-500">
+      <div className="flex py-3 px-4 rounded-lg text-gray-500 font-semibold cursor-pointer">
         <span>Miercoles?</span>
       </div>
-      <div class="bg-yellow-400 py-3 px-5 text-white font-semibold rounded-lg hover:shadow-lg transition duration-3000 cursor-pointer">
+      <div className="bg-yellow-400 py-3 px-5 text-white font-semibold rounded-lg hover:shadow-lg transition duration-3000 cursor-pointer">
       <div className="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
       <input
         type="checkbox"
@@ -105,12 +105,12 @@ const FormularioMiHorario = () => {
       </div>
     </div>
   </div>
-  <div class="p-4 flex flex-col items-center text-center group  cursor-pointer">
-    <div class="flex items-center p-6 space-x-12 bg-white rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-500">
-      <div class="flex py-3 px-4 rounded-lg text-gray-500 font-semibold cursor-pointer">
+  <div className="p-4 flex flex-col items-center text-center group  cursor-pointer">
+    <div className="flex items-center p-6 space-x-12 bg-white rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-500">
+      <div className="flex py-3 px-4 rounded-lg text-gray-500 font-semibold cursor-pointer">
         <span>Jueves?</span>
       </div>
-      <div class="bg-yellow-400 py-3 px-5 text-white font-semibold rounded-lg hover:shadow-lg transition duration-3000 cursor-pointer">
+      <div className="bg-yellow-400 py-3 px-5 text-white font-semibold rounded-lg hover:shadow-lg transition duration-3000 cursor-pointer">
       <div className="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
       <input
         type="checkbox"
@@ -131,12 +131,12 @@ const FormularioMiHorario = () => {
       </div>
     </div>
   </div>
-  <div class="p-4 flex flex-col items-center text-center group  cursor-pointer">
-    <div class="flex items-center p-6 space-x-12 bg-white rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-500">
-      <div class="flex py-3 px-4 rounded-lg text-gray-500 font-semibold cursor-pointer">
+  <div className="p-4 flex flex-col items-center text-center group  cursor-pointer">
+    <div className="flex items-center p-6 space-x-12 bg-white rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-500">
+      <div className="flex py-3 px-4 rounded-lg text-gray-500 font-semibold cursor-pointer">
         <span>Viernes?</span>
       </div>
-      <div class="bg-yellow-400 py-3 px-5 text-white font-semibold rounded-lg hover:shadow-lg transition duration-3000 cursor-pointer">
+      <div className="bg-yellow-400 py-3 px-5 text-white font-semibold rounded-lg hover:shadow-lg transition duration-3000 cursor-pointer">
       <div className="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
       <input
         type="checkbox"
@@ -158,12 +158,12 @@ const FormularioMiHorario = () => {
     </div>
   </div>
   <div className='p-4  flex flex-col items-center text-center group  cursor-pointer'>
-  <div class=" bg-white rounded-lg shadow-lg hover:shadow-xl transition duration-500 cursor-pointer">
-  <div class=" px-4 bg-white rounded-t-lg text-gray-500 font-semibold cursor-pointer">
+  <div className=" bg-white rounded-lg shadow-lg hover:shadow-xl transition duration-500 cursor-pointer">
+  <div className=" px-4 bg-white rounded-t-lg text-gray-500 font-semibold cursor-pointer">
   <h1 className='text-lg'>Tu Horario para la semana</h1>
   </div>
-  <div class="grid grid-cols-2 gap-2 bg-white rounded-b-lg">
-    <div class="flex items-center justify-center py-2 px-4 gap-1 text-gray-500 font-semibold cursor-pointer">
+  <div className="grid grid-cols-2 gap-2 bg-white rounded-b-lg">
+    <div className="flex items-center justify-center py-2 px-4 gap-1 text-gray-500 font-semibold cursor-pointer">
       <h1 className='text-sm'>Inicio: </h1>
       <input type="time" id="horasemanainicio" name="horasemanainicio"
       className='border rounded-md  border-blue-200' 
@@ -174,7 +174,7 @@ const FormularioMiHorario = () => {
          })}
          />
     </div>
-    <div class="flex items-center justify-center py-2 px-2 gap-1 text-gray-500 font-semibold cursor-pointer">
+    <div className="flex items-center justify-center py-2 px-2 gap-1 text-gray-500 font-semibold cursor-pointer">
     <h1 className='text-sm'>Fin: </h1>
     <input type="time" id="horasemanafin" name="horasemanafin" 
     className='border rounded-md  border-blue-200 '
@@ -193,13 +193,13 @@ const FormularioMiHorario = () => {
     
 <div>
   <h1 className='bg-red-200 text-2xl text-gray-600 font-regular cursor-pointer text-center'>¿Que días estas disponible los fines de semana?</h1>
-<div class=" bg-red-200 grid grid-cols-3 gap-1">
-  <div class="p-4 flex flex-col items-center text-center group  cursor-pointer">
-    <div class="flex items-center p-6 space-x-12 bg-white rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-500">
-      <div class="flex py-3 px-4 rounded-lg text-gray-500 font-semibold cursor-pointer">
+<div className=" bg-red-200 grid grid-cols-3 gap-1">
+  <div className="p-4 flex flex-col items-center text-center group  cursor-pointer">
+    <div className="flex items-center p-6 space-x-12 bg-white rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-500">
+      <div className="flex py-3 px-4 rounded-lg text-gray-500 font-semibold cursor-pointer">
         <span>Sábado?</span>
       </div>
-      <div class="bg-yellow-400 py-3 px-5 text-white font-semibold rounded-lg hover:shadow-lg transition duration-3000 cursor-pointer">
+      <div className="bg-yellow-400 py-3 px-5 text-white font-semibold rounded-lg hover:shadow-lg transition duration-3000 cursor-pointer">
       <div className="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
       <input
         type="checkbox"
@@ -221,12 +221,12 @@ const FormularioMiHorario = () => {
     </div>
   </div>
 
-  <div class="p-4 flex flex-col items-center text-center group  cursor-pointer">
-    <div class="flex items-center p-6 space-x-6 bg-white rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-500">
-      <div class="flex py-3 px-4 rounded-lg text-gray-500 font-semibold cursor-pointer">
+  <div className="p-4 flex flex-col items-center text-center group  cursor-pointer">
+    <div className="flex items-center p-6 space-x-6 bg-white rounded-xl shadow-lg hover:shadow-xl transform hover:scale-105 transition duration-500">
+      <div className="flex py-3 px-4 rounded-lg text-gray-500 font-semibold cursor-pointer">
         <span>Domingo?</span>
       </div>
-      <div class="bg-yellow-400 py-3 px-5 text-white font-semibold rounded-lg hover:shadow-lg transition duration-3000 cursor-pointer">
+      <div className="bg-yellow-400 py-3 px-5 text-white font-semibold rounded-lg hover:shadow-lg transition duration-3000 cursor-pointer">
       <div className="relative inline-block w-10 mr-2 align-middle select-none transition duration-200 ease-in">
       <input
         type="checkbox"
@@ -248,12 +248,12 @@ const FormularioMiHorario = () => {
     </div>
   </div>
   <div className='p-4  flex flex-col items-center text-center group  cursor-pointer'>
-  <div class=" bg-white rounded-lg shadow-lg hover:shadow-xl transition duration-500 cursor-pointer">
-  <div class=" px-4 bg-white rounded-t-lg text-gray-500 font-semibold cursor-pointer">
+  <div className=" bg-white rounded-lg shadow-lg hover:shadow-xl transition duration-500 cursor-pointer">
+  <div className=" px-4 bg-white rounded-t-lg text-gray-500 font-semibold cursor-pointer">
   <h1 className='text-lg'>Tu Horario para el fin de semana </h1>
   </div>
-  <div class="grid grid-cols-2 gap-2 bg-white rounded-b-lg">
-    <div class="flex items-center justify-center py-2 px-4 gap-1 text-gray-500 font-semibold cursor-pointer">
+  <div className="grid grid-cols-2 gap-2 bg-white rounded-b-lg">
+    <div className="flex items-center justify-center py-2 px-4 gap-1 text-gray-500 font-semibold cursor-pointer">
       <h1 className='text-sm'>Inicio: </h1>
       <input type="time" id="horafindesemanainicio" name="horafindesemanainicio" 
          className='border rounded-md  border-red-200'
@@ -264,7 +264,7 @@ const FormularioMiHorario = () => {
          })}
          />
     </div>
-    <div class="flex items-center justify-center py-2 px-2 gap-1 text-gray-500 font-semibold cursor-pointer">
+    <div className="flex items-center justify-center py-2 px-2 gap-1 text-gray-500 font-semibold cursor-pointer">
     <h1 className='text-sm'>Fin: {''} </h1>
     <input type="time" id="horafindesemanafin" name="horafindesemanafin" 
     className='border rounded-md  border-red-200'
@@ -283,9 +283,9 @@ const FormularioMiHorario = () => {
 </div>
 </div>
   </div>
-  <div class="w-full   bg-indigo-600 shadow-xl shadow-indigo-200 py-10 px-20 flex justify-between items-center">
-  <p class=" text-white"> <span class="text-4xl font-medium">Tus horarios son importantes...</span>  <span class="text-lg">Con esto los profesionales veran tu disponibilidad! </span></p>
-  <input type="submit" value="GUARDAR TUS HORARIOS"class="px-5 py-3  font-medium text-slate-700 shadow-xl  hover:bg-white duration-150  bg-yellow-400"/>
+  <div className="w-full   bg-indigo-600 shadow-xl shadow-indigo-200 py-10 px-20 flex justify-between items-center">
+  <p className=" text-white"> <span className="text-4xl font-medium">Tus horarios son importantes...</span>  <span className="text-lg">Con esto los profesionales veran tu disponibilidad! </span></p>
+  <input type="submit" value="GUARDAR TUS HORARIOS"className="px-5 py-3  font-medium text-slate-700 shadow-xl  hover:bg-white duration-150  bg-yellow-400"/>
   </div>
 
     </div>

@@ -3,7 +3,6 @@ import { useState, useEffect } from 'react';
 import { Navigate } from 'react-router-dom';
 import Alerta from '../../components/Alerta';
 import clientAxios from '../../config/axios';
-import recuperarpass from '../../assets/img/recuperar-pass-pro.png'
 const NuevaPassPro = () => {
   
   const [password, setPassword]= useState('')
@@ -13,7 +12,6 @@ const NuevaPassPro = () => {
   const [showPwd, setShowPwd] = useState(false)
   const params = useParams()
   const { token } = params
-  console.log(token)
  
   useEffect(()=>{
     const comprobarToken = async ()=>{
@@ -115,7 +113,7 @@ const { msg } = alerta
                     </div>
                 </div>
             </div>
-            <div className="hidden md:block md:w-1/2 rounded-r-lg " ><img className='' src={recuperarpass} alt="" /></div>
+            <div className="hidden md:block md:w-1/2 rounded-r-lg " ><img className='' src="https://res.cloudinary.com/dde62spnz/image/upload/v1689082200/Imagenes%20sitio/recuperar-pass-pro_um46g7.png" alt="" /></div>
 
         </div>
     </div>

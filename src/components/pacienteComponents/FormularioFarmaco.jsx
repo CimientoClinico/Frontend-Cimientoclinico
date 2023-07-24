@@ -2,6 +2,7 @@ import { useState, useEffect } from "react"
 import clientAxios from "../../config/axios"
 import useHistoriaCli from "../../hooks/paciente/useHistoriaCli"
 import Alerta from "../Alerta"
+import CustomTooltip from "./CustomTooltip"
 const FormularioFarmaco = () => {
   const [alerta, setAlerta ]= useState({})
   const [nombre, setNombre] = useState('')
@@ -85,6 +86,7 @@ useEffect(()=>{
 <div className="md:flex  lg:gap-24 xs:gap-0 ">
     <div className="sm:w-1/6 xl:w-3/6 ml-4 md:mb-0 ">
     <h1 className="text-gray-600 font-nunito font-semibold text-lg py-5 xl:ml-20 xs:ml-0 ">¿Tienes algún tratamiento farmacológico actualmente?</h1>
+    
     </div>
     <div className="py-3 md:w-6/6 ">
    <form onSubmit={handleSubmit2}>
@@ -154,7 +156,11 @@ useEffect(()=>{
 
     <div className="md:flex  lg:gap-24 xs:gap-0 px-5 ">
       <div className="md:w-4/6 ml-4 md:mb-0   ">
-      <label className="text-gray-700 font-bold text-md">Tratamiento farmacológico actual</label>
+      <div>
+      <label className="text-gray-700 font-bold text-sm" data-tooltip-id="my-tooltip" data-tooltip-content="Registra los medicamentos que usas actualmente">
+      Tratamiento farmacológico actual <CustomTooltip id="my-tooltip" message="Registra los medicamentos que usas actualmente" />
+      </label>
+    </div>
       <input
             type="text"
             className="w-11/12 focus:outline-none focus:text-gray-900  border border-gray-300 rounded-md placeholder-slate-400 p-2 "

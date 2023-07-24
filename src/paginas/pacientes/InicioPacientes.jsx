@@ -20,15 +20,14 @@ const {auth, actualizarContacto,  actualizarEstilodevida, cargando} =  useAuth()
 const [mostrarFormulario, setMostrarFormulario] = useState(false);
 const alerts = [
   {
-    message: 'Primera alerta',
-  },
-  {
-    message: 'Segunda alerta',
-  },
-  {
-    message: 'Tercera alerta',
+    titulo: "¡Bienvenido a Cimiento Clínico!",
+    message: "Descubre un lugar donde tu salud es nuestra prioridad. Permítenos ser parte de tu historia clínica, brindándote un servicio personalizado y seguro. Gestiona tus horarios y consulta motivos con facilidad, confiando en nuestros profesionales altamente capacitados para tu bienestar.",
+    gif: "https://res.cloudinary.com/dde62spnz/image/upload/v1689624395/Imagenes%20sitio/motivoconsulta-home_shubum.gif",
   },
 ];
+
+
+
 
 useEffect(() => {
   setPerfil(auth)

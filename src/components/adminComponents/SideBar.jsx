@@ -40,7 +40,7 @@ const SideBar = () => {
           
         </div>
         {open ?   <div className="flex gap-x-4 items-center">
-           <h1 className={`cursor-pointer font-nunito font-extrabold duration-500 text-2xl `}> Cimiento Clínico</h1>
+           <Link to={"/admin"} className={`cursor-pointer font-nunito font-extrabold duration-500 text-2xl `}> Cimiento Clínico</Link>
         
           
            </div>

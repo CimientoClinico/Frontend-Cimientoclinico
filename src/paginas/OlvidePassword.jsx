@@ -2,7 +2,6 @@ import { useState } from 'react';
 import Alerta from '../components/Alerta';
 import clientAxios from '../config/axios';
 import { Link } from 'react-router-dom';
-import emailrecuperacion from '../assets/img/email.png'
 const OlvidePassword = () => {
   const [email, setEmail]= useState('')
   const [alerta, setAlerta]= useState({})
@@ -67,7 +66,7 @@ const OlvidePassword = () => {
 
               </div>
               <div className="w-full mx-auto px-20 flex-col items-center space-y-6">
-              <img src={emailrecuperacion} alt="" />
+              <img src="https://res.cloudinary.com/dde62spnz/image/upload/v1689082241/Imagenes%20sitio/email_qhxdzt.png" alt="" />
               <h1 className="text-white text-3xl font-nunito font-bold">Ingresa tu correo para recuperar tu contraseña e ingresar a Cimiento Clínico</h1>
               </div>
            
