@@ -1,14 +1,12 @@
 import React from 'react'
 import { useEffect,useState } from "react";
 import clientAxios from "../../config/axios";
-import { FaTimes } from 'react-icons/fa';
 import { AiFillCloseCircle } from "react-icons/ai";
 import { MdKeyboardArrowDown, MdKeyboardArrowRight } from "react-icons/md";
-import pdfMake from 'pdfmake/build/pdfmake';
-import pdfFonts from 'pdfmake/build/vfs_fonts';
 import moment from "moment";
-// Configura pdfmake con los tipos de letra necesarios
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
+import pdfMake from 'pdfmake/build/pdfmake';
+ import pdfFonts from './fonts';
+ pdfMake.vfs = pdfFonts;
 const FormularioControles = ({  pacienteId,consulta, motivoId,profesionalId }) => {
 
       const [control, setControl] = useState([]);

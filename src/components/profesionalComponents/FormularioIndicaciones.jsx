@@ -8,10 +8,9 @@ import { Paginacion } from "../Paginacion";
 import { AiFillCloseCircle } from "react-icons/ai";
 import { FaCopy } from "react-icons/fa";
 import { IoMdCloseCircle} from "react-icons/io";
-import pdfMake from 'pdfmake/build/pdfmake'; // Importar el módulo principal de pdfmake
-import pdfFonts from 'pdfmake/build/vfs_fonts'; // Importar las fuentes utilizadas por pdfmake
-// Registrar las fuentes en pdfmake
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
+import pdfMake from 'pdfmake/build/pdfmake';
+ import pdfFonts from './fonts';
+ pdfMake.vfs = pdfFonts;
 const FormularioIndicaciones = () => {
   const [consulta, setConsulta] = useState([]);
   const [medidas, setMedidas] = useState([]);

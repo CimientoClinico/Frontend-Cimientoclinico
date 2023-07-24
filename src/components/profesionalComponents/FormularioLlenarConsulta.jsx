@@ -14,10 +14,9 @@ import { AiFillCloseCircle } from "react-icons/ai";
 import { FaCopy } from "react-icons/fa";
 import ExamenSolicitado from "./ExamenSolicitado";
 import FormularioControles from "./FormularioControles";
-import pdfMake from 'pdfmake/build/pdfmake'; // Importar el módulo principal de pdfmake
-import pdfFonts from 'pdfmake/build/vfs_fonts'; // Importar las fuentes utilizadas por pdfmake
-// Registrar las fuentes en pdfmake
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
+import pdfMake from 'pdfmake/build/pdfmake';
+ import pdfFonts from './fonts';
+ pdfMake.vfs = pdfFonts;
 const FormularioLlenarConsulta = () => {
     const [consulta, setConsulta] = useState([]);
     const navigate = useNavigate()
