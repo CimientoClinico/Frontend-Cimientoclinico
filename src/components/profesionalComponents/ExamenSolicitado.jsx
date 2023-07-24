@@ -7,9 +7,8 @@ import { MdKeyboardArrowDown, MdKeyboardArrowRight } from "react-icons/md";
 import moment from "moment";
 import proAuth from "../../hooks/proAuth"
 import pdfMake from 'pdfmake/build/pdfmake';
-import pdfFonts from 'pdfmake/build/vfs_fonts';
-
-pdfMake.vfs = pdfFonts.pdfMake.vfs;
+ import pdfFonts from './fonts';
+ pdfMake.vfs = pdfFonts;
 const ExamenSolicitado = ({ consultaId, pacienteId, profesionalId,consulta,motivoConsultaId,nombrepaciente,apellidopaciente,rutpaciente,edadpaciente }) => {
     const [secciones, setSecciones] = useState([
         { nombre: 'Hematológicos', examenes: ['Hemograma', 'Grupo sanguineo ABO y RH','Reticulocitos','Protrombina','TTPK'] },
