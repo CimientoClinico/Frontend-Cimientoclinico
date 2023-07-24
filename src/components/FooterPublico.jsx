@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 
 const FooterPublico = () =>{
 
@@ -29,7 +30,7 @@ const FooterPublico = () =>{
                 <a className="block  text-white   text-sm font-semibold mb-2" href="#">Datos de seguridad</a>
               </li>
               <li>
-                <a className="block  text-white   text-sm font-semibold mb-2" href="#">Misión visión</a>
+                <a className="block  text-white   text-sm font-semibold mb-2" href="#">Contacto</a>
               </li>
             </ul>
           </div>
@@ -37,7 +38,7 @@ const FooterPublico = () =>{
             <span className="block text-white   text-sm font-semibold mb-2">Preguntas frecuentes</span>
             <ul className="list-unstyled">
               <li>
-                <a className="block  text-white   text-sm font-semibold mb-2" href="#">Contacto</a>
+                <Link to={"/ingresa-admin"} className="block  text-white   text-sm font-semibold mb-2" href="#">Administrador</Link>
               </li>
           
             </ul>
