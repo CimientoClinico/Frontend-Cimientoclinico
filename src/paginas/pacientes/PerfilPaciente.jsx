@@ -128,7 +128,7 @@ const fotoPerfil = async (e)  =>{
 : 
 
 <div className="">
-                  { auth.image === undefined ? <img src="https://res.cloudinary.com/dde62spnz/image/upload/v1684334055/Imagenes%20sitio/sinfoto_bm34kj.png"/> :<Image cloudName="dde62spnz" publicId={auth.image.public_id}>
+                  { auth.image === undefined ? <img src="https://res.cloudinary.com/dde62spnz/image/upload/v1684334055/Imagenes%20sitio/sinfoto_bm34kj.png"/> :<Image  cloudName="dde62spnz" publicId={auth.image.public_id} style={{ borderRadius: "50%" }}>
                  </Image> }
 
    </div>}

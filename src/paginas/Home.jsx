@@ -28,10 +28,10 @@ const Home = () => {
         <h1 className='text-center text-2xl font-sans  font-semibold'>Ingresa y/o registrate para agendar tu hora</h1> 
         <div className='flex gap-4 justify-center'>
              <div className="mt-3 space-y-1  ">
-                  <Link  to="/ingresa"className="bg-coral-200 hover:bg-coral-100 active:bg-coral-300 inline-block w-full px-3 py-2 md:px-12 md:py-2 text-center text-white font-sans font-black text-xl md:text-2xl uppercase rounded-full shadow ">Soy Paciente</Link>
+                  <Link  to="/paciente"className="bg-coral-200 hover:bg-coral-100 active:bg-coral-300 inline-block w-full px-3 py-2 md:px-12 md:py-2 text-center text-white font-sans font-black text-xl md:text-2xl uppercase rounded-full shadow ">Soy Paciente</Link>
              </div>
               <div className="mt-3 space-y-2">
-                   <Link to="/ingresa-profesional"className=" bg-musgo-200 hover:bg-musgo-100 active:bg-musgo-300 inline-block w-full px-3 py-2 md:px-12 md:py-2text-center text-black font-sans font-black text-xl md:text-2xl uppercase rounded-full shadow ">Soy Profesional</Link>
+                   <Link to="/profesional"className=" bg-musgo-200 hover:bg-musgo-100 active:bg-musgo-300 inline-block w-full px-3 py-2 md:px-12 md:py-2text-center text-black font-sans font-black text-xl md:text-2xl uppercase rounded-full shadow ">Soy Profesional</Link>
               </div>
 
         </div>
