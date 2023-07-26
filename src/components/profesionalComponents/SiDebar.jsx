@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { HiMenuAlt3 } from "react-icons/hi";
-import { MdHome,  MdVoiceChat, MdAccountCircle,MdFollowTheSigns,MdPaid, MdDarkMode,MdContentPaste } from "react-icons/md";
+import { MdHome,  MdVideoChat, MdAccountCircle,MdFollowTheSigns,MdPaid, MdDarkMode,MdContentPaste } from "react-icons/md";
 import{HiUserGroup} from "react-icons/hi";
 import{BsFillDoorOpenFill,BsCalendar3} from "react-icons/bs";
 import { Link } from "react-router-dom";
@@ -43,7 +43,7 @@ const Sidebar = () => {
   const numNotificaciones= consultaspro.length
   const menus = [
     { name: "Inicio", link: "/profesional", icon: MdHome },
-    { name: `Tus Consultas` , link: "/profesional/consultas", icon: MdVoiceChat},
+    { name: `Tus Consultas` , link: "/profesional/consultas", icon:MdVideoChat},
     { name: "Motivos de consulta", link: "/profesional/lista-motivos-consulta", icon: MdContentPaste },
     { name: "Perfil", link: "/profesional/perfil-profesional", icon: MdAccountCircle },
     { name: "Tarifas", link: "/profesional/tarifas", icon: MdPaid },
