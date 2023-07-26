@@ -17,10 +17,12 @@ const HeaderComunidad = () => {
          </nav>
      </div>
    </header>
-   <div className='flex justify-center gap-2 py-10' >
-   <h1 className='text-center text-5xl  font-semibold'>Comunidad de </h1>
-    <h1 className='text-center text-5xl text-lila-300 font-semibold'> Profesionales</h1>
-   </div>
+   <div className='flex flex-col justify-center items-center md:flex-row md:justify-center md:gap-2 py-10'>
+  <h1 className='text-center text-4xl md:text-5xl font-semibold'>Comunidad de</h1>
+  <h1 className='text-center text-4xl md:text-5xl text-lila-300 font-semibold'>Profesionales</h1>
+</div>
+
+
  
     </>
   )
