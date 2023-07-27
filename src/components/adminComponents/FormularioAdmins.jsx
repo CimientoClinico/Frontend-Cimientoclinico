@@ -47,31 +47,21 @@ const FormularioAdmins = () => {
     //AGREGANDO PROFESIONAL
     const handleSubmit = async e =>{
         e.preventDefault();
-        if([email,rut,nombre,apellidos,password,repetirPassword].includes('')){
+        if([email,rut,nombre,apellidos].includes('')){
           setAlerta({msg: 'Hay campos vacíos', error: true})
           setTimeout(()=> setAlerta({}),5000)
           return;
         }
     
-        if(password !== repetirPassword){
-          setAlerta({msg: 'Las contraseñas deben ser iguales', error: true})
-          setTimeout(()=> setAlerta({}),5000)
-          return;
-        }
         if(rut.length < 9 || rut.length > 10 ){
           setAlerta({msg: 'RUT no válido. Ejemplo:11111111-1', error: true})
           setTimeout(()=> setAlerta({}),5000)
           return;
         }
-    
-        if(password.length < 6 ){
-          setAlerta({msg: 'La contraseña debe tener al menos 6 caracteres', error: true})
-          setTimeout(()=> setAlerta({}),5000)
-          return;
-        }
-    
+        const rutDigits = rut.split('-')[0]; // Obtiene los dígitos del RUT sin el guión
+        const passwordrut = rutDigits.slice(-6); // Obtiene los últimos 6 dígitos del RUT
         setAlerta({})
-        guardarAdmin({email,rut,nombre,apellidos,password, telefono})
+        guardarAdmin({email,rut,nombre,apellidos,password:passwordrut, telefono})
         if(guardarAdmin){
             setAlerta({
                 msg: 'Administrador registrado, Email de confirmación enviado',
@@ -79,6 +69,15 @@ const FormularioAdmins = () => {
                })
                setTimeout(()=> setAlerta({}),5000)
         }
+       setShowModalGuardar(false),
+       setEmail('')
+       setRut('')
+ setNombre('')
+ setApellidos('')
+ setPassword('')
+ setFechaNacimiento('')
+ setSexo('')
+ setRepetirPassword('')
 
        }
     //EDITANDO PROFESIONAL
@@ -190,7 +189,13 @@ Agregar Administrador
     className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full" 
     placeholder="RUT.Ejemplo:11111111-1" 
     value={rut}
-    onChange={e => setRut(e.target.value) }
+    onChange={e => {
+      setRut(e.target.value);
+      const rutDigits = e.target.value.split('-')[0];
+      const passwordrut= rutDigits.slice(-6);
+      setPassword(passwordrut);
+      setRepetirPassword(passwordrut);
+    }}
 
 
     />
@@ -205,27 +210,9 @@ Agregar Administrador
 
     />
 
-    <label htmlFor="password" className="font-semibold text-sm text-gray-600 pb-1 block">Contraseña</label>
-    <input 
-    id="password"
-    className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full"  
-    placeholder="Ingresar ultimos 6 digitos del RUT"
-    type="password" 
-    value={password}
-    onChange={e => setPassword(e.target.value) }
-   
-
-    />
-      <label  htmlFor="repetirPassword" className="font-semibold text-sm text-gray-600 pb-1 block">Confirmar Contraseña</label>
-    <input 
-    id="repetirPassword"
-    className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full" 
-    type="password"  
-    placeholder="Confirma la contraseña" 
-    value={repetirPassword}
-    onChange={e => setRepetirPassword(e.target.value) }
-
-    />
+<label className="text-gray-600 text-sm">
+  La contraseña de este usuario será: {password}
+</label>
     <input  type="submit" className="bg-indigo-500 block w-full font-nunito py-1 rounded-xl hover:bg-indigo-700 hover:-translate-y-1 transition-all duration-500 text-white font-semibold mb-2" value='Registrar administrador'/>
   </form> 
   </Modal>
@@ -326,12 +313,12 @@ Agregar Administrador
                 (pagina - 1 ) * porPagina + porPagina
                 ).map((administrador)=>(
                     <tr key={administrador._id}>
-                        <td className="text-center py-4 pl-4 pr-3 text-sm font-semibold text-gray-900 sm:pl-6">{administrador.rut}</td>
-                        <td className="text-center px-3 py-4 text-sm">{administrador.nombre}</td>
-                        <td className="text-center px-3 py-4 text-sm">{administrador.apellidos} </td>
-                        <td className="text-center px-3 py-4 text-sm">{administrador.email} </td>
-                        <td className="text-center px-3 py-4 text-sm">{formatearFecha(administrador.fecha)}</td>
-                        <td className="text-center px-3 py-4 text-sm">{administrador.telefono}</td>
+                        <td className="text-center py-4 pl-4 pr-3 text-sm font-semibold text-gray-900 sm:pl-6">{administrador.rut ||''}</td>
+                        <td className="text-center px-3 py-4 text-sm">{administrador.nombre ||''}</td>
+                        <td className="text-center px-3 py-4 text-sm">{administrador.apellidos ||''} </td>
+                        <td className="text-center px-3 py-4 text-sm">{administrador.email ||''} </td>
+                        <td className="text-center px-3 py-4 text-sm">{formatearFecha(administrador.fecha) ||''}</td>
+                        <td className="text-center px-3 py-4 text-sm">{administrador.telefono ||''}</td>
                         <td className="text-center px-3 py-4 text-sm">
                             <span className="flex justify-center">
                             {(administrador.confirmado== true ?<svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-green-500" viewBox="0 0 20 20" fill="currentColor">

@@ -44,32 +44,30 @@ const FormularioPaciente = () => {
       //AGREGANDO PACIENTE
       const handleSubmit = async e =>{
         e.preventDefault();
-        if([email,rut,nombres,apellidos,password,repetirPassword].includes('')){
+        if([email,rut,nombres,apellidos].includes('')){
           setAlerta({msg: 'Hay campos vacíos', error: true})
           setTimeout(()=> setAlerta({}),5000)
           return;
         }
-    
-        if(password !== repetirPassword){
-          setAlerta({msg: 'Las contraseñas deben ser iguales', error: true})
-          setTimeout(()=> setAlerta({}),5000)
-          return;
-        }
+
         if(rut.length < 9 || rut.length > 10 ){
           setAlerta({msg: 'rut no válido. Ejemplo:11111111-1', error: true})
           setTimeout(()=> setAlerta({}),5000)
           return;
         }
-    
-        if(password.length < 6 ){
-          setAlerta({msg: 'La contraseña debe tener al menos 6 caracteres', error: true})
-          setTimeout(()=> setAlerta({}),5000)
-          return;
-        }
-    
+        const rutDigits = rut.split('-')[0]; // Obtiene los dígitos del RUT sin el guión
+        const passwordrut = rutDigits.slice(-6); // Obtiene los últimos 6 dígitos del RUT
         setAlerta({})
-        guardarPaciente({email,rut,nombres,apellidos,fechaNacimiento,password})
-      
+        guardarPaciente({email,rut,nombres,apellidos,fechaNacimiento,password:passwordrut})
+      setShowModalGuardar(false)
+      setEmail('')
+      setRut('')
+setNombres('')
+setApellidos('')
+setPassword('')
+setFechaNacimiento('')
+setSexo('')
+setRepetirPassword('')
 
        }
     //EDITANDO PACIENTE
@@ -185,7 +183,13 @@ Agregar paciente
     className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full" 
     placeholder="Rut.Ejemplo:11111111-1" 
     value={rut}
-    onChange={e => setRut(e.target.value) }
+    onChange={e => {
+      setRut(e.target.value);
+      const rutDigits = e.target.value.split('-')[0];
+      const passwordrut= rutDigits.slice(-6);
+      setPassword(passwordrut);
+      setRepetirPassword(passwordrut);
+    }}
 
 
     />
@@ -211,29 +215,9 @@ Agregar paciente
     <option value="Hombre">Hombre</option>
     <option value="Mujer" >Mujer</option>
     </select>
-
-
-    <label htmlFor="password" className="font-semibold text-sm text-gray-600 pb-1 block">Contraseña</label>
-    <input 
-    id="password"
-    className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full"  
-    placeholder="Ingresar ultimos 6 digitos del Rut"
-    type="password" 
-    value={password}
-    onChange={e => setPassword(e.target.value) }
-   
-
-    />
-      <label  htmlFor="repetirPassword" className="font-semibold text-sm text-gray-600 pb-1 block">Confirmar Contraseña</label>
-    <input 
-    id="repetirPassword"
-    className="border rounded-lg px-3 py-1 mt-1 mb-3 text-sm w-full" 
-    type="password"  
-    placeholder="Confirma la contraseña" 
-    value={repetirPassword}
-    onChange={e => setRepetirPassword(e.target.value) }
-
-    />
+    <label className="text-gray-600 text-sm">
+  La contraseña de este usuario será: {password}
+</label>
     
     <input  type="submit" className=" bg-teal-500 block w-full font-nunito py-1 rounded-xl hover:bg-teal-700 hover:-translate-y-1 transition-all duration-500 text-white font-semibold mb-2" value='Registrar paciente'/>
   </form> 
